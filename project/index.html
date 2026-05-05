@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Оптовые Цены — e-commerce</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+  }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    background: #f0eee9;
+    text-rendering: optimizeLegibility;
+  }
+  * { box-sizing: border-box; }
+  /* Hide scrollbars inside artboards */
+  ::-webkit-scrollbar { display: none; }
+  /* Tweak panel reset */
+  button { font-family: inherit; }
+  /* Floating preface card on canvas */
+  .preface {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 720px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 12px 36px rgba(0,0,0,0.05);
+    line-height: 1.55;
+  }
+  .preface h1 {
+    margin: 0 0 6px;
+    font-size: 30px; font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #1a0a14;
+  }
+  .preface .sub {
+    color: #5a4a52; font-size: 14px; font-weight: 600;
+    margin-bottom: 18px; letter-spacing: 0.02em;
+  }
+  .preface p { color: #29261b; font-size: 14px; margin: 0 0 8px; }
+  .preface p b { color: #E6097A; }
+  .preface .palette {
+    display: flex; gap: 6px; margin: 16px 0 8px;
+  }
+  .preface .swatch {
+    height: 36px; flex: 1; border-radius: 10px;
+    display: flex; align-items: flex-end; padding: 6px 8px;
+    font-size: 10px; font-weight: 800; color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .preface .row {
+    display: flex; gap: 14px; align-items: center; margin-top: 10px;
+  }
+  .preface .logo-img {
+    width: 70px; height: 70px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(230,9,122,0.3);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="browser-window.jsx"></script>
+<script type="text/babel" src="app/store.jsx"></script>
+<script type="text/babel" src="app/components.jsx"></script>
+<script type="text/babel" src="app/screens.jsx"></script>
+<script type="text/babel" src="app/mobile.jsx"></script>
+<script type="text/babel" src="app/desktop.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+function Themed({ theme, children }) {
+  return (
+    <ThemeContext.Provider value={theme}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+const VARIANTS = [
+  { key: 'magnit',   label: 'А · Магнит',     desc: 'Магента + жёлтый — рыночная энергия' },
+  { key: 'noir',     label: 'B · Чёрный',      desc: 'Тёмный фон, неоновые карточки' },
+  { key: 'boutique', label: 'C · Светлый',     desc: 'Белый ведущий, магента акцент' },
+  { key: 'carnival', label: 'D · Карнавал',    desc: 'Жёлтый ведущий, максимум игры' },
+];
+
+const SCREENS = [
+  { key: 'home',     label: 'Главная' },
+  { key: 'catalog',  label: 'Каталог' },
+  { key: 'pdp',      label: 'Карточка товара', id: 'p03' },
+  { key: 'cart',     label: 'Корзина' },
+  { key: 'checkout', label: 'Оформление' },
+];
+
+function App() {
+  // Each artboard is a self-contained app (own router, own cart) so users can
+  // click around freely in any one without affecting the others.
+  return (
+    <DesignCanvas>
+      {/* Preface */}
+      <DCSection id="intro" title="Оптовые Цены 01" subtitle="E-commerce косметики · 4 визуальных направления · мобильный + десктоп">
+        <DCArtboard id="brief" label="Бриф · палитра" width={720} height={420}>
+          <Preface />
+        </DCArtboard>
+      </DCSection>
+
+      {/* Mobile artboards — one per variant, each starting on Home */}
+      <DCSection id="mobile-home" title="Мобильный · Главная" subtitle="Свайпайте, тапайте, проходите путь до оформления заказа">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'m-home-' + v.key} label={v.label} width={DEVICE_W + 24} height={DEVICE_H + 24}>
+            <ArtboardCenter>
+              <Themed theme={THEMES[v.key]}>
+                <MobileApp initial={{ screen: 'home' }} />
+              </Themed>
+            </ArtboardCenter>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Mobile · PDP — show product page immediately */}
+      <DCSection id="mobile-pdp" title="Мобильный · Карточка товара" subtitle="Тушь Maybelline Lash Sensational">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'m-pdp-' + v.key} label={v.label} width={DEVICE_W + 24} height={DEVICE_H + 24}>
+            <ArtboardCenter>
+              <Themed theme={THEMES[v.key]}>
+                <MobileApp initial={{ screen: 'pdp', id: 'p03' }} />
+              </Themed>
+            </ArtboardCenter>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Mobile · Cart */}
+      <DCSection id="mobile-cart" title="Мобильный · Корзина и оформление" subtitle="Превью с заполненной корзиной">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'m-cart-' + v.key} label={v.label} width={DEVICE_W + 24} height={DEVICE_H + 24}>
+            <ArtboardCenter>
+              <Themed theme={THEMES[v.key]}>
+                <MobileAppWithSeed initial={{ screen: 'cart' }} seed={['p01', 'p03', 'p08', 'p13']} />
+              </Themed>
+            </ArtboardCenter>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Desktop · Home */}
+      <DCSection id="desktop-home" title="Десктоп · Главная" subtitle="Полная версия для веба">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'d-home-' + v.key} label={v.label} width={DESKTOP_W + 24} height={DESKTOP_H + 60}>
+            <Themed theme={THEMES[v.key]}>
+              <DesktopApp initial={{ screen: 'home' }} />
+            </Themed>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Desktop · Catalog */}
+      <DCSection id="desktop-catalog" title="Десктоп · Каталог" subtitle="Категория «Макияж» · фильтры и сетка">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'d-cat-' + v.key} label={v.label} width={DESKTOP_W + 24} height={DESKTOP_H + 60}>
+            <Themed theme={THEMES[v.key]}>
+              <DesktopApp initial={{ screen: 'catalog', cat: 'makeup' }} />
+            </Themed>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Desktop · PDP */}
+      <DCSection id="desktop-pdp" title="Десктоп · Карточка товара">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'d-pdp-' + v.key} label={v.label} width={DESKTOP_W + 24} height={DESKTOP_H + 60}>
+            <Themed theme={THEMES[v.key]}>
+              <DesktopApp initial={{ screen: 'pdp', id: 'p03' }} />
+            </Themed>
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      {/* Desktop · Cart + Checkout */}
+      <DCSection id="desktop-cart" title="Десктоп · Корзина и оформление">
+        {VARIANTS.map((v) => (
+          <DCArtboard key={v.key} id={'d-cart-' + v.key} label={v.label} width={DESKTOP_W + 24} height={DESKTOP_H + 60}>
+            <Themed theme={THEMES[v.key]}>
+              <DesktopAppWithSeed initial={{ screen: 'cart' }} seed={['p01', 'p03', 'p08', 'p13', 'p15']} />
+            </Themed>
+          </DCArtboard>
+        ))}
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+// ── Center a fixed-size frame inside an artboard
+function ArtboardCenter({ children }) {
+  return (
+    <div style={{
+      width: '100%', height: '100%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'transparent',
+    }}>
+      {children}
+    </div>
+  );
+}
+
+// Preface card — palette + brief
+function Preface() {
+  return (
+    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="preface">
+        <div className="row" style={{ marginBottom: 16 }}>
+          <img className="logo-img" src="assets/logo.png" alt="" />
+          <div>
+            <h1>Оптовые Цены 01</h1>
+            <div className="sub">B2C · косметика и парфюмерия · доставка по РФ</div>
+          </div>
+        </div>
+        <p>Палитра взята с аватара: <b>магента</b> доминирует, <b>жёлтый</b> цветок — главный акцент, <b>оранжевый</b> ободок — вторичный, чёрный фон. Дальше — четыре направления, в которых можно нести этот код в e-commerce.</p>
+        <div className="palette">
+          <div className="swatch" style={{ background: '#E6097A' }}>#E6097A</div>
+          <div className="swatch" style={{ background: '#0A0A0A' }}>#0A0A0A</div>
+          <div className="swatch" style={{ background: '#F4D423', color: '#1a0a14', textShadow: 'none' }}>#F4D423</div>
+          <div className="swatch" style={{ background: '#F89020' }}>#F89020</div>
+          <div className="swatch" style={{ background: '#FFFFFF', color: '#1a0a14', textShadow: 'none', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08)' }}>#FFFFFF</div>
+        </div>
+        <p style={{ marginTop: 16 }}>Каждый артборд — это <b>живой кликабельный прототип</b>. Нажимайте на товар, добавляйте в корзину, переходите к оформлению. Чтобы увидеть один экран крупно — наведите на артборд и нажмите на иконку «развернуть» в шапке карточки.</p>
+        <p style={{ color: '#7a6a72', fontSize: 13 }}>Шрифт интерфейса — <b style={{ color: '#1a0a14' }}>Manrope</b> (можно заменить).</p>
+      </div>
+    </div>
+  );
+}
+
+// Mobile/desktop apps that pre-seed the cart for cart/checkout previews
+function MobileAppWithSeed({ initial, seed }) {
+  return (
+    <CartProvider>
+      <RouterProvider initial={initial}>
+        <SeedCart ids={seed} />
+        <MobileShell />
+      </RouterProvider>
+    </CartProvider>
+  );
+}
+function DesktopAppWithSeed({ initial, seed }) {
+  return (
+    <CartProvider>
+      <RouterProvider initial={initial}>
+        <SeedCart ids={seed} />
+        <DesktopShell />
+      </RouterProvider>
+    </CartProvider>
+  );
+}
+function SeedCart({ ids }) {
+  const cart = useCart();
+  const seeded = React.useRef(false);
+  React.useEffect(() => {
+    if (seeded.current) return;
+    seeded.current = true;
+    ids.forEach((id, i) => cart.add(id, i === 1 ? 2 : 1));
+  }, []);
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
