@@ -8,7 +8,11 @@
       "WebFetch(domain:taplink.cc)",
       "WebFetch(domain:www.instagram.com)",
       "WebFetch(domain:2gis.kg)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(curl -s -X POST https://ygkbugzxvanuujkjmpiw.supabase.co/auth/v1/signup -H 'apikey: sb_publishable_0t7nh17ZN8iwi8A8clPQ-w_FfweLWHg' -H 'Content-Type: application/json' -d '{\"email\":\"admin@optcen.kg\",\"password\":\"Admin2024!\"}')",
+      "Bash(curl -s -X POST https://ygkbugzxvanuujkjmpiw.supabase.co/auth/v1/signup -H 'apikey: sb_publishable_0t7nh17ZN8iwi8A8clPQ-w_FfweLWHg' -H 'Content-Type: application/json' -d '{\"email\":\"ramilsalihar@gmail.com\",\"password\":\"Admin2024!\"}')",
+      "Bash(curl -s -X POST https://ygkbugzxvanuujkjmpiw.supabase.co/auth/v1/signup -H 'apikey: sb_publishable_0t7nh17ZN8iwi8A8clPQ-w_FfweLWHg' -H 'Content-Type: application/json' -d '{\"email\":\"test@gmail.com\",\"password\":\"admin1\"}')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('email'\\) or d.get\\('msg'\\)\\)\")"
     ]
   }
 }
