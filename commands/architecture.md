@@ -2,61 +2,137 @@
 
 ## Stack
 - React 18 + Vite 6
+- `@supabase/supabase-js` — backend/DB (only external dependency)
 - No CSS framework — all styles inline via JS objects
-- No router library — custom `RouterContext` in `store.jsx`
+- No router library — custom `RouterContext` in `src/shared/router.jsx`
 - No state library — React Context only
 
-## File Map
+## Feature Sliced Design (FSD)
 
 ```
 src/
-  main.jsx          # Vite entry, mounts <App />
-  App.jsx           # Root: DesignCanvas with sections + artboards, theme wiring
-  store.jsx         # All data + all contexts (Theme, Cart, Router)
-  screens.jsx       # Screen components (HomeScreen, CatalogScreen, PDPScreen, CartScreen, CheckoutScreen)
-  components.jsx    # Shared primitives (Icon, Logo, ProductCard, Button, etc.)
-  shells.jsx        # Device wrappers: MobileApp, DesktopApp (handle nav + context providers)
-  DesignCanvas.jsx  # Canvas layout: DCSection, DCArtboard
-  BrowserWindow.jsx # Desktop chrome wrapper
-  IOSFrame.jsx      # Mobile device frame wrapper
+  app/
+    WebApp.jsx          # Root: providers + AppShell (mobile/desktop selector)
+  pages/
+    home.jsx            # HomeScreen
+    catalog.jsx         # CatalogScreen — live search, filters, sort
+    pdp.jsx             # PDPScreen — product detail, cart + favorites
+    cart.jsx            # CartScreen — line items, sticky summary (mobile)
+    checkout.jsx        # CheckoutScreen
+    order-done.jsx      # OrderDoneScreen
+    favorites.jsx       # FavoritesScreen
+    gifts.jsx           # GiftsScreen — sales + gift sets
+    shops.jsx           # ShopsScreen — 4 store locations
+    about.jsx           # AboutScreen — company, values, contacts
+  widgets/
+    NavSidebar.jsx      # Collapsible sidebar (220/72px) + settings panel
+    TopBar.jsx          # Sticky top bar (search, back button, cart)
+    RightPanel.jsx      # Optional right panel (home + catalog on wide screens)
+    MobileHeader.jsx    # Mobile sticky header + back button
+    MobileTabBar.jsx    # Mobile bottom tab bar
+    DesktopFooter.jsx   # Footer — О нас + Магазины navigate to screens
+    ToastContainer.jsx  # Fixed toast stack
+    ThemeSwitcher.jsx   # SWATCHES array + ThemeSwitcher component
+  entities/
+    product/
+      model.js          # PRODUCTS (23 items), fmtRub, pctOff, JSDoc types
+      ProductCard.jsx
+      ProductImage.jsx
+      PriceTag.jsx
+      DiscountBadge.jsx
+      HitBadge.jsx
+    category/
+      model.js          # CATEGORIES (9 items including gifts)
+    banner/
+      model.js          # BANNERS (3 items)
+      PromoBanner.jsx
+  features/
+    cart.jsx            # CartContext, CartProvider, useCart
+    favorites.jsx       # FavoritesContext, FavoritesProvider, useFavorites
+    notification.jsx    # NotificationContext, NotificationProvider, useNotification
+  shared/
+    theme.jsx           # THEMES (4 variants), ThemeContext, useTheme
+    router.jsx          # RouterContext, RouterProvider, useRouter
+    ui/
+      Icon.jsx          # SVG icon functions
+      Logo.jsx
+      Button.jsx
+      StarRating.jsx
+      SearchField.jsx
+      Section.jsx       # Section + Carousel
+  service/
+    supabase.js         # Supabase client (reads from .env)
+    products.js         # fetchProducts, fetchProductById, fetchProductsByCategory
+    orders.js           # createOrder, fetchOrders
+    auth.js             # signInWithPhone, verifyOtp, signOut, getSession, onAuthStateChange
 ```
 
-## Rendering Model
+Also in root `src/`:
+```
+  main.jsx            # Vite entry → mounts <WebApp />
+  App.jsx             # Design canvas (artboard review view, not production)
+  shells.jsx          # Design canvas device shells (MobileApp, DesktopApp)
+  DesignCanvas.jsx    # DCSection, DCArtboard
+  BrowserWindow.jsx   # Desktop chrome frame (design canvas only)
+  IOSFrame.jsx        # iOS device frame (design canvas only)
+```
 
-`App.jsx` renders a `DesignCanvas` — a scrollable artboard gallery.
-Each artboard wraps a `<Themed>` provider (sets which theme) and either `<MobileApp>` or `<DesktopApp>`.
+## Two Entry Points
 
-`MobileApp` / `DesktopApp` in `shells.jsx`:
-- Wrap `RouterProvider` + `CartProvider` + device frame
-- Pass `initial` route and optional `seed` (pre-filled cart items)
-- Render the correct screen via `route.screen`
+| Entry | File | Purpose |
+|-------|------|---------|
+| Production app | `src/main.jsx` → `src/app/WebApp.jsx` | Responsive real app |
+| Design canvas | `src/main.jsx` was changed to WebApp; `src/App.jsx` is the old artboard gallery | Design review only |
 
 ## Routing
 
-Custom router in `store.jsx`. No URL changes.
+Custom router — no URL changes, stack-based history.
+
 ```js
-const { route, go, back } = useRouter();
-go({ screen: 'pdp', id: 'p03' })  // navigate to PDP
-go({ screen: 'cart' })
+const { route, go, back, history } = useRouter();
+
+go({ screen: 'pdp', id: 'p03' })
 go({ screen: 'catalog', cat: 'makeup' })
-back()  // pop history
+go({ screen: 'catalog', search: true })  // auto-focuses search input
+back()
 ```
 
-Screens: `home` | `catalog` | `pdp` | `cart` | `checkout` | `confirm`
+### Back Button Logic
 
-## Screens (in screens.jsx)
+- **No back button** on nav screens: `home`, `catalog`, `gifts`, `shops`, `cart`, `favorites`
+- **Back button shown** on: `pdp`, `checkout`, `order_done`, `about`
+- Desktop: TopBar reads `NAV_SCREENS` array to decide
+- Mobile: `headerCfg` in `MobileShell` maps `showBack` per screen
 
-| Component        | Route                         | Notes                          |
-|-----------------|-------------------------------|--------------------------------|
-| `HomeScreen`     | `{ screen: 'home' }`          | Banners, hits, new arrivals, sale |
-| `CatalogScreen`  | `{ screen: 'catalog', cat? }` | Category filter, product grid  |
-| `PDPScreen`      | `{ screen: 'pdp', id }`       | Product detail, add to cart    |
-| `CartScreen`     | `{ screen: 'cart' }`          | Cart items, totals             |
-| `CheckoutScreen` | `{ screen: 'checkout' }`      | Delivery form                  |
-| `ConfirmScreen`  | `{ screen: 'confirm' }`       | Order success                  |
+## Provider Chain (WebApp.jsx)
 
-## Theme System
+```jsx
+<ThemeContext.Provider value={THEMES[themeKey]}>
+  <NotificationProvider>
+    <FavoritesProvider>
+      <CartProvider>
+        <RouterProvider initial={{ screen: 'home' }}>
+          <AppShell />
+        </RouterProvider>
+      </CartProvider>
+    </FavoritesProvider>
+  </NotificationProvider>
+</ThemeContext.Provider>
+```
 
-4 visual variants, each an object with ~18 color tokens (see `styles.md`).
-Access in any component: `const t = useTheme()` → `t.primary`, `t.ink`, etc.
-Theme is set at artboard level in `App.jsx` — each artboard has its own isolated theme + cart + router.
+Theme is controlled at app level via `themeKey` state — single theme for whole app. (Design canvas `App.jsx` sets theme per artboard for review.)
+
+## Responsive Breakpoints
+
+- `MOBILE_BP = 900` — below: MobileShell, above: DesktopShell
+- `HIDE_RIGHT_PANEL_BP = 1280` — RightPanel only shows on very wide screens
+
+## Supabase
+
+Credentials in `.env` (gitignored):
+```
+VITE_SUPABASE_URL=https://ygkbugzxvanuujkjmpiw.supabase.co
+VITE_SUPABASE_ANON_KEY=...
+```
+
+Import from `src/service/supabase.js`. Service modules are ready but not yet wired to UI — local static data still in use.

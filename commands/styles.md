@@ -1,6 +1,6 @@
 # Design System & Styles
 
-## Brand Colors (source palette)
+## Brand Colors
 
 | Token   | Value     | Role                        |
 |---------|-----------|-----------------------------|
@@ -12,18 +12,18 @@
 
 ## Theme Token Shape
 
-Every theme object exposes these tokens. Access via `useTheme()`:
+Access via `const t = useTheme()` in any component:
 
 ```js
 t.bg           // page background
 t.surface      // card/panel background
-t.surfaceAlt   // secondary surface (e.g. hover states)
+t.surfaceAlt   // secondary surface
 t.pageBg       // outermost canvas bg
 t.primary      // main brand color (#E6097A in all themes)
-t.primaryDark  // darker primary for hover (#B8005F)
+t.primaryDark  // darker primary (#B8005F)
 t.accent       // yellow accent (#F4D423)
 t.accent2      // orange accent (#F89020)
-t.ink          // body text color
+t.ink          // body text
 t.muted        // secondary/disabled text
 t.border       // subtle borders (rgba)
 t.headerBg     // top navigation background
@@ -37,42 +37,42 @@ t.discountBg   // discount badge background
 t.discountInk  // discount badge text
 ```
 
-## 4 Theme Variants
+## 3 Active Theme Variants (SWATCHES)
+
+Theme switcher lives in the sidebar settings panel. 3 swatches shown (carnival removed).
 
 ### magnit (А · Магнит)
-White bg, magenta header, yellow price tags — market energy feel.
+White bg, magenta header, yellow price tags.
 - `bg`: `#FFFFFF`, `headerBg`: `#E6097A`, `priceTagBg`: `#F4D423`
 
 ### noir (B · Чёрный)
 Dark bg with neon cards.
-- `bg`: `#0A0A0A`, `surface`: `#161116`, `headerBg`: `#0A0A0A`, `ink`: `#FFFFFF`
+- `bg`: `#0A0A0A`, `surface`: `#161116`, `ink`: `#FFFFFF`
 
 ### boutique (C · Светлый)
-Warm white, dark price tags for contrast.
+Warm white, dark price tags.
 - `bg`: `#FAF7F4`, `headerBg`: `#FFFFFF`, `priceTagBg`: `#1A0A14`, `priceTagInk`: `#F4D423`
 
-### carnival (D · Карнавал)
-Yellow dominant background, maximum playfulness.
-- `bg`: `#F4D423`, `headerBg`: `#1A0A14`, `headerInk`: `#F4D423`, `btnBg`: `#1A0A14`
+All 4 theme objects still exist in `THEMES` in `src/shared/theme.jsx` — carnival is just removed from SWATCHES display.
 
 ## Typography
 
-Font: **Manrope** (loaded via Google Fonts in `index.html`)
-- No Tailwind, no CSS classes — all `style={}` inline objects
-- Font weights in use: 500, 600, 700, 800, 900
-- Letter spacing: `-0.02em` for headings, `0.02em` for labels/badges
+Font: **Manrope** (Google Fonts, loaded in `index.html`)
+- No CSS classes — all `style={}` inline
+- Weights: 500, 600, 700, 800, 900
+- Headings: `letterSpacing: '-0.02em'`
+- Labels/badges: `letterSpacing: '0.02em'`
 
 ## Spacing Conventions
 
-Mobile: `padding: '0 16px'`, gaps of `10–12px`
-Desktop: `padding: '0 40px'`, gaps of `16–24px`
-Section margin-top: mobile `20px`, desktop `36px`
+| Context | Padding | Gap |
+|---------|---------|-----|
+| Mobile  | `0 16px` | `10–12px` |
+| Desktop | `0 40px` | `16–24px` |
 
-## Component Style Pattern
+## Rules
 
-All components use inline styles via `useTheme()`:
-```jsx
-const t = useTheme();
-<div style={{ background: t.cardBg, color: t.ink, borderRadius: 16, padding: 12 }}>
-```
-No CSS files. No class names. No CSS modules.
+- **Never hardcode colors** — always `t.*` tokens
+- **All styles are inline JS objects** — no CSS files, no Tailwind, no class names
+- Every component must render correctly across all 4 themes
+- Use `t.primary` for interactive/brand elements, `t.muted` for secondary text, `t.border` for dividers

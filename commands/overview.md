@@ -2,121 +2,97 @@
 
 ## What It Is
 
-B2C e-commerce web app for cosmetics and perfumery, sold at wholesale prices. Target market: Kyrgyzstan (Bishkek). Currency: сом (с). Language: Russian. Built as a fully interactive React prototype — not a mock, every button works.
+B2C e-commerce web app for cosmetics and perfumery. Business name: **САМЫЙ БОЛЬШОЙ МАГАЗИН КОСМЕТИКИ В КЫРГЫЗСТАНЕ**. Target market: Kyrgyzstan (Bishkek). Currency: сом (с). Language: Russian. Built as a fully interactive React app — not a mock, every button works.
 
-## Core Functionality
+Instagram: [@optovye_ceny01_](https://www.instagram.com/optovye_ceny01_/)
 
-### Customer-Facing Flow
-1. **Browse** → Home page with hero banners, bestsellers carousel, category grid, sale section
-2. **Discover** → Catalog page with category filter, sort (price / rating / discount), live product grid
-3. **Evaluate** → Product Detail Page (PDP): image gallery, price block, qty picker, tabs (description / ingredients / reviews / delivery)
-4. **Purchase** → Cart: line items with qty stepper, promo code input, order summary, savings display
+## Real Business Data
+
+- **4 physical stores** in Bishkek (see `src/pages/shops.jsx`)
+  - ул. Киевская, 69, 1 этаж — Первомайский р-н (главный, 4★, 1489 отзывов)
+  - ул. Гражданская, 2 — Свердловский р-н (4.5★, 732 отзыва)
+  - ул. Арстанбека Дуйшеева, 6/5 — Октябрьский р-н (4★, 193 отзыва)
+  - ул. Исы Ахунбаева, 101 — Первомайский р-н
+
+## Customer-Facing Flow
+
+1. **Browse** → Home page: hero banners, bestsellers carousel, category grid, sale section
+2. **Discover** → Catalog: live search by name/brand, category filter, sort, chip filters
+3. **Evaluate** → PDP: image gallery, price block, qty picker, favorites toggle, tabs (description / ingredients / reviews / delivery)
+4. **Purchase** → Cart: line items with qty stepper, promo code, order summary pinned to bottom on mobile
 5. **Checkout** → Delivery method (courier / pickup / Kyrgyz Post), payment method (SBP / card / installments / COD), form validation
-6. **Confirm** → Order success screen with generated order number
+6. **Confirm** → Order success screen with order number
 
-### Content & Data
-- **20 products** across 8 categories: face, hair, body, makeup, parfum, mens, kids, home
-- **All products on sale** — every item has a `price` (current) and `old` (original) value
-- **6 bestsellers** (p01, p02, p03, p05, p10, p13) marked with hit badge
-- **3 promo banners**: daily deal, new user offer, new arrivals
-- **8 top brands**: Nivea, Pantene, Loreal, Garnier, Dove, Maybelline, Schwarzkopf, Vichy
+## Screens
 
-### Navigation
-- Custom router (no library) — screen stack with `go()` / `back()`
-- Screens: `home` | `catalog` | `pdp` | `cart` | `checkout` | `order_done` | `favorites`
-- Desktop: left sidebar nav (collapsible 220px / 72px) + sticky TopBar + optional right panel
-- Mobile: sticky header + bottom tab bar (pinned via `height: 100dvh` + inner scroll)
+| Screen      | Route                           | Notes                                  |
+|------------|--------------------------------|----------------------------------------|
+| home        | `{ screen: 'home' }`           | Hero, hits carousel, categories, sale  |
+| catalog     | `{ screen: 'catalog', cat? }`  | Live search + filters + sort           |
+| pdp         | `{ screen: 'pdp', id }`        | Product detail, add to cart + favorites |
+| cart        | `{ screen: 'cart' }`           | Cart items, sticky summary footer      |
+| checkout    | `{ screen: 'checkout' }`       | Delivery + payment form                |
+| order_done  | `{ screen: 'order_done' }`     | Success screen                         |
+| favorites   | `{ screen: 'favorites' }`      | Saved products                         |
+| gifts       | `{ screen: 'gifts' }`          | Sales + gift sets                      |
+| shops       | `{ screen: 'shops' }`          | 4 store locations with 2GIS links      |
+| about       | `{ screen: 'about' }`          | Company story, values, contacts        |
 
-### Personalization Features
-- **Favorites** — toggle ♥ on any product card; persists in session; dedicated Favorites screen
-- **Cart** — add/remove/qty; subtotal, savings, delivery threshold (free above 1 500 с)
-- **Toast notifications** — on add-to-cart and add-to-favorites actions
+## Navigation Rules
 
-## Key Features to Highlight
+- **Nav screens** (sidebar items, no back button): `home`, `catalog`, `gifts`, `shops`, `cart`, `favorites`
+- **Detail screens** (back button shown): `pdp`, `checkout`, `order_done`, `about`
+- Desktop: collapsible left sidebar (220px / 72px) + sticky TopBar + optional RightPanel
+- Mobile: sticky MobileHeader + bottom MobileTabBar
+
+## Sidebar Settings Panel
+
+Clicking "Настройки" in the sidebar:
+- Expands sidebar if collapsed
+- Slides in 3 panels with staggered animation (110ms each): Theme switcher → Войти → Language (RU/KG/EN)
+- Closing animates out in reverse order
+- Collapses automatically when sidebar is closed
+
+## Key Features
 
 ### 🚚 Delivery
 - Bishkek: next-day, free above 1 500 с
 - Osh / Jalal-Abad: 2 days, 199 с
 - Kyrgyz regions: 3–7 days via Kyrgyz Post
-- Pickup: free from 12 locations in Bishkek, same day after 18:00
+- Pickup: free from 4 stores in Bishkek
 
 ### 💳 Payment Options
 - SBP (bank app transfer, no fee)
 - Card online (Visa, Mastercard, МИР)
-- Installments (4 payments, 0% APR, 1-minute approval)
-- Cash on delivery (cash or card to courier)
+- Installments (4 payments, 0% APR)
+- Cash on delivery
 
-### 🎨 4 Visual Themes
-- **Магнит** — magenta dominant, yellow price tags (market energy)
+### 🎨 3 Active Visual Themes
+- **Магнит** — magenta dominant, yellow price tags
 - **Чёрный рынок** — dark bg, neon cards
 - **Светлый** — warm white, dark price tags
-- **Карнавал** — yellow dominant, maximum playfulness
-- Theme switcher always visible on desktop TopBar and home screen mobile strip
+- Theme switcher lives in sidebar settings panel
+- Mobile home screen also has theme strip
 
-### 🔒 Trust & Quality
-- Guaranteed original products
-- 14-day returns, no questions asked
-- 12 000+ verified reviews across catalog
+### 🔒 Trust
+- Guaranteed originals, 14-day returns
+- 12 000+ verified reviews
 - Direct supplier sourcing
 
-### 🤖 AI Chatbot / Suggestion Feature (Planned / Highlight for AI Agents)
-> Not yet implemented. This is a high-priority future feature.
-- A floating assistant button should appear on catalog and PDP pages
-- It should accept natural language queries: "something for oily skin under 500 с", "gift for man, cologne"
-- It should filter/suggest products from the existing PRODUCTS array
-- Integration point: a `ChatWidget` component added to `app/WebApp.jsx`, calling an LLM API with the product catalog as context
-- The product model is already structured for easy embedding (id, cat, brand, name, vol, price, rating, hit)
-
-## Tech Stack
-
-- **React 18 + Vite 6** — no framework, no router library, no CSS framework
-- **Inline JS styles only** — all styling via `useTheme()` context hook, no CSS files
-- **Font**: Manrope (Google Fonts)
-- **No external dependencies** beyond React + Vite
-
-## File Structure (Feature Sliced Design)
-
-```
-src/
-  app/          ← root providers + shell selector (WebApp.jsx)
-  pages/        ← one file per screen (home, catalog, pdp, cart, checkout, order-done, favorites)
-  widgets/      ← composite UI blocks (NavSidebar, TopBar, RightPanel, MobileHeader, MobileTabBar, DesktopFooter, ToastContainer, ThemeSwitcher)
-  entities/
-    product/    ← model.js (data + JSDoc) + ProductCard, ProductImage, PriceTag, DiscountBadge, HitBadge
-    category/   ← model.js
-    banner/     ← model.js + PromoBanner
-  features/     ← cart.jsx, favorites.jsx, notification.jsx (React Context providers)
-  shared/
-    theme.jsx   ← THEMES object + ThemeContext + useTheme
-    router.jsx  ← RouterContext + RouterProvider + useRouter
-    ui/         ← Icon, Logo, Button, StarRating, SearchField, Section, Carousel
-```
-
-## Data Shapes (Quick Reference)
-
-```js
-// Product
-{ id, cat, brand, name, vol, price, old, rating, reviews, hit?, hue, shape }
-
-// Category
-{ id, ru, emoji }
-
-// Banner
-{ id, kicker, title, sub, cta, accent }
-
-// Cart state (from useCart())
-{ items, list, add, remove, setQty, clear, count, subtotal, saved }
-
-// Favorites state (from useFavorites())
-{ toggle, has, list, count }
-```
+### 🤖 AI Chatbot (Planned)
+> High-priority future feature.
+- Floating assistant on catalog + PDP
+- Natural language: "что-то для жирной кожи до 500 с"
+- Integration point: `ChatWidget` in `src/app/WebApp.jsx`, LLM API with PRODUCTS as context
 
 ## Adding Features — Quick Recipes
 
-**New screen**: add component to `src/pages/`, register in `ScreenContent` in `src/app/WebApp.jsx`, add to `shells.jsx` if design canvas also needed
+**New screen**: add file to `src/pages/`, register in `ScreenContent` in `src/app/WebApp.jsx`, add to `headerCfg` in `MobileShell`, add to `NAV_SCREENS` in `TopBar.jsx` if it's a nav-level page
 
 **New product**: add entry to `src/entities/product/model.js` PRODUCTS array
 
-**New theme**: add object to `THEMES` in `src/shared/theme.jsx`, add swatch to `SWATCHES` in `src/widgets/ThemeSwitcher.jsx`
+**New theme**: add to `THEMES` in `src/shared/theme.jsx`, add swatch to `SWATCHES` in `src/widgets/ThemeSwitcher.jsx`
 
-**New category**: add entry to `src/entities/category/model.js` CATEGORIES array
+**New category**: add to `src/entities/category/model.js` CATEGORIES array
+
+**New nav item**: add to `mainItems` in `src/widgets/NavSidebar.jsx`, add icon to `NI` object
