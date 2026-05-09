@@ -1,10 +1,8 @@
 import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
-import { PRODUCTS } from '../entities/product/model.js';
-import { CATEGORIES } from '../entities/category/model.js';
-import { BANNERS } from '../entities/banner/model.js';
 import { pctOff } from '../entities/product/model.js';
+import { useData } from '../features/data.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { SearchField } from '../shared/ui/SearchField.jsx';
 import { Section, Carousel } from '../shared/ui/Section.jsx';
@@ -15,10 +13,11 @@ import { DesktopFooter } from '../widgets/DesktopFooter.jsx';
 export function HomeScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
+  const { products, categories, banners } = useData();
   const isDesk = device === 'desktop';
-  const hits = PRODUCTS.filter((p) => p.hit);
-  const newArrivals = PRODUCTS.slice(8, 14);
-  const sale = PRODUCTS.filter((p) => p.old && pctOff(p.price, p.old) >= 30).slice(0, 6);
+  const hits = products.filter((p) => p.hit);
+  const newArrivals = products.slice(8, 14);
+  const sale = products.filter((p) => p.old && pctOff(p.price, p.old) >= 30).slice(0, 6);
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 0 : 16 }}>
@@ -49,7 +48,7 @@ export function HomeScreen({ device }) {
       )}
 
       <div style={{ display: 'flex', gap: 10, padding: isDesk ? '24px 40px 8px' : '12px 16px', overflowX: 'auto', scrollbarWidth: 'none' }}>
-        {CATEGORIES.map((c) => (
+        {categories.map((c) => (
           <button key={c.id} onClick={() => router.go({ screen: 'catalog', cat: c.id })} style={{
             background: t.surface, color: t.ink,
             border: `1.5px solid ${t.border}`, cursor: 'pointer',
@@ -68,9 +67,9 @@ export function HomeScreen({ device }) {
         gridTemplateColumns: isDesk ? '2fr 1fr' : '1fr',
         gap: 12,
       }}>
-        <PromoBanner b={BANNERS[0]} height={isDesk ? 280 : 180} onClick={() => router.go({ screen: 'catalog' })} />
-        {isDesk && <PromoBanner b={BANNERS[1]} height={280} onClick={() => {}} />}
-        {!isDesk && <PromoBanner b={BANNERS[1]} height={120} onClick={() => {}} />}
+        <PromoBanner b={banners[0]} height={isDesk ? 280 : 180} onClick={() => router.go({ screen: 'catalog' })} />
+        {isDesk && <PromoBanner b={banners[1]} height={280} onClick={() => {}} />}
+        {!isDesk && <PromoBanner b={banners[1]} height={120} onClick={() => {}} />}
       </div>
 
       <div style={{
@@ -113,7 +112,7 @@ export function HomeScreen({ device }) {
           gridTemplateColumns: isDesk ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
           padding: isDesk ? '0 40px' : '0 16px',
         }}>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <button key={c.id} onClick={() => router.go({ screen: 'catalog', cat: c.id })} style={{
               border: 'none', cursor: 'pointer', textAlign: 'left',
               background: c.id === 'face' ? t.primary : (c.id === 'makeup' ? t.accent : t.surface),

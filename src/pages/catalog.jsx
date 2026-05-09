@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
-import { PRODUCTS, pctOff } from '../entities/product/model.js';
-import { CATEGORIES } from '../entities/category/model.js';
+import { pctOff } from '../entities/product/model.js';
+import { useData } from '../features/data.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { ProductCard } from '../entities/product/ProductCard.jsx';
 import { DesktopFooter } from '../widgets/DesktopFooter.jsx';
@@ -24,6 +24,7 @@ function Chip({ children, active, onClick }) {
 export function CatalogScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
+  const { products: allProducts, categories } = useData();
   const isDesk = device === 'desktop';
   const cat = router.route.cat;
   const [sort, setSort] = React.useState('popular');
@@ -32,7 +33,7 @@ export function CatalogScreen({ device }) {
   const focusSearch = !!router.route.search;
 
   const q = query.trim().toLowerCase();
-  let products = PRODUCTS.filter((p) => !cat || p.cat === cat);
+  let products = allProducts.filter((p) => !cat || p.cat === cat);
   if (q) products = products.filter((p) =>
     p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
   );
@@ -44,7 +45,7 @@ export function CatalogScreen({ device }) {
   if (sort === 'rating') products.sort((a, b) => b.rating - a.rating);
   if (sort === 'discount') products.sort((a, b) => pctOff(b.price, b.old || b.price) - pctOff(a.price, a.old || a.price));
 
-  const catName = CATEGORIES.find((c) => c.id === cat)?.ru || 'Весь каталог';
+  const catName = categories.find((c) => c.id === cat)?.ru || 'Весь каталог';
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>

@@ -4,7 +4,8 @@ import { useRouter } from '../shared/router.jsx';
 import { useCart } from '../features/cart.jsx';
 import { useFavorites } from '../features/favorites.jsx';
 import { useNotification } from '../features/notification.jsx';
-import { PRODUCTS, fmtRub, pctOff } from '../entities/product/model.js';
+import { fmtRub, pctOff } from '../entities/product/model.js';
+import { useData } from '../features/data.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { Button } from '../shared/ui/Button.jsx';
 import { StarRating } from '../shared/ui/StarRating.jsx';
@@ -25,16 +26,20 @@ const qtyBtn = (t) => ({
 export function PDPScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
+  const { products } = useData();
   const cart = useCart();
   const isDesk = device === 'desktop';
-  const p = PRODUCTS.find((x) => x.id === router.route.id) || PRODUCTS[0];
+  const p = products.find((x) => x.id === router.route.id) || products[0];
   const favs = useFavorites();
   const notify = useNotification();
   const [qty, setQty] = React.useState(1);
   const [tab, setTab] = React.useState('about');
+
+  if (!p) return null;
+
   const isFav = favs.has(p.id);
 
-  const similar = PRODUCTS.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, isDesk ? 5 : 4);
+  const similar = products.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, isDesk ? 5 : 4);
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>

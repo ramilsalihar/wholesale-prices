@@ -1,21 +1,23 @@
 import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
-import { PRODUCTS, pctOff, fmtRub } from '../entities/product/model.js';
+import { pctOff, fmtRub } from '../entities/product/model.js';
+import { useData } from '../features/data.jsx';
 import { Section, Carousel } from '../shared/ui/Section.jsx';
 import { ProductCard } from '../entities/product/ProductCard.jsx';
 
 export function GiftsScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
+  const { products } = useData();
   const isDesk = device === 'desktop';
 
-  const sales = [...PRODUCTS]
+  const sales = [...products]
     .filter((p) => p.old)
     .sort((a, b) => pctOff(b.price, b.old) - pctOff(a.price, a.old))
     .slice(0, 10);
 
-  const giftSets = PRODUCTS.filter((p) => p.cat === 'gifts');
+  const giftSets = products.filter((p) => p.cat === 'gifts');
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 60 : 16 }}>

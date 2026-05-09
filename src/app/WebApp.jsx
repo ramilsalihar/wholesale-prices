@@ -4,6 +4,7 @@ import { RouterProvider, useRouter } from '../shared/router.jsx';
 import { CartProvider } from '../features/cart.jsx';
 import { FavoritesProvider } from '../features/favorites.jsx';
 import { NotificationProvider } from '../features/notification.jsx';
+import { DataProvider } from '../features/data.jsx';
 import { MobileHeader } from '../widgets/MobileHeader.jsx';
 import { MobileTabBar } from '../widgets/MobileTabBar.jsx';
 import { NavSidebar } from '../widgets/NavSidebar.jsx';
@@ -146,15 +147,17 @@ export default function WebApp() {
   const [themeKey, setThemeKey] = React.useState('magnit');
   return (
     <ThemeContext.Provider value={THEMES[themeKey]}>
-      <NotificationProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <RouterProvider initial={{ screen: 'home' }}>
-              <AppShell themeKey={themeKey} setThemeKey={setThemeKey} />
-            </RouterProvider>
-          </CartProvider>
-        </FavoritesProvider>
-      </NotificationProvider>
+      <DataProvider>
+        <NotificationProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <RouterProvider initial={{ screen: 'home' }}>
+                <AppShell themeKey={themeKey} setThemeKey={setThemeKey} />
+              </RouterProvider>
+            </CartProvider>
+          </FavoritesProvider>
+        </NotificationProvider>
+      </DataProvider>
     </ThemeContext.Provider>
   );
 }

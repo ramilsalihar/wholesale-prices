@@ -3,6 +3,7 @@ import { useTheme } from '../../shared/theme.jsx';
 
 export function PromoBanner({ b, onClick, height = 140 }) {
   const t = useTheme();
+  if (!b) return null;
   const palette = {
     primary: { bg: t.primary, ink: '#FFFFFF', accent: t.accent },
     accent:  { bg: t.accent,  ink: '#1A0A14', accent: t.primary },

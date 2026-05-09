@@ -76,7 +76,9 @@ const NAV = [
   },
 ];
 
-export function AdminSidebar({ screen, go }) {
+export function AdminSidebar({ screen, go, mobile, drawerOpen }) {
+  const visible = !mobile || drawerOpen;
+
   return (
     <aside style={{
       position: 'fixed',
@@ -89,8 +91,25 @@ export function AdminSidebar({ screen, go }) {
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'auto',
-      zIndex: 10,
+      zIndex: 16,
+      transform: visible ? 'translateX(0)' : 'translateX(-100%)',
+      transition: 'transform 0.22s ease',
+      boxShadow: mobile && drawerOpen ? '4px 0 24px rgba(0,0,0,0.12)' : 'none',
     }}>
+      {mobile && (
+        <div style={{
+          padding: '16px 16px 8px',
+          fontSize: 15,
+          fontWeight: 800,
+          color: AT.primary,
+          letterSpacing: '-0.02em',
+          borderBottom: `1px solid ${AT.border}`,
+          marginBottom: 4,
+        }}>
+          Оптовые Цены
+        </div>
+      )}
+
       <nav style={{ padding: '12px 8px', flex: 1 }}>
         {NAV.map(item => {
           const active = screen === item.key;

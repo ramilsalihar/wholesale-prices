@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function ProductImage({ p, padding = 20 }) {
-  const [h, s, l] = p.hue;
+  const [h, s, l] = p?.hue ?? [300, 50, 75];
   const tint = `hsl(${h}, ${s}%, ${l}%)`;
   const tintDark = `hsl(${h}, ${Math.min(s + 5, 100)}%, ${Math.max(l - 25, 25)}%)`;
   const bgFar = `hsl(${h}, ${Math.max(s - 30, 20)}%, 96%)`;

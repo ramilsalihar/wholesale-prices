@@ -1,15 +1,17 @@
 import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
-import { PRODUCTS, fmtRub } from '../entities/product/model.js';
+import { fmtRub } from '../entities/product/model.js';
+import { useData } from '../features/data.jsx';
 import { ProductImage } from '../entities/product/ProductImage.jsx';
 
 export function RightPanel() {
   const t = useTheme();
   const router = useRouter();
+  const { products } = useData();
 
-  const newItems = ['p13', 'p05', 'p03'].map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean);
-  const featured = PRODUCTS.find((p) => p.id === 'p11');
+  const newItems = ['p13', 'p05', 'p03'].map((id) => products.find((p) => p.id === id)).filter(Boolean);
+  const featured = products.find((p) => p.id === 'p11');
 
   return (
     <div style={{
