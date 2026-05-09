@@ -19,11 +19,11 @@ function DesktopShell() {
   const { screen } = router.route;
 
   let content;
-  if (screen === 'home')         content = <HomeScreen device="desktop" />;
+  if (screen === 'home') content = <HomeScreen device="desktop" />;
   else if (screen === 'catalog') content = <CatalogScreen device="desktop" />;
-  else if (screen === 'pdp')     content = <PDPScreen device="desktop" />;
-  else if (screen === 'cart')    content = <CartScreen device="desktop" />;
-  else if (screen === 'checkout')content = <CheckoutScreen device="desktop" />;
+  else if (screen === 'pdp') content = <PDPScreen device="desktop" />;
+  else if (screen === 'cart') content = <CartScreen device="desktop" />;
+  else if (screen === 'checkout') content = <CheckoutScreen device="desktop" />;
   else if (screen === 'order_done') content = <OrderDoneScreen device="desktop" />;
 
   const url = ({

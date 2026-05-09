@@ -1,9 +1,10 @@
 # Оптовые Цены — Claude Context
 
-B2C e-commerce for cosmetics/perfumery (Russia). Design prototype → production React app.
+B2C e-commerce for cosmetics/perfumery (Kyrgyzstan/Bishkek). Currency: сом (с). Production React app.
 
 ## Quick Reference
 
+@commands/overview.md
 @commands/architecture.md
 @commands/styles.md
 @commands/data.md

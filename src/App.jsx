@@ -1,12 +1,12 @@
 import React from 'react';
-import { ThemeContext, THEMES, CartProvider, RouterProvider, useCart } from './store.jsx';
+import { ThemeContext, THEMES } from './shared/theme.jsx';
 import { DesignCanvas, DCSection, DCArtboard } from './DesignCanvas.jsx';
 import { MobileApp, MobileAppWithSeed, DesktopApp, DesktopAppWithSeed, DEVICE_W, DEVICE_H, DESKTOP_W, DESKTOP_H } from './shells.jsx';
-import { Logo } from './components.jsx';
+
 
 const VARIANTS = [
-  { key: 'magnit',   label: 'А · Магнит',  desc: 'Магента + жёлтый — рыночная энергия' },
-  { key: 'noir',     label: 'B · Чёрный',  desc: 'Тёмный фон, неоновые карточки' },
+  { key: 'magnit', label: 'А · Магнит', desc: 'Магента + жёлтый — рыночная энергия' },
+  { key: 'noir', label: 'B · Чёрный', desc: 'Тёмный фон, неоновые карточки' },
   { key: 'boutique', label: 'C · Светлый', desc: 'Белый ведущий, магента акцент' },
   { key: 'carnival', label: 'D · Карнавал', desc: 'Жёлтый ведущий, максимум игры' },
 ];

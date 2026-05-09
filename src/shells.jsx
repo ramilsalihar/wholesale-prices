@@ -1,7 +1,19 @@
 import React from 'react';
-import { useTheme, useRouter, useCart, CartProvider, RouterProvider, CATEGORIES } from './store.jsx';
-import { Icon, Logo, SearchField, MobileHeader, MobileTabBar } from './components.jsx';
-import { HomeScreen, CatalogScreen, PDPScreen, CartScreen, CheckoutScreen, OrderDoneScreen } from './screens.jsx';
+import { useTheme } from './shared/theme.jsx';
+import { useRouter, RouterProvider } from './shared/router.jsx';
+import { useCart, CartProvider } from './features/cart.jsx';
+import { CATEGORIES } from './entities/category/model.js';
+import { Icon } from './shared/ui/Icon.jsx';
+import { Logo } from './shared/ui/Logo.jsx';
+import { SearchField } from './shared/ui/SearchField.jsx';
+import { MobileHeader } from './widgets/MobileHeader.jsx';
+import { MobileTabBar } from './widgets/MobileTabBar.jsx';
+import { HomeScreen } from './pages/home.jsx';
+import { CatalogScreen } from './pages/catalog.jsx';
+import { PDPScreen } from './pages/pdp.jsx';
+import { CartScreen } from './pages/cart.jsx';
+import { CheckoutScreen } from './pages/checkout.jsx';
+import { OrderDoneScreen } from './pages/order-done.jsx';
 import { IOSDevice, IOSStatusBar } from './IOSFrame.jsx';
 import { ChromeWindow } from './BrowserWindow.jsx';
 
