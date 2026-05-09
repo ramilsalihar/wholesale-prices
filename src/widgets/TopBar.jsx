@@ -26,18 +26,20 @@ export function TopBar() {
           flexShrink: 0,
         }}>{Icon.back()}</button>
       )}
-      <div
-        onClick={() => router.go({ screen: 'catalog' })}
-        style={{
-          flex: 1, maxWidth: 520,
-          background: t.bg, borderRadius: 12, padding: '10px 14px',
-          display: 'flex', alignItems: 'center', gap: 10,
-          boxShadow: `inset 0 0 0 1.5px ${t.border}`, cursor: 'text',
-        }}
-      >
-        <span style={{ color: t.muted, display: 'flex' }}>{Icon.search()}</span>
-        <span style={{ flex: 1, fontSize: 14, color: t.muted }}>Поиск косметики, брендов…</span>
-      </div>
+      {router.route.screen !== 'catalog' && (
+        <div
+          onClick={() => router.go({ screen: 'catalog', search: true })}
+          style={{
+            flex: 1, maxWidth: 520,
+            background: t.bg, borderRadius: 12, padding: '10px 14px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            boxShadow: `inset 0 0 0 1.5px ${t.border}`, cursor: 'text',
+          }}
+        >
+          <span style={{ color: t.muted, display: 'flex' }}>{Icon.search()}</span>
+          <span style={{ flex: 1, fontSize: 14, color: t.muted }}>Поиск косметики, брендов…</span>
+        </div>
+      )}
 
       <div style={{ flex: 1 }} />
 

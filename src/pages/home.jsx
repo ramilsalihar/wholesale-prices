@@ -44,7 +44,7 @@ export function HomeScreen({ device }) {
 
       {!isDesk && (
         <div style={{ padding: '12px 16px 8px', background: t.headerBg }}>
-          <SearchField onFocus={() => router.go({ screen: 'catalog' })} />
+          <SearchField onFocus={() => router.go({ screen: 'catalog', search: true })} />
         </div>
       )}
 
