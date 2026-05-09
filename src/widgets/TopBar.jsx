@@ -9,7 +9,7 @@ export function TopBar() {
   const router = useRouter();
   const cart = useCart();
 
-  const NAV_SCREENS = ['home', 'catalog', 'gifts', 'cart', 'favorites'];
+  const NAV_SCREENS = ['home', 'catalog', 'gifts', 'shops', 'cart', 'favorites'];
   const canGoBack = !NAV_SCREENS.includes(router.route.screen);
 
   return (

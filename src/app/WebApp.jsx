@@ -19,6 +19,8 @@ import { CheckoutScreen } from '../pages/checkout.jsx';
 import { OrderDoneScreen } from '../pages/order-done.jsx';
 import { FavoritesScreen } from '../pages/favorites.jsx';
 import { GiftsScreen } from '../pages/gifts.jsx';
+import { AboutScreen } from '../pages/about.jsx';
+import { ShopsScreen } from '../pages/shops.jsx';
 
 const MOBILE_BP = 900;
 const HIDE_RIGHT_PANEL_BP = 1280;
@@ -42,6 +44,8 @@ function ScreenContent({ screen, device }) {
   if (screen === 'order_done') return <OrderDoneScreen device={device} />;
   if (screen === 'favorites')  return <FavoritesScreen device={device} />;
   if (screen === 'gifts')      return <GiftsScreen device={device} />;
+  if (screen === 'about')      return <AboutScreen device={device} />;
+  if (screen === 'shops')      return <ShopsScreen device={device} />;
   return <HomeScreen device={device} />;
 }
 
@@ -86,6 +90,8 @@ function MobileShell({ themeKey, setThemeKey }) {
     cart:       { title: 'Корзина',    showBack: false, hide: false },
     favorites:  { title: 'Избранное',  showBack: false, hide: false },
     gifts:      { title: 'Подарки',    showBack: false, hide: false },
+    about:      { title: 'О нас',       showBack: true,  hide: false },
+    shops:      { title: 'Магазины',    showBack: false, hide: false },
     checkout:   { title: 'Оформление', showBack: true,  hide: false },
     order_done: { title: null,         showBack: false, hide: true  },
   })[screen] || { title: null, showBack: false, hide: false };

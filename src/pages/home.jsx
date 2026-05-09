@@ -36,7 +36,6 @@ export function HomeScreen({ device }) {
             <span style={{ opacity: 0.95 }}>Бишкек</span>
           </div>
           <div style={{ display: 'flex', gap: 18 }}>
-            <span style={{ opacity: 0.95, cursor: 'pointer' }}>Магазины</span>
             <span style={{ opacity: 0.95, cursor: 'pointer' }}>Доставка и оплата</span>
             <span style={{ opacity: 0.95, cursor: 'pointer' }}>Помощь</span>
           </div>

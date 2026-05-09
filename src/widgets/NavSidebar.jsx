@@ -27,6 +27,12 @@ const NI = {
       <path d="M20.8 5.6a5.5 5.5 0 0 0-8.8.7 5.5 5.5 0 0 0-8.8-.7 5.7 5.7 0 0 0 0 7.9L12 22.4l8.8-8.9a5.7 5.7 0 0 0 0-7.9z" />
     </svg>
   ),
+  store: (p = {}) => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
   gift: (p = {}) => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}>
       <polyline points="20 12 20 22 4 22 4 12" />
@@ -282,6 +288,7 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
     { id: 'home',      icon: () => NI.home(),         label: 'Главная',     to: { screen: 'home' } },
     { id: 'catalog',   icon: () => NI.grid(),         label: 'Каталог',     to: { screen: 'catalog' } },
     { id: 'gifts',     icon: () => NI.gift(),         label: 'Подарки',     to: { screen: 'gifts' } },
+    { id: 'shops',     icon: () => NI.store(),        label: 'Магазины',    to: { screen: 'shops' } },
     { id: 'cart',      icon: () => Icon.cart(),       label: 'Корзина',     to: { screen: 'cart' },      badge: cart.count },
     { id: 'favorites', icon: () => NI.heart(favs?.count > 0), label: 'Избранное', to: { screen: 'favorites' }, badge: favs?.count },
   ];
