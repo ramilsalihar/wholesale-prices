@@ -5,7 +5,7 @@ import { Logo } from '../shared/ui/Logo.jsx';
 export function DesktopFooter() {
   const t = useTheme();
   return (
-    <div style={{ background: t.headerBg, color: t.headerInk, padding: '40px 40px 24px', marginTop: 40 }}>
+    <div style={{ background: t.headerBg, color: t.headerInk, padding: '40px 40px 24px', marginTop: 0 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 32, marginBottom: 24 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>

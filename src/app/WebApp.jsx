@@ -59,9 +59,9 @@ function DesktopShell({ themeKey, setThemeKey }) {
       background: t.bg, color: t.ink,
       fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
     }}>
-      <NavSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      <NavSidebar open={sidebarOpen} setOpen={setSidebarOpen} themeKey={themeKey} setThemeKey={setThemeKey} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
-        <TopBar themeKey={themeKey} setThemeKey={setThemeKey} />
+        <TopBar />
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
           <div style={{ flex: 1, overflowY: 'auto' }}>
             <ScreenContent screen={screen} device="desktop" />

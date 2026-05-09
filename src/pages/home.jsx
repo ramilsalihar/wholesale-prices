@@ -21,7 +21,7 @@ export function HomeScreen({ device }) {
   const sale = PRODUCTS.filter((p) => p.old && pctOff(p.price, p.old) >= 30).slice(0, 6);
 
   return (
-    <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 60 : 16 }}>
+    <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 0 : 16 }}>
       {isDesk && (
         <div style={{
           background: t.headerBg, color: t.headerInk,

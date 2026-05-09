@@ -90,56 +90,79 @@ export function CartScreen({ device }) {
   const delivery = cart.subtotal >= 1500 ? 0 : 199;
   const total = cart.subtotal + delivery;
 
-  return (
-    <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: isDesk ? '1.5fr 1fr' : '1fr',
-        gap: isDesk ? 32 : 0,
-        padding: isDesk ? '24px 40px 40px' : 0,
-      }}>
-        <div>
-          <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 900, letterSpacing: '-0.02em',
-            margin: 0, padding: isDesk ? 0 : '14px 16px 8px' }}>
-            Корзина · {cart.count} {cart.count === 1 ? 'товар' : (cart.count < 5 ? 'товара' : 'товаров')}
-          </h1>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: isDesk ? '20px 0 0' : '0 16px' }}>
-            {cart.list.map((p) => <CartLine key={p.id} p={p} />)}
+  const SummaryBox = (
+    <div style={{ background: t.surface, borderRadius: isDesk ? 16 : 0, padding: 20, boxShadow: isDesk ? `inset 0 0 0 1.5px ${t.border}` : `0 -1px 0 ${t.border}` }}>
+      <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 14 }}>Итого</div>
+      <Row k="Товары" v={fmtRub(cart.subtotal)} />
+      <Row k="Скидка" v={`−${fmtRub(cart.saved)}`} accent />
+      <Row k="Доставка" v={delivery === 0 ? 'Бесплатно' : fmtRub(delivery)} />
+      {delivery > 0 && (
+        <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, marginTop: -4, marginBottom: 8 }}>
+          Добавьте товаров на {fmtRub(1500 - cart.subtotal)} — доставка бесплатно
+        </div>
+      )}
+      <div style={{ borderTop: `1.5px dashed ${t.border}`, margin: '12px 0' }} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>К оплате</span>
+        <span style={{ fontSize: 24, fontWeight: 900, color: t.primary, letterSpacing: '-0.02em' }}>{fmtRub(total)}</span>
+      </div>
+      <Button block size="lg" onClick={() => router.go({ screen: 'checkout' })}>Оформить заказ</Button>
+      <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <PayBadge>Visa</PayBadge><PayBadge>МИР</PayBadge><PayBadge>СБП</PayBadge><PayBadge>Долями</PayBadge>
+      </div>
+    </div>
+  );
+
+  if (isDesk) {
+    return (
+      <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 32, padding: '24px 40px 40px' }}>
+          <div>
+            <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>
+              Корзина · {cart.count} {cart.count === 1 ? 'товар' : (cart.count < 5 ? 'товара' : 'товаров')}
+            </h1>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '20px 0 0' }}>
+              {cart.list.map((p) => <CartLine key={p.id} p={p} />)}
+            </div>
+            <div style={{ display: 'flex', gap: 8, padding: '20px 0 0' }}>
+              <input placeholder="Промокод" style={{
+                flex: 1, padding: '12px 16px', borderRadius: 12,
+                border: `1.5px solid ${t.border}`, background: t.surface, color: t.ink,
+                fontSize: 14, fontFamily: 'inherit', outline: 'none',
+              }} />
+              <Button variant="ghost" size="md">Применить</Button>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 8, padding: isDesk ? '20px 0 0' : '16px' }}>
-            <input placeholder="Промокод" style={{
-              flex: 1, padding: '12px 16px', borderRadius: 12,
-              border: `1.5px solid ${t.border}`, background: t.surface, color: t.ink,
-              fontSize: 14, fontFamily: 'inherit', outline: 'none',
-            }} />
-            <Button variant="ghost" size="md">Применить</Button>
+          <div style={{ position: 'sticky', top: 20, alignSelf: 'flex-start' }}>
+            {SummaryBox}
           </div>
         </div>
+        <DesktopFooter />
+      </div>
+    );
+  }
 
-        <div style={{ padding: isDesk ? 0 : '8px 16px 16px', position: isDesk ? 'sticky' : 'static', top: 20, alignSelf: 'flex-start' }}>
-          <div style={{ background: t.surface, borderRadius: 16, padding: 20, boxShadow: `inset 0 0 0 1.5px ${t.border}` }}>
-            <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 14 }}>Итого</div>
-            <Row k="Товары" v={fmtRub(cart.subtotal)} />
-            <Row k="Скидка" v={`−${fmtRub(cart.saved)}`} accent />
-            <Row k="Доставка" v={delivery === 0 ? 'Бесплатно' : fmtRub(delivery)} />
-            {delivery > 0 && (
-              <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, marginTop: -4, marginBottom: 8 }}>
-                Добавьте товаров на {fmtRub(1500 - cart.subtotal)} — доставка бесплатно
-              </div>
-            )}
-            <div style={{ borderTop: `1.5px dashed ${t.border}`, margin: '12px 0' }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-              <span style={{ fontSize: 14, fontWeight: 700 }}>К оплате</span>
-              <span style={{ fontSize: 24, fontWeight: 900, color: t.primary, letterSpacing: '-0.02em' }}>{fmtRub(total)}</span>
-            </div>
-            <Button block size="lg" onClick={() => router.go({ screen: 'checkout' })}>Оформить заказ</Button>
-            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-              <PayBadge>Visa</PayBadge><PayBadge>МИР</PayBadge><PayBadge>СБП</PayBadge><PayBadge>Долями</PayBadge>
-            </div>
-          </div>
+  return (
+    <div style={{ background: t.bg, color: t.ink, display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+      <div style={{ flex: 1 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em', margin: 0, padding: '14px 16px 8px' }}>
+          Корзина · {cart.count} {cart.count === 1 ? 'товар' : (cart.count < 5 ? 'товара' : 'товаров')}
+        </h1>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '0 16px' }}>
+          {cart.list.map((p) => <CartLine key={p.id} p={p} />)}
+        </div>
+        <div style={{ display: 'flex', gap: 8, padding: '16px' }}>
+          <input placeholder="Промокод" style={{
+            flex: 1, padding: '12px 16px', borderRadius: 12,
+            border: `1.5px solid ${t.border}`, background: t.surface, color: t.ink,
+            fontSize: 14, fontFamily: 'inherit', outline: 'none',
+          }} />
+          <Button variant="ghost" size="md">Применить</Button>
         </div>
       </div>
-      {isDesk && <DesktopFooter />}
+      <div style={{ position: 'sticky', bottom: 0, zIndex: 5 }}>
+        {SummaryBox}
+      </div>
     </div>
   );
 }

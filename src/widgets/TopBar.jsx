@@ -3,9 +3,8 @@ import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { useCart } from '../features/cart.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
-import { ThemeSwitcher } from './ThemeSwitcher.jsx';
 
-export function TopBar({ themeKey, setThemeKey }) {
+export function TopBar() {
   const t = useTheme();
   const router = useRouter();
   const cart = useCart();
@@ -42,9 +41,7 @@ export function TopBar({ themeKey, setThemeKey }) {
 
       <div style={{ flex: 1 }} />
 
-      <ThemeSwitcher themeKey={themeKey} setThemeKey={setThemeKey} />
-
-      <div style={{
+<div style={{
         display: 'flex', alignItems: 'center', gap: 10,
         background: t.surfaceAlt, borderRadius: 12, padding: '8px 14px',
       }}>
