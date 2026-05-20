@@ -39,6 +39,21 @@ create table if not exists banners (
   active boolean default true
 );
 
+create table if not exists stores (
+  id       text primary key,
+  name     text not null,
+  address  text,
+  district text,
+  city     text,
+  hours    text,
+  rating   float4 default 4.5,
+  reviews  int4   default 0,
+  map_url  text,
+  badge    text,
+  active   boolean default true,
+  sort     int4    default 0
+);
+
 create table if not exists orders (
   id               uuid primary key default gen_random_uuid(),
   items            jsonb    not null default '[]',
@@ -58,6 +73,7 @@ create table if not exists orders (
 alter table categories enable row level security;
 alter table products    enable row level security;
 alter table banners     enable row level security;
+alter table stores      enable row level security;
 alter table orders      enable row level security;
 
 -- Public read
@@ -85,6 +101,14 @@ create policy "auth full access products"
 drop policy if exists "auth full access banners" on banners;
 create policy "auth full access banners"
   on banners for all using (auth.role() = 'authenticated');
+
+drop policy if exists "public read active stores" on stores;
+create policy "public read active stores"
+  on stores for select using (active = true);
+
+drop policy if exists "auth full access stores" on stores;
+create policy "auth full access stores"
+  on stores for all using (auth.role() = 'authenticated');
 
 -- Orders: anyone can insert (checkout), admin can read/update
 drop policy if exists "public insert orders" on orders;
@@ -150,3 +174,15 @@ insert into banners (id, kicker, title, sub, cta, accent) values
 on conflict (id) do update set
   kicker = excluded.kicker, title = excluded.title, sub = excluded.sub,
   cta = excluded.cta, accent = excluded.accent;
+
+-- ── SEED: STORES ────────────────────────────────────────────
+
+insert into stores (id, name, address, district, city, hours, rating, reviews, map_url, badge, sort) values
+  ('s1', 'Оптовые цены 01 · Киевская',   'ул. Киевская, 69, 1 этаж',          'Первомайский район',  'Бишкек, 720040', '09:00 – 21:00', 4.0, 1489, 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001036586856/74.605312%2C42.874828', 'Главный', 0),
+  ('s2', 'Оптовые цены 01 · Гражданская','ул. Гражданская, 2',                 'Свердловский район',  'Бишкек, 720065', '09:00 – 21:00', 4.5,  732, 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001077243451/74.636694%2C42.875686', null,      1),
+  ('s3', 'Оптовые цены 01 · Дуйшеева',  'ул. Арстанбека Дуйшеева, 6/5',      'Октябрьский район',   'Бишкек, 720060', '09:00 – 21:00', 4.0,  193, 'https://2gis.kg/bishkek/firm/70000001102767646',                                                   null,      2),
+  ('s4', 'Оптовые цены 01 · Ахунбаева', 'ул. Исы Ахунбаева, 101',             'Первомайский район',  'Бишкек, 720055', '09:00 – 21:00', 4.2,   34, 'https://2gis.kg/bishkek/branches/70000001036586855/geo/15763234351138719/74.60829%2C42.843155',    null,      3)
+on conflict (id) do update set
+  name = excluded.name, address = excluded.address, district = excluded.district,
+  city = excluded.city, hours = excluded.hours, rating = excluded.rating,
+  reviews = excluded.reviews, map_url = excluded.map_url, badge = excluded.badge, sort = excluded.sort;

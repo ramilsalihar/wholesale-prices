@@ -1,54 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { DesktopFooter } from '../widgets/DesktopFooter.jsx';
+import { fetchStores } from '../service/stores.js';
 
-const SHOPS = [
-  {
-    id: 1,
-    name: 'Оптовые цены 01 · Киевская',
-    address: 'ул. Киевская, 69, 1 этаж',
-    district: 'Первомайский район',
-    city: 'Бишкек, 720040',
-    hours: '09:00 – 21:00',
-    rating: 4.0,
-    reviews: 1489,
-    mapUrl: 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001036586856/74.605312%2C42.874828',
-    badge: 'Главный',
-  },
-  {
-    id: 2,
-    name: 'Оптовые цены 01 · Гражданская',
-    address: 'ул. Гражданская, 2',
-    district: 'Свердловский район',
-    city: 'Бишкек, 720065',
-    hours: '09:00 – 21:00',
-    rating: 4.5,
-    reviews: 732,
-    mapUrl: 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001077243451/74.636694%2C42.875686',
-  },
-  {
-    id: 3,
-    name: 'Оптовые цены 01 · Дуйшеева',
-    address: 'ул. Арстанбека Дуйшеева, 6/5',
-    district: 'Октябрьский район',
-    city: 'Бишкек, 720060',
-    hours: '09:00 – 21:00',
-    rating: 4.0,
-    reviews: 193,
-    mapUrl: 'https://2gis.kg/bishkek/firm/70000001102767646',
-  },
-  {
-    id: 4,
-    name: 'Оптовые цены 01 · Ахунбаева',
-    address: 'ул. Исы Ахунбаева, 101',
-    district: 'Первомайский район',
-    city: 'Бишкек, 720055',
-    hours: '09:00 – 21:00',
-    rating: 4.2,
-    reviews: 34,
-    mapUrl: 'https://2gis.kg/bishkek/branches/70000001036586855/geo/15763234351138719/74.60829%2C42.843155',
-  },
+const STATIC_SHOPS = [
+  { id: 's1', name: 'Оптовые цены 01 · Киевская', address: 'ул. Киевская, 69, 1 этаж', district: 'Первомайский район', city: 'Бишкек, 720040', hours: '09:00 – 21:00', rating: 4.0, reviews: 1489, map_url: 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001036586856/74.605312%2C42.874828', badge: 'Главный', active: true, sort: 0 },
+  { id: 's2', name: 'Оптовые цены 01 · Гражданская', address: 'ул. Гражданская, 2', district: 'Свердловский район', city: 'Бишкек, 720065', hours: '09:00 – 21:00', rating: 4.5, reviews: 732, map_url: 'https://2gis.kg/bishkek/branches/70000001036586855/firm/70000001077243451/74.636694%2C42.875686', active: true, sort: 1 },
+  { id: 's3', name: 'Оптовые цены 01 · Дуйшеева', address: 'ул. Арстанбека Дуйшеева, 6/5', district: 'Октябрьский район', city: 'Бишкек, 720060', hours: '09:00 – 21:00', rating: 4.0, reviews: 193, map_url: 'https://2gis.kg/bishkek/firm/70000001102767646', active: true, sort: 2 },
+  { id: 's4', name: 'Оптовые цены 01 · Ахунбаева', address: 'ул. Исы Ахунбаева, 101', district: 'Первомайский район', city: 'Бишкек, 720055', hours: '09:00 – 21:00', rating: 4.2, reviews: 34, map_url: 'https://2gis.kg/bishkek/branches/70000001036586855/geo/15763234351138719/74.60829%2C42.843155', active: true, sort: 3 },
 ];
 
 function StarRow({ rating, reviews }) {
@@ -136,7 +96,7 @@ function ShopCard({ shop, isDesk }) {
 
       <div style={{ padding: isDesk ? '0 24px 20px' : '0 18px 16px' }}>
         <a
-          href={shop.mapUrl}
+          href={shop.map_url}
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -159,6 +119,13 @@ function ShopCard({ shop, isDesk }) {
 export function ShopsScreen({ device }) {
   const t = useTheme();
   const isDesk = device === 'desktop';
+  const [shops, setShops] = useState(STATIC_SHOPS);
+
+  useEffect(() => {
+    fetchStores()
+      .then(data => { if (data?.length) setShops(data); })
+      .catch(() => {});
+  }, []);
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
@@ -196,7 +163,7 @@ export function ShopsScreen({ device }) {
           gridTemplateColumns: isDesk ? 'repeat(2, 1fr)' : '1fr',
           gap: isDesk ? 20 : 14,
         }}>
-          {SHOPS.map((shop) => (
+          {shops.map((shop) => (
             <ShopCard key={shop.id} shop={shop} isDesk={isDesk} />
           ))}
         </div>
