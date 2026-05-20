@@ -124,6 +124,7 @@ export function CatalogScreen({ device }) {
         position: 'sticky', top: 0, zIndex: 8,
         background: t.bg, borderBottom: `1px solid ${t.border}`,
       }}>
+        {/* Search */}
         <div style={{ padding: isDesk ? '10px 40px' : '8px 16px' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
@@ -150,54 +151,52 @@ export function CatalogScreen({ device }) {
           </div>
         </div>
 
+        {/* Category chips row + expand + sort */}
         <div style={{
           padding: isDesk ? '0 40px 10px' : '0 16px 10px',
-          display: 'flex', alignItems: 'center', gap: 10,
+          display: 'flex', alignItems: filtersOpen ? 'flex-start' : 'center', gap: 8,
         }}>
+          {/* Scrollable category chips — wraps when expanded */}
+          <div style={{
+            flex: 1, display: 'flex', gap: 6,
+            overflowX: filtersOpen ? 'visible' : 'auto',
+            flexWrap: filtersOpen ? 'wrap' : 'nowrap',
+            scrollbarWidth: 'none',
+          }}>
+            {categories.map(c => (
+              <Chip key={c.id} active={activeCats.includes(c.id)} onClick={() => toggleCat(c.id)}>
+                {c.emoji} {c.ru}
+              </Chip>
+            ))}
+          </div>
+
+          {/* Expand more filters */}
           <button
             onClick={() => setFiltersOpen(o => !o)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '7px 14px', borderRadius: 999,
-              border: `1.5px solid ${activeFilterCount > 0 ? t.primary : t.border}`,
-              background: activeFilterCount > 0 ? t.primary : t.surface,
-              color: activeFilterCount > 0 ? '#fff' : t.ink,
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '7px 12px', borderRadius: 999, flexShrink: 0,
+              border: `1.5px solid ${filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.primary : t.border}`,
+              background: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.primary : t.surface,
+              color: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? '#fff' : t.ink,
               fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-              flexShrink: 0,
             }}
           >
-            {Icon.filter({ width: 14, height: 14 })}
-            Фильтры
-            {activeFilterCount > 0 && (
+            {Icon.filter({ width: 13, height: 13 })}
+            {(activeFilterCount - activeCats.length) > 0 && (
               <span style={{
                 background: 'rgba(255,255,255,0.25)', borderRadius: 999,
-                fontSize: 11, fontWeight: 800, padding: '0 6px', lineHeight: '18px',
-              }}>{activeFilterCount}</span>
+                fontSize: 11, fontWeight: 800, padding: '0 5px', lineHeight: '17px',
+              }}>{activeFilterCount - activeCats.length}</span>
             )}
             <span style={{
-              fontSize: 9, marginLeft: 1,
+              fontSize: 9,
               transform: filtersOpen ? 'rotate(180deg)' : 'none',
               display: 'inline-block', transition: 'transform 0.18s',
             }}>▼</span>
           </button>
 
-          <div style={{ flex: 1, display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>
-            {activeCats.map(id => {
-              const c = categories.find(x => x.id === id);
-              return <Chip key={id} active onClick={() => toggleCat(id)}>{c?.emoji} {c?.ru} ×</Chip>;
-            })}
-            {activeBrands.map(b => (
-              <Chip key={b} active onClick={() => toggleBrand(b)}>{b} ×</Chip>
-            ))}
-            {priceRange && (
-              <Chip active onClick={() => setPriceRange(null)}>
-                {PRICE_RANGES.find(r => r.key === priceRange)?.label} ×
-              </Chip>
-            )}
-            {onlySale && <Chip active onClick={() => setOnlySale(false)}>🔥 Со скидкой ×</Chip>}
-            {hitsOnly && <Chip active onClick={() => setHitsOnly(false)}>⭐ Хиты ×</Chip>}
-          </div>
-
+          {/* Sort */}
           <select
             value={sort}
             onChange={e => setSort(e.target.value)}
@@ -215,23 +214,13 @@ export function CatalogScreen({ device }) {
           </select>
         </div>
 
+        {/* Expanded filters: brands, price, toggles */}
         {filtersOpen && (
           <div style={{
             padding: isDesk ? '0 40px 16px' : '0 16px 16px',
             borderTop: `1px solid ${t.border}`,
             paddingTop: 14,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
-              КАТЕГОРИИ
-            </div>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-              {categories.map(c => (
-                <Chip key={c.id} active={activeCats.includes(c.id)} onClick={() => toggleCat(c.id)}>
-                  {c.emoji} {c.ru}
-                </Chip>
-              ))}
-            </div>
-
             <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
               БРЕНДЫ
             </div>

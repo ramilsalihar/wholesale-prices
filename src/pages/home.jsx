@@ -42,78 +42,63 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
       borderBottom: `1px solid ${t.border}`,
       padding: isDesk ? '0 40px' : '0 16px',
     }}>
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          padding: '12px 0',
-          background: 'none', border: 'none', cursor: 'pointer',
-          color: t.ink, fontFamily: 'Manrope, sans-serif',
-          fontSize: 14, fontWeight: 700,
-        }}
-      >
-        {Icon.filter()}
-        Фильтры
-        {activeCount > 0 && (
-          <span style={{
-            background: t.primary, color: '#fff',
-            borderRadius: 999, fontSize: 11, fontWeight: 800,
-            padding: '1px 7px', lineHeight: '18px',
-          }}>
-            {activeCount}
-          </span>
-        )}
-        <span style={{ marginLeft: 2, fontSize: 10, opacity: 0.6, transform: open ? 'rotate(180deg)' : 'none', display: 'inline-block', transition: 'transform 0.18s' }}>▼</span>
-      </button>
-
-      {!open && activeCount > 0 && (
-        <div style={{ display: 'flex', gap: 6, paddingBottom: 10, flexWrap: 'wrap' }}>
-          {activeCats.map(id => {
-            const c = categories.find(x => x.id === id);
+      {/* Category chips row + brands expand button */}
+      <div style={{ display: 'flex', alignItems: open ? 'flex-start' : 'center', gap: 8, padding: '8px 0' }}>
+        <div style={{
+          flex: 1, display: 'flex', gap: 6,
+          overflowX: open ? 'visible' : 'auto',
+          flexWrap: open ? 'wrap' : 'nowrap',
+          scrollbarWidth: 'none',
+        }}>
+          {categories.map(c => {
+            const active = activeCats.includes(c.id);
             return (
-              <button key={id} onClick={() => onCat(id)} style={chipBase(true)}>
-                {c?.emoji} {c?.ru} ×
+              <button key={c.id} onClick={() => onCat(c.id)} style={chipBase(active)}>
+                {c.emoji} {c.ru}
               </button>
             );
           })}
-          {activeBrands.map(b => (
-            <button key={b} onClick={() => onBrand(b)} style={chipBase(true)}>
-              {b} ×
-            </button>
-          ))}
         </div>
-      )}
 
+        <button
+          onClick={() => setOpen(o => !o)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            padding: '7px 12px', borderRadius: 999, flexShrink: 0,
+            border: `1.5px solid ${open || activeBrands.length > 0 ? t.primary : t.border}`,
+            background: open || activeBrands.length > 0 ? t.primary : t.surface,
+            color: open || activeBrands.length > 0 ? '#fff' : t.ink,
+            fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Manrope, sans-serif',
+          }}
+        >
+          {Icon.filter({ width: 13, height: 13 })}
+          {activeBrands.length > 0 && (
+            <span style={{
+              background: 'rgba(255,255,255,0.25)', borderRadius: 999,
+              fontSize: 11, fontWeight: 800, padding: '0 5px', lineHeight: '17px',
+            }}>{activeBrands.length}</span>
+          )}
+          <span style={{
+            fontSize: 9,
+            transform: open ? 'rotate(180deg)' : 'none',
+            display: 'inline-block', transition: 'transform 0.18s',
+          }}>▼</span>
+        </button>
+      </div>
+
+      {/* Expanded: brands */}
       {open && (
-        <div style={{ paddingBottom: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
-            КАТЕГОРИИ
-          </div>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-            {categories.map(c => {
-              const active = activeCats.includes(c.id);
-              return (
-                <button key={c.id} onClick={() => onCat(c.id)} style={chipBase(active)}>
-                  {c.emoji} {c.ru}
-                </button>
-              );
-            })}
-          </div>
-
+        <div style={{ paddingBottom: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
             БРЕНДЫ
           </div>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-            {uniqueBrands.map(b => {
-              const active = activeBrands.includes(b);
-              return (
-                <button key={b} onClick={() => onBrand(b)} style={chipBase(active)}>
-                  {b}
-                </button>
-              );
-            })}
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: activeCount > 0 ? 10 : 0 }}>
+            {uniqueBrands.map(b => (
+              <button key={b} onClick={() => onBrand(b)} style={chipBase(activeBrands.includes(b))}>
+                {b}
+              </button>
+            ))}
           </div>
-
           {activeCount > 0 && (
             <button
               onClick={onClear}
