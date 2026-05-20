@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { pctOff } from '../entities/product/model.js';
@@ -10,14 +10,161 @@ import { ProductCard } from '../entities/product/ProductCard.jsx';
 import { PromoBanner } from '../entities/banner/PromoBanner.jsx';
 import { DesktopFooter } from '../widgets/DesktopFooter.jsx';
 
+function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBrand, onClear, isDesk }) {
+  const t = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const uniqueBrands = useMemo(
+    () => [...new Set(products.map(p => p.brand).filter(Boolean))].sort(),
+    [products]
+  );
+
+  const activeCount = activeCats.length + activeBrands.length;
+
+  const chipBase = (active) => ({
+    padding: '6px 14px',
+    borderRadius: 999,
+    border: `1.5px solid ${active ? t.primary : t.border}`,
+    background: active ? t.primary : t.surface,
+    color: active ? '#fff' : t.ink,
+    fontSize: 13,
+    fontWeight: 700,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    fontFamily: 'Manrope, sans-serif',
+    transition: 'background 0.12s, border-color 0.12s, color 0.12s',
+  });
+
+  return (
+    <div style={{
+      background: t.surface,
+      borderBottom: `1px solid ${t.border}`,
+      padding: isDesk ? '0 40px' : '0 16px',
+    }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          padding: '12px 0',
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: t.ink, fontFamily: 'Manrope, sans-serif',
+          fontSize: 14, fontWeight: 700,
+        }}
+      >
+        {Icon.filter()}
+        Фильтры
+        {activeCount > 0 && (
+          <span style={{
+            background: t.primary, color: '#fff',
+            borderRadius: 999, fontSize: 11, fontWeight: 800,
+            padding: '1px 7px', lineHeight: '18px',
+          }}>
+            {activeCount}
+          </span>
+        )}
+        <span style={{ marginLeft: 2, fontSize: 10, opacity: 0.6, transform: open ? 'rotate(180deg)' : 'none', display: 'inline-block', transition: 'transform 0.18s' }}>▼</span>
+      </button>
+
+      {!open && activeCount > 0 && (
+        <div style={{ display: 'flex', gap: 6, paddingBottom: 10, flexWrap: 'wrap' }}>
+          {activeCats.map(id => {
+            const c = categories.find(x => x.id === id);
+            return (
+              <button key={id} onClick={() => onCat(id)} style={chipBase(true)}>
+                {c?.emoji} {c?.ru} ×
+              </button>
+            );
+          })}
+          {activeBrands.map(b => (
+            <button key={b} onClick={() => onBrand(b)} style={chipBase(true)}>
+              {b} ×
+            </button>
+          ))}
+        </div>
+      )}
+
+      {open && (
+        <div style={{ paddingBottom: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
+            КАТЕГОРИИ
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+            {categories.map(c => {
+              const active = activeCats.includes(c.id);
+              return (
+                <button key={c.id} onClick={() => onCat(c.id)} style={chipBase(active)}>
+                  {c.emoji} {c.ru}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
+            БРЕНДЫ
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+            {uniqueBrands.map(b => {
+              const active = activeBrands.includes(b);
+              return (
+                <button key={b} onClick={() => onBrand(b)} style={chipBase(active)}>
+                  {b}
+                </button>
+              );
+            })}
+          </div>
+
+          {activeCount > 0 && (
+            <button
+              onClick={onClear}
+              style={{
+                padding: '7px 16px', background: 'none',
+                border: `1.5px solid ${t.border}`, borderRadius: 999,
+                fontSize: 13, fontWeight: 700, color: t.muted,
+                cursor: 'pointer', fontFamily: 'Manrope, sans-serif',
+              }}
+            >
+              Сбросить всё
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function HomeScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
   const { products, categories, banners } = useData();
   const isDesk = device === 'desktop';
-  const hits = products.filter((p) => p.hit);
-  const newArrivals = products.slice(8, 14);
-  const sale = products.filter((p) => p.old && pctOff(p.price, p.old) >= 30).slice(0, 6);
+
+  const [activeCats, setActiveCats] = useState([]);
+  const [activeBrands, setActiveBrands] = useState([]);
+
+  function toggleCat(id) {
+    setActiveCats(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }
+  function toggleBrand(b) {
+    setActiveBrands(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b]);
+  }
+  function clearFilters() {
+    setActiveCats([]);
+    setActiveBrands([]);
+  }
+
+  const filtered = useMemo(() => {
+    return products.filter(p => {
+      const catOk = activeCats.length === 0 || activeCats.includes(p.cat);
+      const brandOk = activeBrands.length === 0 || activeBrands.includes(p.brand);
+      return catOk && brandOk;
+    });
+  }, [products, activeCats, activeBrands]);
+
+  const hasFilters = activeCats.length > 0 || activeBrands.length > 0;
+  const hits = hasFilters ? filtered.filter(p => p.hit) : products.filter(p => p.hit);
+  const sale = (hasFilters ? filtered : products).filter(p => p.old && pctOff(p.price, p.old) >= 30).slice(0, 6);
+  const newArrivals = hasFilters ? filtered.slice(0, 6) : products.slice(8, 14);
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 0 : 16 }}>
@@ -47,19 +194,16 @@ export function HomeScreen({ device }) {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 10, padding: isDesk ? '24px 40px 8px' : '12px 16px', overflowX: 'auto', scrollbarWidth: 'none' }}>
-        {categories.map((c) => (
-          <button key={c.id} onClick={() => router.go({ screen: 'catalog', cat: c.id })} style={{
-            background: t.surface, color: t.ink,
-            border: `1.5px solid ${t.border}`, cursor: 'pointer',
-            padding: isDesk ? '10px 16px' : '8px 14px', borderRadius: 999,
-            fontSize: isDesk ? 14 : 13, fontWeight: 700, whiteSpace: 'nowrap',
-            display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0,
-          }}>
-            <span>{c.emoji}</span>{c.ru}
-          </button>
-        ))}
-      </div>
+      <FilterBar
+        products={products}
+        categories={categories}
+        activeCats={activeCats}
+        activeBrands={activeBrands}
+        onCat={toggleCat}
+        onBrand={toggleBrand}
+        onClear={clearFilters}
+        isDesk={isDesk}
+      />
 
       <div style={{
         padding: isDesk ? '16px 40px' : '8px 16px',
@@ -96,76 +240,49 @@ export function HomeScreen({ device }) {
         ))}
       </div>
 
-      <Section title="Хиты продаж" sub="Покупают чаще всего" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
-        <Carousel device={device}>
-          {hits.map((p) => (
-            <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
-              <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
-            </div>
-          ))}
-        </Carousel>
-      </Section>
+      {hits.length > 0 && (
+        <Section title="Хиты продаж" sub="Покупают чаще всего" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
+          <Carousel device={device}>
+            {hits.map((p) => (
+              <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
+                <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
+              </div>
+            ))}
+          </Carousel>
+        </Section>
+      )}
 
-      <Section title="Категории" device={device}>
-        <div style={{
-          display: 'grid', gap: 10,
-          gridTemplateColumns: isDesk ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
-          padding: isDesk ? '0 40px' : '0 16px',
-        }}>
-          {categories.map((c) => (
-            <button key={c.id} onClick={() => router.go({ screen: 'catalog', cat: c.id })} style={{
-              border: 'none', cursor: 'pointer', textAlign: 'left',
-              background: c.id === 'face' ? t.primary : (c.id === 'makeup' ? t.accent : t.surface),
-              color: c.id === 'face' ? '#fff' : t.ink,
-              padding: isDesk ? '20px 16px' : '16px 14px',
-              borderRadius: 14, position: 'relative', overflow: 'hidden',
-              minHeight: isDesk ? 130 : 90,
-              boxShadow: `0 1px 0 ${t.border}`,
-            }}>
-              <div style={{ fontSize: isDesk ? 36 : 28 }}>{c.emoji}</div>
-              <div style={{ fontWeight: 800, fontSize: isDesk ? 14 : 13, marginTop: 4, letterSpacing: '-0.01em' }}>{c.ru}</div>
-            </button>
-          ))}
+      {sale.length > 0 && (
+        <Section title="Скидки до 60%" sub="Только сегодня" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
+          <Carousel device={device}>
+            {sale.map((p) => (
+              <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
+                <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
+              </div>
+            ))}
+          </Carousel>
+        </Section>
+      )}
+
+      {newArrivals.length > 0 && (
+        <Section title="Новинки" sub="Свежий завоз" device={device}>
+          <div style={{
+            display: 'grid', gap: isDesk ? 16 : 10,
+            gridTemplateColumns: isDesk ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
+            padding: isDesk ? '0 40px' : '0 16px',
+          }}>
+            {newArrivals.map((p) => (
+              <ProductCard key={p.id} p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {hasFilters && filtered.length === 0 && (
+        <div style={{ padding: '40px 16px', textAlign: 'center', color: t.muted, fontSize: 14 }}>
+          Нет товаров по выбранным фильтрам
         </div>
-      </Section>
-
-      <Section title="Скидки до 60%" sub="Только сегодня" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
-        <Carousel device={device}>
-          {sale.map((p) => (
-            <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
-              <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
-            </div>
-          ))}
-        </Carousel>
-      </Section>
-
-      <Section title="Новинки" sub="Свежий завоз" device={device}>
-        <div style={{
-          display: 'grid', gap: isDesk ? 16 : 10,
-          gridTemplateColumns: isDesk ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
-          padding: isDesk ? '0 40px' : '0 16px',
-        }}>
-          {newArrivals.map((p) => (
-            <ProductCard key={p.id} p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />
-          ))}
-        </div>
-      </Section>
-
-      <Section title="Любимые бренды" device={device}>
-        <div style={{
-          display: 'grid', gap: 8,
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          padding: isDesk ? '0 40px' : '0 16px',
-        }}>
-          {['Nivea', 'Pantene', 'Loreal', 'Garnier', 'Dove', 'Maybelline', 'Schwarzkopf', 'Vichy'].map((b) => (
-            <div key={b} style={{
-              background: t.surface, color: t.ink, border: `1.5px solid ${t.border}`,
-              padding: isDesk ? '20px 12px' : '14px 8px', borderRadius: 12,
-              fontWeight: 800, fontSize: isDesk ? 14 : 12, textAlign: 'center', letterSpacing: '0.02em',
-            }}>{b}</div>
-          ))}
-        </div>
-      </Section>
+      )}
 
       {isDesk && <DesktopFooter />}
     </div>

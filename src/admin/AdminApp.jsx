@@ -5,6 +5,7 @@ import { AdminShell } from './layout/AdminShell.jsx';
 import { Dashboard } from './pages/Dashboard.jsx';
 import { Categories } from './pages/Categories.jsx';
 import { Products } from './pages/Products.jsx';
+import { Brands } from './pages/Brands.jsx';
 import { AT } from './adminTheme.js';
 
 function Placeholder({ screen }) {
@@ -40,6 +41,7 @@ function ScreenContent({ screen }) {
   switch (screen) {
     case 'dashboard':  return <Dashboard />;
     case 'categories': return <Categories />;
+    case 'brands':     return <Brands />;
     case 'products':   return <Products />;
     default:           return <Placeholder screen={screen} />;
   }

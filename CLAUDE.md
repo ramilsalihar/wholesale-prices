@@ -59,7 +59,7 @@ To add a new screen: create `src/pages/name.jsx`, register in `ScreenContent` + 
 
 ## Supabase
 
-- URL: `https://ygkbugzxvanuujkjmpiw.supabase.co`
+- URL: `https://iqkjcguevgyjmfjvtuoh.supabase.co`
 - Credentials in `.env` (gitignored via `.gitignore`)
 - Tables expected: `products`, `orders`, `auth` (Supabase built-in)
 - Service layer ready, not yet wired to UI components

@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchAllProducts, upsertProduct, toggleProductActive, updateProduct } from '../../service/products.js';
 import { fetchCategories } from '../../service/categories.js';
+import { fetchAllBrands } from '../../service/brands.js';
 
 const SHAPES = ['jar', 'bottle', 'tube', 'flask', 'lipstick', 'palette', 'pencil', 'stick', 'spray', 'bar'];
 
 const EMPTY_FORM = {
-  id: '', cat: '', brand: '', name: '', vol: '',
+  id: '', cat: '', brand_id: '', brand: '', name: '', vol: '',
   price: '', old: '', rating: '4.8', reviews: '0',
   hit: false, hue: [300, 50, 75], shape: 'bottle', active: true,
+  description: '', ingredients: '', image_url: '', stock: '0', sku: '',
 };
 
 function Field({ label, children, required }) {
@@ -71,6 +73,7 @@ function StatusBadge({ active }) {
 export function Products() {
   const [products, setProducts] = useState([]);
   const [cats, setCats] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -83,9 +86,10 @@ export function Products() {
   async function load() {
     setLoading(true);
     try {
-      const [prods, categories] = await Promise.all([fetchAllProducts(), fetchCategories()]);
+      const [prods, categories, allBrands] = await Promise.all([fetchAllProducts(), fetchCategories(), fetchAllBrands()]);
       setProducts(prods);
       setCats(categories);
+      setBrands(allBrands);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -105,11 +109,14 @@ export function Products() {
   function openEdit(p) {
     setEditId(p.id);
     setForm({
-      id: p.id, cat: p.cat ?? '', brand: p.brand ?? '', name: p.name ?? '',
-      vol: p.vol ?? '', price: String(p.price ?? ''), old: String(p.old ?? ''),
+      id: p.id, cat: p.cat ?? '', brand_id: p.brand_id ?? '', brand: p.brand ?? '',
+      name: p.name ?? '', vol: p.vol ?? '',
+      price: String(p.price ?? ''), old: String(p.old ?? ''),
       rating: String(p.rating ?? '4.8'), reviews: String(p.reviews ?? '0'),
       hit: !!p.hit, hue: p.hue ?? [300, 50, 75], shape: p.shape ?? 'bottle',
       active: p.active !== false,
+      description: p.description ?? '', ingredients: p.ingredients ?? '',
+      image_url: p.image_url ?? '', stock: String(p.stock ?? '0'), sku: p.sku ?? '',
     });
     setShowForm(true);
     setError('');
@@ -129,10 +136,12 @@ export function Products() {
     setSaving(true);
     setError('');
     try {
+      const selectedBrand = brands.find(b => b.id === form.brand_id);
       await upsertProduct({
         id: form.id,
         cat: form.cat,
-        brand: form.brand.trim(),
+        brand_id: form.brand_id || null,
+        brand: selectedBrand ? selectedBrand.name : form.brand.trim(),
         name: form.name.trim(),
         vol: form.vol.trim(),
         price: Number(form.price),
@@ -143,6 +152,11 @@ export function Products() {
         hue: form.hue,
         shape: form.shape,
         active: form.active,
+        description: form.description.trim() || null,
+        ingredients: form.ingredients.trim() || null,
+        image_url: form.image_url.trim() || null,
+        stock: Number(form.stock),
+        sku: form.sku.trim() || null,
       });
       await load();
       closeForm();
@@ -209,7 +223,14 @@ export function Products() {
               </select>
             </Field>
             <Field label="Бренд">
-              <input style={inp()} value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))} placeholder="Nivea" />
+              <select
+                style={inp()}
+                value={form.brand_id}
+                onChange={e => setForm(f => ({ ...f, brand_id: e.target.value }))}
+              >
+                <option value="">— выберите —</option>
+                {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+              </select>
             </Field>
             <Field label="Название" required>
               <input style={inp()} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Крем для лица" />
@@ -233,6 +254,37 @@ export function Products() {
               <select style={inp()} value={form.shape} onChange={e => setForm(f => ({ ...f, shape: e.target.value }))}>
                 {SHAPES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
+            </Field>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 16 }}>
+            <Field label="Склад (шт)">
+              <input style={inp()} type="number" min="0" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} placeholder="0" />
+            </Field>
+            <Field label="Артикул (SKU)">
+              <input style={inp()} value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="SKU-001" />
+            </Field>
+            <Field label="URL фото">
+              <input style={inp()} value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} placeholder="https://..." />
+            </Field>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+            <Field label="Описание">
+              <textarea
+                style={inp({ minHeight: 80, resize: 'vertical' })}
+                value={form.description}
+                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                placeholder="Описание товара..."
+              />
+            </Field>
+            <Field label="Состав">
+              <textarea
+                style={inp({ minHeight: 80, resize: 'vertical' })}
+                value={form.ingredients}
+                onChange={e => setForm(f => ({ ...f, ingredients: e.target.value }))}
+                placeholder="Aqua, Glycerin..."
+              />
             </Field>
           </div>
 

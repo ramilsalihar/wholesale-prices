@@ -131,7 +131,7 @@ Theme is controlled at app level via `themeKey` state — single theme for whole
 
 Credentials in `.env` (gitignored):
 ```
-VITE_SUPABASE_URL=https://ygkbugzxvanuujkjmpiw.supabase.co
+VITE_SUPABASE_URL=https://iqkjcguevgyjmfjvtuoh.supabase.co
 VITE_SUPABASE_ANON_KEY=...
 ```
 

@@ -98,7 +98,7 @@ export function PDPScreen({ device }) {
             </div>
             <div style={{ flex: 1 }} />
             <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, maxWidth: 220, fontWeight: 500 }}>
-              <span style={{ color: t.ink, fontWeight: 700 }}>На складе:</span> 47 шт<br/>
+              <span style={{ color: t.ink, fontWeight: 700 }}>На складе:</span> {p.stock != null ? `${p.stock} шт` : '—'}<br/>
               <span style={{ color: t.ink, fontWeight: 700 }}>Объём:</span> {p.vol}
             </div>
           </div>
@@ -166,18 +166,22 @@ export function PDPScreen({ device }) {
           </div>
           <div style={{ padding: '16px 0', fontSize: 14, lineHeight: 1.6, color: t.ink }}>
             {tab === 'about' && (
-              <p style={{ margin: 0, maxWidth: 560 }}>
-                Профессиональное средство по уходу с эффективной формулой. Подходит для ежедневного использования. Не содержит парабенов и сульфатов. Дерматологически тестировано. Подходит для чувствительной кожи и любого типа волос. Объём {p.vol}, страна-производитель — Россия. Срок годности — 24 месяца с даты производства, указанной на упаковке.
+              <p style={{ margin: 0, maxWidth: 560, whiteSpace: 'pre-line' }}>
+                {p.description || `Профессиональное средство по уходу с эффективной формулой. Подходит для ежедневного использования. Не содержит парабенов и сульфатов. Дерматологически тестировано. Подходит для чувствительной кожи и любого типа волос. Объём ${p.vol}, страна-производитель — Россия. Срок годности — 24 месяца с даты производства, указанной на упаковке.`}
               </p>
             )}
             {tab === 'compose' && (
-              <ul style={{ margin: 0, paddingLeft: 18, color: t.muted, lineHeight: 1.7 }}>
-                <li>Aqua, Glycerin, Cetearyl Alcohol</li>
-                <li>Tocopherol (витамин E)</li>
-                <li>Panthenol (D5)</li>
-                <li>Aloe Barbadensis Leaf Extract</li>
-                <li>Parfum, Phenoxyethanol</li>
-              </ul>
+              p.ingredients ? (
+                <p style={{ margin: 0, color: t.muted, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{p.ingredients}</p>
+              ) : (
+                <ul style={{ margin: 0, paddingLeft: 18, color: t.muted, lineHeight: 1.7 }}>
+                  <li>Aqua, Glycerin, Cetearyl Alcohol</li>
+                  <li>Tocopherol (витамин E)</li>
+                  <li>Panthenol (D5)</li>
+                  <li>Aloe Barbadensis Leaf Extract</li>
+                  <li>Parfum, Phenoxyethanol</li>
+                </ul>
+              )
             )}
             {tab === 'reviews' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
