@@ -62,6 +62,22 @@ export function ProductsTableSkeleton({ rows = 7 }) {
   );
 }
 
+// ── Orders table skeleton ────────────────────────────────────────
+
+export function OrdersTableSkeleton({ rows = 8 }) {
+  return (
+    <TableSkeleton rows={rows} cols={[
+      { w: 80, h: 13 },           // order id
+      { w: 90, h: 11 },           // date
+      { w: '50%' },               // customer
+      { w: 110 },                 // phone
+      { w: 24 },                  // items count
+      { w: 70 },                  // total
+      { w: 80, h: 22, r: 999 },  // status badge
+    ]} />
+  );
+}
+
 // ── Brands card grid skeleton ────────────────────────────────────
 
 export function BrandsTableSkeleton({ rows = 8 }) {

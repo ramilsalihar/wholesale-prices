@@ -94,6 +94,22 @@ export function TopBar() {
 
       <div style={{ flex: 1 }} />
 
+      {user && (
+        <button
+          onClick={() => router.go({ screen: 'my_orders' })}
+          style={{
+            background: router.route.screen === 'my_orders' ? `${t.primary}14` : 'transparent',
+            border: `1.5px solid ${router.route.screen === 'my_orders' ? t.primary : t.border}`,
+            borderRadius: 10, padding: '8px 14px', cursor: 'pointer',
+            fontSize: 13, fontWeight: 700,
+            color: router.route.screen === 'my_orders' ? t.primary : t.muted,
+            fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
+          }}
+        >
+          Мои заказы
+        </button>
+      )}
+
       <UserChip t={t} user={user} onClick={openLogin} />
 
       <button

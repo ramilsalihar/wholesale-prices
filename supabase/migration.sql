@@ -76,3 +76,17 @@ UPDATE products SET brand_id = 'eveline'         WHERE brand = 'Eveline';
 UPDATE products SET brand_id = 'bioderma'        WHERE brand = 'Bioderma';
 UPDATE products SET brand_id = 'davidoff'        WHERE brand = 'Davidoff';
 UPDATE products SET brand_id = 'gillette'        WHERE brand = 'Gillette';
+
+-- Step 6: Extended order fields
+ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS user_id   uuid references auth.users(id),
+  ADD COLUMN IF NOT EXISTS user_name text,
+  ADD COLUMN IF NOT EXISTS email     text,
+  ADD COLUMN IF NOT EXISTS city      text,
+  ADD COLUMN IF NOT EXISTS notes     text;
+
+-- Allow authenticated clients to read their own orders
+DROP POLICY IF EXISTS "users read own orders" ON orders;
+CREATE POLICY "users read own orders"
+  ON orders FOR SELECT
+  USING (auth.uid() = user_id OR auth.role() = 'authenticated');

@@ -24,6 +24,7 @@ import { FavoritesScreen } from '../pages/favorites.jsx';
 import { GiftsScreen } from '../pages/gifts.jsx';
 import { AboutScreen } from '../pages/about.jsx';
 import { ShopsScreen } from '../pages/shops.jsx';
+import { MyOrdersScreen } from '../pages/my-orders.jsx';
 
 const MOBILE_BP = 900;
 const HIDE_RIGHT_PANEL_BP = 1280;
@@ -49,6 +50,7 @@ function ScreenContent({ screen, device }) {
   if (screen === 'gifts')      return <GiftsScreen device={device} />;
   if (screen === 'about')      return <AboutScreen device={device} />;
   if (screen === 'shops')      return <ShopsScreen device={device} />;
+  if (screen === 'my_orders')  return <MyOrdersScreen device={device} />;
   return <HomeScreen device={device} />;
 }
 
@@ -96,6 +98,7 @@ function MobileShell({ themeKey, setThemeKey }) {
     gifts:      { title: 'Подарки',    showBack: false, hide: false },
     about:      { title: 'О нас',       showBack: true,  hide: false },
     shops:      { title: 'Магазины',    showBack: false, hide: false },
+    my_orders:  { title: 'Мои заказы', showBack: false, hide: false },
     checkout:   { title: 'Оформление', showBack: true,  hide: false },
     order_done: { title: null,         showBack: false, hide: true  },
   })[screen] || { title: null, showBack: false, hide: false };

@@ -2,9 +2,11 @@ import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { useCart } from '../features/cart.jsx';
+import { useAuth } from '../features/auth.jsx';
 import { fmtRub } from '../entities/product/model.js';
 import { Button } from '../shared/ui/Button.jsx';
 import { ProductImage } from '../entities/product/ProductImage.jsx';
+import { createOrder } from '../service/orders.js';
 
 function Stepper({ step, steps }) {
   const t = useTheme();
@@ -37,16 +39,28 @@ function Block({ title, children }) {
   );
 }
 
-function Field({ label, value, onChange, placeholder }) {
+function Field({ label, value, onChange, placeholder, type = 'text', required, error }) {
   const t = useTheme();
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontSize: 12, color: t.muted, fontWeight: 700, marginBottom: 4 }}>{label}</div>
-      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} style={{
-        width: '100%', padding: '12px 14px', borderRadius: 10,
-        border: `1.5px solid ${t.border}`, background: t.bg, color: t.ink,
-        fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
-      }} />
+      <div style={{ fontSize: 12, color: error ? '#DE350B' : t.muted, fontWeight: 700, marginBottom: 4 }}>
+        {label}{required && <span style={{ color: '#DE350B' }}> *</span>}
+      </div>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: '100%', padding: '12px 14px', borderRadius: 10,
+          border: `1.5px solid ${error ? '#DE350B' : t.border}`,
+          background: error ? 'rgba(222,53,11,0.04)' : t.bg,
+          color: t.ink, fontSize: 14, fontFamily: 'inherit',
+          outline: 'none', boxSizing: 'border-box',
+          transition: 'border-color 0.15s',
+        }}
+      />
+      {error && <div style={{ fontSize: 11, color: '#DE350B', marginTop: 4, fontWeight: 600 }}>{error}</div>}
     </label>
   );
 }
@@ -88,17 +102,79 @@ export function CheckoutScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
   const cart = useCart();
+  const { user } = useAuth();
   const isDesk = device === 'desktop';
+
   const [delivery, setDelivery] = React.useState('courier');
-  const [pay, setPay] = React.useState('sbp');
-  const [name, setName] = React.useState('');
-  const [phone, setPhone] = React.useState('');
+  const [pay, setPay] = React.useState('card');
+  const [name, setName] = React.useState(user?.user_metadata?.full_name ?? '');
+  const [phone, setPhone] = React.useState('+996 ');
+  const [email, setEmail] = React.useState(user?.email ?? '');
   const [addr, setAddr] = React.useState('');
+  const [placing, setPlacing] = React.useState(false);
+  const [fieldErrors, setFieldErrors] = React.useState({});
 
   const deliveryFee = delivery === 'pickup' ? 0 : (cart.subtotal >= 1500 ? 0 : 199);
   const total = cart.subtotal + deliveryFee;
 
-  const place = () => { cart.clear(); router.go({ screen: 'order_done' }); };
+  function handlePhoneChange(val) {
+    // Always keep +996 prefix
+    if (!val.startsWith('+996')) {
+      setPhone('+996 ');
+      return;
+    }
+    // Allow only digits and spaces after +996
+    const suffix = val.slice(4).replace(/[^\d\s]/g, '');
+    setPhone('+996' + (suffix ? ' ' + suffix.trim().replace(/\s+/g, ' ') : ' '));
+  }
+
+  function validate() {
+    const errs = {};
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 12) errs.phone = 'Введите номер в формате +996 XXX XXX XXX';
+    if (!name.trim()) errs.name = 'Введите имя';
+    if (delivery !== 'pickup' && !addr.trim()) errs.addr = 'Укажите адрес доставки';
+    return errs;
+  }
+
+  async function place() {
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      return;
+    }
+    setFieldErrors({});
+    setPlacing(true);
+    try {
+      const order = await createOrder({
+        items: cart.list.map(p => ({ id: p.id, name: p.name, brand: p.brand, price: p.price, qty: p.qty })),
+        subtotal: cart.subtotal,
+        delivery: deliveryFee,
+        total,
+        phone: phone.trim(),
+        address: addr.trim() || null,
+        city: 'Бишкек',
+        payMethod: pay,
+        deliveryMethod: delivery,
+        userName: name.trim() || null,
+        email: email.trim() || null,
+        userId: user?.id ?? null,
+        notes: null,
+      });
+      cart.clear();
+      router.go({ screen: 'order_done', orderId: order.id, orderNum: order.id.slice(0, 8).toUpperCase() });
+    } catch (e) {
+      setFieldErrors({ submit: e.message || 'Ошибка при оформлении заказа' });
+    } finally {
+      setPlacing(false);
+    }
+  }
+
+  const PlaceButton = ({ block }) => (
+    <Button block={block} size="lg" onClick={place} disabled={placing} style={{ opacity: placing ? 0.7 : 1 }}>
+      {placing ? 'Оформляем...' : (block && !isDesk ? `Оформить · ${fmtRub(total)}` : 'Оформить')}
+    </Button>
+  );
 
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
@@ -113,28 +189,49 @@ export function CheckoutScreen({ device }) {
           <Stepper step={1} steps={['Контакты', 'Доставка', 'Оплата']} />
 
           <Block title="1. Контактные данные">
-            <Field label="Имя" value={name} onChange={setName} placeholder="Анна" />
-            <Field label="Телефон" value={phone} onChange={setPhone} placeholder="+7 (___) ___-__-__" />
-            <Field label="E-mail" value="" onChange={() => {}} placeholder="вы@почта.ру" />
+            <Field
+              label="Имя" value={name} onChange={v => { setName(v); setFieldErrors(e => ({ ...e, name: '' })); }}
+              placeholder="Айгерим" required
+              error={fieldErrors.name}
+            />
+            <Field
+              label="Телефон" value={phone}
+              onChange={v => { handlePhoneChange(v); setFieldErrors(e => ({ ...e, phone: '' })); }}
+              placeholder="+996 700 123 456" required
+              error={fieldErrors.phone}
+            />
+            <Field
+              label="E-mail" type="email" value={email}
+              onChange={v => { setEmail(v); setFieldErrors(e => ({ ...e, email: '' })); }}
+              placeholder="вы@почта.kg"
+            />
           </Block>
 
           <Block title="2. Доставка">
             <RadioRow checked={delivery === 'courier'} onClick={() => setDelivery('courier')} t="Курьер" s="Завтра до 22:00 · 199 с (бесплатно от 1 500 с)" />
-            <RadioRow checked={delivery === 'pickup'}  onClick={() => setDelivery('pickup')}  t="Самовывоз" s="Сегодня после 18:00 · бесплатно · 12 точек в Бишкеке" />
-            <RadioRow checked={delivery === 'post'}    onClick={() => setDelivery('post')}    t="Кыргыз Почтасы" s="3–7 дней · от 199 с" />
+            <RadioRow checked={delivery === 'pickup'}  onClick={() => setDelivery('pickup')}  t="Самовывоз" s="Сегодня после 18:00 · бесплатно · 4 точки в Бишкеке" />
             {delivery !== 'pickup' && (
-              <Field label="Адрес доставки" value={addr} onChange={setAddr} placeholder="Бишкек, ул. Чуй, 1, кв 5" />
+              <Field
+                label="Адрес доставки" value={addr}
+                onChange={v => { setAddr(v); setFieldErrors(e => ({ ...e, addr: '' })); }}
+                placeholder="Бишкек, ул. Чуй, 1, кв 5" required
+                error={fieldErrors.addr}
+              />
             )}
           </Block>
 
           <Block title="3. Оплата">
-            <RadioRow checked={pay === 'sbp'}   onClick={() => setPay('sbp')}   t="СБП"          s="Через приложение банка · без комиссии" />
-            <RadioRow checked={pay === 'card'}   onClick={() => setPay('card')}  t="Картой онлайн" s="Visa, Mastercard, МИР" />
-            <RadioRow checked={pay === 'split'}  onClick={() => setPay('split')} t="Долями"        s="4 платежа без переплат · одобрение за 1 минуту" />
-            <RadioRow checked={pay === 'cash'}   onClick={() => setPay('cash')}  t="При получении" s="Наличными или картой курьеру" />
+            <RadioRow checked={pay === 'card'} onClick={() => setPay('card')} t="Картой онлайн" s="Visa, Mastercard, Элкарт" />
+            <RadioRow checked={pay === 'cash'} onClick={() => setPay('cash')} t="При получении"  s="Наличными или картой курьеру" />
           </Block>
 
-          {!isDesk && <Button block size="lg" onClick={place} style={{ marginTop: 16 }}>Оформить · {fmtRub(total)}</Button>}
+          {fieldErrors.submit && (
+            <div style={{ background: 'rgba(222,53,11,0.06)', border: '1px solid rgba(222,53,11,0.2)', color: '#DE350B', borderRadius: 10, padding: '10px 14px', fontSize: 13, marginBottom: 12 }}>
+              {fieldErrors.submit}
+            </div>
+          )}
+
+          {!isDesk && <PlaceButton block />}
         </div>
 
         <div style={{ position: isDesk ? 'sticky' : 'static', top: 20, alignSelf: 'flex-start' }}>
@@ -161,7 +258,7 @@ export function CheckoutScreen({ device }) {
               <span style={{ fontSize: 14, fontWeight: 700 }}>К оплате</span>
               <span style={{ fontSize: 24, fontWeight: 900, color: t.primary }}>{fmtRub(total)}</span>
             </div>
-            {isDesk && <Button block size="lg" onClick={place}>Оформить</Button>}
+            {isDesk && <PlaceButton block />}
             <div style={{ fontSize: 11, color: t.muted, textAlign: 'center', marginTop: 10 }}>
               Нажимая «Оформить», вы соглашаетесь с условиями и обработкой персональных данных.
             </div>
