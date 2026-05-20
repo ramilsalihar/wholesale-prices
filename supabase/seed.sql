@@ -68,6 +68,18 @@ create table if not exists orders (
   created_at       timestamptz default now()
 );
 
+create table if not exists settings (
+  id                       text primary key default 'main',
+  store_name               text,
+  instagram                text,
+  phone                    text,
+  free_delivery_threshold  int4 default 1500,
+  delivery_bishkek         int4 default 199,
+  delivery_osh             int4 default 199,
+  delivery_regions         int4 default 299,
+  default_theme            text default 'magnit'
+);
+
 -- ── RLS ─────────────────────────────────────────────────────
 
 alter table categories enable row level security;
@@ -75,6 +87,7 @@ alter table products    enable row level security;
 alter table banners     enable row level security;
 alter table stores      enable row level security;
 alter table orders      enable row level security;
+alter table settings    enable row level security;
 
 -- Public read
 drop policy if exists "public read categories" on categories;
@@ -118,6 +131,15 @@ create policy "public insert orders"
 drop policy if exists "auth full access orders" on orders;
 create policy "auth full access orders"
   on orders for all using (auth.role() = 'authenticated');
+
+-- Settings: public read, auth full access
+drop policy if exists "public read settings" on settings;
+create policy "public read settings"
+  on settings for select using (true);
+
+drop policy if exists "auth full access settings" on settings;
+create policy "auth full access settings"
+  on settings for all using (auth.role() = 'authenticated');
 
 -- ── SEED: CATEGORIES ────────────────────────────────────────
 
@@ -186,3 +208,13 @@ on conflict (id) do update set
   name = excluded.name, address = excluded.address, district = excluded.district,
   city = excluded.city, hours = excluded.hours, rating = excluded.rating,
   reviews = excluded.reviews, map_url = excluded.map_url, badge = excluded.badge, sort = excluded.sort;
+
+-- ── SEED: SETTINGS ──────────────────────────────────────────
+
+insert into settings (id, store_name, instagram, phone, free_delivery_threshold, delivery_bishkek, delivery_osh, delivery_regions, default_theme) values
+  ('main', 'САМЫЙ БОЛЬШОЙ МАГАЗИН КОСМЕТИКИ В КЫРГЫЗСТАНЕ', 'optovye_ceny01_', '8 (312) 123-45-67', 1500, 199, 199, 299, 'magnit')
+on conflict (id) do update set
+  store_name = excluded.store_name, instagram = excluded.instagram, phone = excluded.phone,
+  free_delivery_threshold = excluded.free_delivery_threshold,
+  delivery_bishkek = excluded.delivery_bishkek, delivery_osh = excluded.delivery_osh,
+  delivery_regions = excluded.delivery_regions, default_theme = excluded.default_theme;
