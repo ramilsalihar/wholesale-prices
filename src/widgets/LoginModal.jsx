@@ -74,7 +74,7 @@ export function LoginModal() {
         window.google.accounts.id.renderButton(btnRef.current, {
           theme: 'outline',
           size: 'large',
-          width: 320,
+          width: Math.min(320, window.innerWidth - 80),
           text: 'continue_with',
           shape: 'rectangular',
           logo_alignment: 'center',
@@ -109,9 +109,10 @@ export function LoginModal() {
         background: t.surface,
         borderRadius: 20,
         boxShadow: '0 24px 80px rgba(0,0,0,0.22)',
-        width: '100%', maxWidth: 380,
-        padding: 32,
+        width: 'calc(100% - 32px)', maxWidth: 380,
+        padding: '28px 24px',
         fontFamily: 'Manrope, sans-serif',
+        boxSizing: 'border-box',
       }}>
         {/* Close */}
         <button

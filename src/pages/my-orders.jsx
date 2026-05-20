@@ -74,7 +74,7 @@ function StatusTrack({ status }) {
 
 // ── Order ticket ─────────────────────────────────────────────────
 
-function OrderTicket({ order, onBack }) {
+function OrderTicket({ order, onBack, isDesk }) {
   const t = useTheme();
   const items = Array.isArray(order.items) ? order.items : [];
   const s = statusInfo(order.status);
@@ -147,7 +147,7 @@ function OrderTicket({ order, onBack }) {
           <div style={{ height: 1, background: t.border, margin: '16px 0' }} />
 
           {/* Delivery details */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isDesk ? '1fr 1fr 1fr 1fr' : '1fr 1fr', gap: 12 }}>
             {[
               ['Доставка', DELIVERY_LABELS[order.delivery_method] ?? order.delivery_method],
               ['Оплата', PAY_LABELS[order.pay_method] ?? order.pay_method],
@@ -199,7 +199,7 @@ export function MyOrdersScreen({ device }) {
   if (selected) {
     return (
       <div style={{ background: t.bg, color: t.ink, minHeight: '100%', padding: pad }}>
-        <OrderTicket order={selected} onBack={() => setSelected(null)} />
+        <OrderTicket order={selected} onBack={() => setSelected(null)} isDesk={isDesk} />
       </div>
     );
   }

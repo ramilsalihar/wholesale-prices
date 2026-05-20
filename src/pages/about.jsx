@@ -119,7 +119,7 @@ export function AboutScreen({ device }) {
             rel="noopener noreferrer"
             style={{
               background: t.surface, borderRadius: 14, padding: '16px 24px',
-              boxShadow: `inset 0 0 0 1px ${t.border}`, minWidth: 180,
+              boxShadow: `inset 0 0 0 1px ${t.border}`, minWidth: 0, flex: '1 1 160px',
               textDecoration: 'none', color: 'inherit', display: 'block',
             }}
           >
@@ -137,7 +137,7 @@ export function AboutScreen({ device }) {
           ].map((c) => (
             <div key={c.label} style={{
               background: t.surface, borderRadius: 14, padding: '16px 24px',
-              boxShadow: `inset 0 0 0 1px ${t.border}`, minWidth: 180,
+              boxShadow: `inset 0 0 0 1px ${t.border}`, minWidth: 0, flex: '1 1 160px',
             }}>
               <div style={{ fontWeight: 800, fontSize: 14 }}>{c.label}</div>
               <div style={{ fontSize: 12, color: t.muted, marginTop: 4 }}>{c.sub}</div>

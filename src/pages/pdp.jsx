@@ -141,7 +141,7 @@ export function PDPScreen({ device }) {
             ].map((u, i) => (
               <div key={i} style={{
                 background: t.surface, padding: '12px 14px', borderRadius: 12,
-                display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 140,
+                display: 'flex', alignItems: 'center', gap: 10, flex: '1 1 120px', minWidth: 0,
                 boxShadow: `inset 0 0 0 1px ${t.border}`,
               }}>
                 <span style={{ color: t.primary, display: 'flex' }}>{u.icon()}</span>
