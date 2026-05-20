@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchAllStores, upsertStore, deleteStore, toggleStoreActive } from '../../service/stores.js';
+import { StoresSkeleton } from '../ui/Skeleton.jsx';
 
 const EMPTY_FORM = {
   id: '', name: '', address: '', district: '', city: 'Бишкек',
@@ -303,7 +304,7 @@ export function Stores() {
       )}
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>
+        <StoresSkeleton count={4} />
       ) : stores.length === 0 ? (
         <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14, background: AT.surface, borderRadius: AT.radiusLg, border: `1px solid ${AT.border}` }}>
           Нет магазинов

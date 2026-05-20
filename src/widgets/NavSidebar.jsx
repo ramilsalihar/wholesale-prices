@@ -3,6 +3,7 @@ import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { useCart } from '../features/cart.jsx';
 import { useFavorites } from '../features/favorites.jsx';
+import { useAuth } from '../features/auth.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { Logo } from '../shared/ui/Logo.jsx';
 import { SWATCHES } from './ThemeSwitcher.jsx';
@@ -167,11 +168,14 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
       icon: NI.user,
       label: 'Войти',
       content: (
-        <button style={{
-          background: t.primary, color: '#fff', border: 'none', cursor: 'pointer',
-          borderRadius: 8, padding: '6px 14px', fontWeight: 800, fontSize: 12,
-          fontFamily: 'inherit', whiteSpace: 'nowrap',
-        }}>
+        <button
+          onClick={openLogin}
+          style={{
+            background: t.primary, color: '#fff', border: 'none', cursor: 'pointer',
+            borderRadius: 8, padding: '6px 14px', fontWeight: 800, fontSize: 12,
+            fontFamily: 'inherit', whiteSpace: 'nowrap',
+          }}
+        >
           Войти
         </button>
       ),
@@ -247,6 +251,7 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
   const router = useRouter();
   const cart = useCart();
   const favs = useFavorites();
+  const { openLogin } = useAuth();
   const screen = router.route.screen;
 
   const [settingsOpen, setSettingsOpen] = React.useState(false);

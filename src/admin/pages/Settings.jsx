@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchSettings, saveSettings, DEFAULT_SETTINGS } from '../../service/settings.js';
+import { SettingsSkeleton } from '../ui/Skeleton.jsx';
 
 const THEMES = [
   { key: 'magnit',   label: 'А · Магнит',   bg: '#E6097A', ink: '#FFFFFF', desc: 'Белый фон, розовый хедер' },
@@ -73,7 +74,14 @@ export function Settings() {
   }
 
   if (loading) {
-    return <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>;
+    return (
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>Настройки</h1>
+        </div>
+        <SettingsSkeleton />
+      </div>
+    );
   }
 
   return (

@@ -5,6 +5,7 @@ import { CartProvider } from '../features/cart.jsx';
 import { FavoritesProvider } from '../features/favorites.jsx';
 import { NotificationProvider } from '../features/notification.jsx';
 import { DataProvider } from '../features/data.jsx';
+import { AuthProvider } from '../features/auth.jsx';
 import { MobileHeader } from '../widgets/MobileHeader.jsx';
 import { MobileTabBar } from '../widgets/MobileTabBar.jsx';
 import { NavSidebar } from '../widgets/NavSidebar.jsx';
@@ -12,6 +13,7 @@ import { TopBar } from '../widgets/TopBar.jsx';
 import { RightPanel } from '../widgets/RightPanel.jsx';
 import { ToastContainer } from '../widgets/ToastContainer.jsx';
 import { ThemeSwitcher, SWATCHES } from '../widgets/ThemeSwitcher.jsx';
+import { LoginModal } from '../widgets/LoginModal.jsx';
 import { HomeScreen } from '../pages/home.jsx';
 import { CatalogScreen } from '../pages/catalog.jsx';
 import { PDPScreen } from '../pages/pdp.jsx';
@@ -75,6 +77,7 @@ function DesktopShell({ themeKey, setThemeKey }) {
         </div>
       </div>
       <ToastContainer />
+      <LoginModal />
     </div>
   );
 }
@@ -132,6 +135,7 @@ function MobileShell({ themeKey, setThemeKey }) {
       </div>
       {showTabBar && <MobileTabBar />}
       <ToastContainer />
+      <LoginModal />
     </div>
   );
 }
@@ -147,17 +151,19 @@ export default function WebApp() {
   const [themeKey, setThemeKey] = React.useState('magnit');
   return (
     <ThemeContext.Provider value={THEMES[themeKey]}>
-      <DataProvider>
-        <NotificationProvider>
-          <FavoritesProvider>
-            <CartProvider>
-              <RouterProvider initial={{ screen: 'home' }}>
-                <AppShell themeKey={themeKey} setThemeKey={setThemeKey} />
-              </RouterProvider>
-            </CartProvider>
-          </FavoritesProvider>
-        </NotificationProvider>
-      </DataProvider>
+      <AuthProvider>
+        <DataProvider>
+          <NotificationProvider>
+            <FavoritesProvider>
+              <CartProvider>
+                <RouterProvider initial={{ screen: 'home' }}>
+                  <AppShell themeKey={themeKey} setThemeKey={setThemeKey} />
+                </RouterProvider>
+              </CartProvider>
+            </FavoritesProvider>
+          </NotificationProvider>
+        </DataProvider>
+      </AuthProvider>
     </ThemeContext.Provider>
   );
 }

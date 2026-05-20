@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchCategories, upsertCategory, deleteCategory } from '../../service/categories.js';
+import { CategoriesTableSkeleton } from '../ui/Skeleton.jsx';
 
 const EMPTY = { id: '', ru: '', emoji: '', sort: 0 };
 
@@ -157,21 +158,23 @@ export function Categories() {
       )}
 
       <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
-        {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>
-        ) : cats.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет категорий</div>
-        ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
-                {['', 'ID', 'Название', 'Порядок', ''].map((h, i) => (
-                  <th key={i} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em' }}>
-                    {h.toUpperCase()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
+              {['', 'ID', 'Название', 'Порядок', ''].map((h, i) => (
+                <th key={i} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em' }}>
+                  {h.toUpperCase()}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {loading ? (
+            <CategoriesTableSkeleton />
+          ) : cats.length === 0 ? (
+            <tbody>
+              <tr><td colSpan={5} style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет категорий</td></tr>
+            </tbody>
+          ) : (
             <tbody>
               {cats.map((cat, i) => (
                 <tr key={cat.id} style={{ borderBottom: i < cats.length - 1 ? `1px solid ${AT.border}` : 'none' }}>
@@ -200,8 +203,8 @@ export function Categories() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        )}
+          )}
+        </table>
       </div>
     </div>
   );

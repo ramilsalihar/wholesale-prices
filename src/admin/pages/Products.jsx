@@ -3,6 +3,7 @@ import { AT } from '../adminTheme.js';
 import { fetchAllProducts, upsertProduct, toggleProductActive } from '../../service/products.js';
 import { fetchCategories } from '../../service/categories.js';
 import { fetchAllBrands } from '../../service/brands.js';
+import { ProductsTableSkeleton } from '../ui/Skeleton.jsx';
 
 const SHAPES = ['jar', 'bottle', 'tube', 'flask', 'lipstick', 'palette', 'pencil', 'stick', 'spray', 'bar'];
 
@@ -587,22 +588,22 @@ export function Products() {
       </div>
 
       <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
-        {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>
-        ) : visible.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет товаров</div>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
-              <thead>
-                <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
-                  {['Фото', 'Название', 'Бренд', 'Категория', 'Цена', 'Склад', 'Статус'].map((h, i) => (
-                    <th key={i} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
-                      {h.toUpperCase()}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
+                {['Фото', 'Название', 'Бренд', 'Категория', 'Цена', 'Склад', 'Статус'].map((h, i) => (
+                  <th key={i} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                    {h.toUpperCase()}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {loading ? (
+              <ProductsTableSkeleton />
+            ) : visible.length === 0 ? (
+              <tbody><tr><td colSpan={7} style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет товаров</td></tr></tbody>
+            ) : (
               <tbody>
                 {visible.map((p, i) => (
                   <tr
@@ -644,9 +645,9 @@ export function Products() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
-        )}
+            )}
+          </table>
+        </div>
       </div>
     </div>
   );

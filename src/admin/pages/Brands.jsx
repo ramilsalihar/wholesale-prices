@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchAllBrands, upsertBrand, deleteBrand, toggleBrandActive } from '../../service/brands.js';
+import { BrandsTableSkeleton } from '../ui/Skeleton.jsx';
 
 const EMPTY_FORM = { id: '', name: '', logo_url: '', sort: '0', active: true };
 
@@ -189,21 +190,21 @@ export function Brands() {
       )}
 
       <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
-        {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>
-        ) : brands.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет брендов</div>
-        ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
-                {['Логотип', 'Название', 'ID', 'Порядок', 'Статус', ''].map((h, i) => (
-                  <th key={i} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
-                    {h.toUpperCase()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
+              {['Логотип', 'Название', 'ID', 'Порядок', 'Статус', ''].map((h, i) => (
+                <th key={i} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                  {h.toUpperCase()}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {loading ? (
+            <BrandsTableSkeleton />
+          ) : brands.length === 0 ? (
+            <tbody><tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет брендов</td></tr></tbody>
+          ) : (
             <tbody>
               {brands.map((b, i) => (
                 <tr key={b.id} style={{ borderBottom: i < brands.length - 1 ? `1px solid ${AT.border}` : 'none' }}>
@@ -252,8 +253,8 @@ export function Brands() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        )}
+          )}
+        </table>
       </div>
     </div>
   );

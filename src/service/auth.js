@@ -1,27 +1,36 @@
-import { supabase } from './supabase.js';
+import { clientSupabase } from './clientSupabase.js';
 
 export async function signInWithPhone(phone) {
-  const { data, error } = await supabase.auth.signInWithOtp({ phone });
+  const { data, error } = await clientSupabase.auth.signInWithOtp({ phone });
   if (error) throw error;
   return data;
 }
 
 export async function verifyOtp(phone, token) {
-  const { data, error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' });
+  const { data, error } = await clientSupabase.auth.verifyOtp({ phone, token, type: 'sms' });
+  if (error) throw error;
+  return data;
+}
+
+export async function signInWithGoogle(idToken) {
+  const { data, error } = await clientSupabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: idToken,
+  });
   if (error) throw error;
   return data;
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
+  const { error } = await clientSupabase.auth.signOut();
   if (error) throw error;
 }
 
 export async function getSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await clientSupabase.auth.getSession();
   return session;
 }
 
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange((_event, session) => callback(session));
+  return clientSupabase.auth.onAuthStateChange((_event, session) => callback(session));
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
 import { fetchAllBanners, upsertBanner, deleteBanner, toggleBannerActive } from '../../service/banners.js';
+import { BannersSkeleton } from '../ui/Skeleton.jsx';
 
 const ACCENT_OPTIONS = [
   { value: 'primary', label: 'Розовый (primary)' },
@@ -252,7 +253,7 @@ export function Banners() {
       )}
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Загрузка...</div>
+        <BannersSkeleton count={3} />
       ) : banners.length === 0 ? (
         <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14, background: AT.surface, borderRadius: AT.radiusLg, border: `1px solid ${AT.border}` }}>
           Нет баннеров
