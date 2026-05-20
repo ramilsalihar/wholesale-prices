@@ -18,7 +18,7 @@ export function DesktopFooter() {
   const t = useTheme();
   const router = useRouter();
   return (
-    <div style={{ background: t.headerBg, color: t.headerInk, padding: '40px 40px 24px', marginTop: 0 }}>
+    <div style={{ background: t.headerBg, color: t.headerInk, padding: '64px 40px 24px', marginTop: 50 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: 32, marginBottom: 24 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
@@ -28,22 +28,9 @@ export function DesktopFooter() {
               <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2 }}>САМЫЙ БОЛЬШОЙ МАГАЗИН КОСМЕТИКИ В КР</div>
             </div>
           </div>
-          <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6, maxWidth: 320, marginBottom: 16 }}>
+          <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6, maxWidth: 320 }}>
             Косметика и парфюмерия по оптовым ценам. Прямые поставки от производителей. 100% оригинал, гарантия качества.
           </div>
-          <a
-            href="https://www.instagram.com/optovye_ceny01_/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(255,255,255,0.12)', borderRadius: 8,
-              padding: '7px 12px', color: 'inherit', textDecoration: 'none',
-              fontSize: 13, fontWeight: 700,
-            }}
-          >
-            <IgIcon /> @optovye_ceny01_
-          </a>
         </div>
         {[
           { h: 'Покупателям', l: ['Доставка и оплата', 'Возврат', 'Гарантия', 'Программа лояльности'] },

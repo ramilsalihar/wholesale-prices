@@ -61,6 +61,11 @@ function DesktopShell({ themeKey, setThemeKey }) {
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const { screen } = router.route;
   const showRightPanel = false;
+  const scrollRef = React.useRef(null);
+
+  React.useLayoutEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [router.route]);
 
   return (
     <div style={{
@@ -72,7 +77,7 @@ function DesktopShell({ themeKey, setThemeKey }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
         <TopBar />
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-          <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto' }}>
             <ScreenContent screen={screen} device="desktop" />
           </div>
           {showRightPanel && <RightPanel />}
@@ -88,6 +93,11 @@ function MobileShell({ themeKey, setThemeKey }) {
   const t = useTheme();
   const router = useRouter();
   const { screen } = router.route;
+  const scrollRef = React.useRef(null);
+
+  React.useLayoutEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [router.route]);
 
   const headerCfg = ({
     home:       { title: null,         showBack: false, hide: false },
@@ -133,7 +143,7 @@ function MobileShell({ themeKey, setThemeKey }) {
           </div>
         </div>
       )}
-      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
         <ScreenContent screen={screen} device="mobile" />
       </div>
       {showTabBar && <MobileTabBar />}

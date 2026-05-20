@@ -8,7 +8,15 @@ export function RouterProvider({ initial = { screen: 'home' }, children }) {
   const [history, setHistory] = React.useState([initial]);
   const go = (next) => {
     setRoute(next);
-    setHistory((h) => [...h, next]);
+    setHistory((h) => {
+      // Replace contiguous pdp entries at tail so PDP→PDP doesn't nest
+      if (next.screen === 'pdp') {
+        let i = h.length;
+        while (i > 1 && h[i - 1].screen === 'pdp') i--;
+        return [...h.slice(0, i), next];
+      }
+      return [...h, next];
+    });
   };
   const back = () => {
     setHistory((h) => {

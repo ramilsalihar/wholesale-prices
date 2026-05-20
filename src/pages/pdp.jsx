@@ -34,6 +34,13 @@ export function PDPScreen({ device }) {
   const notify = useNotification();
   const [qty, setQty] = React.useState(1);
   const [tab, setTab] = React.useState('about');
+  const [selectedImg, setSelectedImg] = React.useState(0);
+
+  const thumbImages = p.images?.length ? p.images : (p.image_url ? [p.image_url] : []);
+
+  React.useEffect(() => {
+    setSelectedImg(0);
+  }, [p?.id]);
 
   if (!p) return null;
 
@@ -52,7 +59,7 @@ export function PDPScreen({ device }) {
         <div>
           <div style={{ background: t.surface, padding: isDesk ? 32 : 0, borderRadius: isDesk ? 16 : 0, position: 'relative' }}>
             <div style={{ aspectRatio: '1 / 1', maxWidth: isDesk ? 520 : '100%', margin: '0 auto' }}>
-              <ProductImage p={p} padding={isDesk ? 60 : 40} />
+              <ProductImage p={p} src={thumbImages[selectedImg]} padding={isDesk ? 60 : 40} />
             </div>
             <div style={{ position: 'absolute', top: isDesk ? 24 : 12, left: isDesk ? 24 : 12,
               display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -60,17 +67,22 @@ export function PDPScreen({ device }) {
               {p.hit && <HitBadge />}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8, padding: isDesk ? '12px 0 0' : '12px 16px 0', overflowX: 'auto', scrollbarWidth: 'none' }}>
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} style={{
-                width: isDesk ? 72 : 56, height: isDesk ? 72 : 56, flexShrink: 0,
-                borderRadius: 8, padding: 6, background: t.surface,
-                boxShadow: i === 0 ? `0 0 0 2px ${t.primary}` : `0 0 0 1px ${t.border}`,
-              }}>
-                <ProductImage p={p} padding={4} />
-              </div>
-            ))}
-          </div>
+          {thumbImages.length > 1 && (
+            <div style={{ display: 'flex', gap: 8, padding: isDesk ? '12px 4px 4px' : '12px 20px 4px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+              {thumbImages.map((imgUrl, i) => (
+                <div key={i} onClick={() => setSelectedImg(i)} style={{
+                  width: isDesk ? 72 : 56, height: isDesk ? 72 : 56, flexShrink: 0,
+                  borderRadius: 8, overflow: 'hidden', cursor: 'pointer',
+                  outline: i === selectedImg ? `2.5px solid ${t.primary}` : `1px solid ${t.border}`,
+                  outlineOffset: i === selectedImg ? 1 : 0,
+                  opacity: i === selectedImg ? 1 : 0.7,
+                  transition: 'outline 0.15s, opacity 0.15s',
+                }}>
+                  <ProductImage p={p} src={imgUrl} padding={4} radius={0} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div style={{ padding: isDesk ? 0 : '16px 16px 0' }}>

@@ -164,7 +164,7 @@ export function HomeScreen({ device }) {
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: 0.95 }}>
               {Icon.truck({ width: 14, height: 14 })} Доставка по КР от 1 дня
             </span>
-            <span style={{ opacity: 0.95 }}>📞 8 (312) 123-45-67</span>
+            <span style={{ opacity: 0.95 }}>📞 +996 222‒06‒01‒01</span>
             <span style={{ opacity: 0.95 }}>Бишкек</span>
           </div>
           <div style={{ display: 'flex', gap: 18 }}>
@@ -228,7 +228,7 @@ export function HomeScreen({ device }) {
 
       {hits.length > 0 && (
         <Section title="Хиты продаж" sub="Покупают чаще всего" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
-          <Carousel device={device}>
+          <Carousel device={device} autoScroll>
             {hits.map((p) => (
               <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
                 <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />

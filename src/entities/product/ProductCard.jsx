@@ -58,19 +58,20 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
 
   return (
     <div onClick={onClick} style={{
-      background: t.cardBg, borderRadius: 14, padding: 10,
+      background: t.cardBg, borderRadius: 14,
       cursor: 'pointer', position: 'relative',
       boxShadow: `0 1px 0 ${t.border}`,
-      display: 'flex', flexDirection: 'column', gap: 8,
+      display: 'flex', flexDirection: 'column',
+      overflow: 'hidden',
     }}>
       <div style={{ position: 'relative' }}>
-        <ProductImage p={p} />
-        <div style={{ position: 'absolute', top: 6, left: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <ProductImage p={p} padding={0} radius={0} />
+        <div style={{ position: 'absolute', top: 8, left: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
           {p.old && p.old > p.price && <DiscountBadge pct={pctOff(p.price, p.old)} />}
           {p.hit && <HitBadge />}
         </div>
         <button onClick={handleFav} style={{
-          position: 'absolute', top: 6, right: 6,
+          position: 'absolute', top: 8, right: 8,
           width: 32, height: 32, borderRadius: '50%',
           background: isFav ? t.primary : 'rgba(255,255,255,0.9)',
           border: 'none', cursor: 'pointer',
@@ -85,14 +86,14 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
           </svg>
         </button>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '0 2px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '8px 10px 0' }}>
         <StarRating rating={p.rating} reviews={p.reviews} compact />
         <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
         <div style={{ fontSize: 13, color: t.ink, fontWeight: 600, lineHeight: 1.25,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 32 }}>{p.name}</div>
         <div style={{ fontSize: 11, color: t.muted }}>{p.vol}</div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, padding: '0 2px 2px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, padding: '0 10px 10px' }}>
         <PriceTag price={p.price} old={p.old} />
         <button onClick={handleAddCart} style={{
           width: 36, height: 36, borderRadius: '50%',

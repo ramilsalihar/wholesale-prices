@@ -17,8 +17,10 @@ function DefaultPlaceholder() {
   );
 }
 
-export function ProductImage({ p, padding = 20 }) {
-  if (!p?.image_url) {
+export function ProductImage({ p, padding = 20, radius = 12, src }) {
+  const imgSrc = src ?? p?.image_url;
+
+  if (!imgSrc) {
     return <DefaultPlaceholder />;
   }
 
@@ -26,13 +28,15 @@ export function ProductImage({ p, padding = 20 }) {
     <div style={{
       width: '100%', aspectRatio: '1 / 1',
       background: '#F8F8F8',
-      borderRadius: 12, overflow: 'hidden',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: radius, overflow: 'hidden',
+      position: 'relative',
     }}>
       <img
-        src={p.image_url}
-        alt={p.name}
+        src={imgSrc}
+        alt={p?.name}
         style={{
+          position: 'absolute',
+          top: padding, right: padding, bottom: padding, left: padding,
           width: `calc(100% - ${padding * 2}px)`,
           height: `calc(100% - ${padding * 2}px)`,
           objectFit: 'contain',

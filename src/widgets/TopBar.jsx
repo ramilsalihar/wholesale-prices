@@ -66,7 +66,7 @@ export function TopBar() {
   return (
     <div style={{
       background: t.surface, borderBottom: `1px solid ${t.border}`,
-      padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 16,
+      padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 16,
       position: 'sticky', top: 0, zIndex: 10, flexShrink: 0,
     }}>
       {canGoBack && (
