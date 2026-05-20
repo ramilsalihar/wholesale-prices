@@ -138,7 +138,7 @@ export function CatalogScreen({ device }) {
               onChange={e => setQuery(e.target.value)}
               placeholder="Поиск по названию или бренду…"
               style={{
-                flex: 1, border: 'none', outline: 'none', fontSize: 14,
+                flex: 1, border: 'none', outline: 'none', fontSize: 16,
                 background: 'transparent', color: t.ink, fontFamily: 'inherit',
               }}
             />
