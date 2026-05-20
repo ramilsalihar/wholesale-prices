@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard.jsx';
 import { Categories } from './pages/Categories.jsx';
 import { Products } from './pages/Products.jsx';
 import { Brands } from './pages/Brands.jsx';
+import { Banners } from './pages/Banners.jsx';
 import { AT } from './adminTheme.js';
 
 function Placeholder({ screen }) {
@@ -43,6 +44,7 @@ function ScreenContent({ screen }) {
     case 'categories': return <Categories />;
     case 'brands':     return <Brands />;
     case 'products':   return <Products />;
+    case 'banners':    return <Banners />;
     default:           return <Placeholder screen={screen} />;
   }
 }

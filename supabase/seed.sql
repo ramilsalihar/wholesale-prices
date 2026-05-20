@@ -39,31 +39,61 @@ create table if not exists banners (
   active boolean default true
 );
 
+create table if not exists orders (
+  id               uuid primary key default gen_random_uuid(),
+  items            jsonb    not null default '[]',
+  subtotal         int4     not null default 0,
+  delivery         int4     not null default 0,
+  total            int4     not null default 0,
+  phone            text,
+  address          text,
+  pay_method       text,
+  delivery_method  text,
+  status           text     not null default 'new',
+  created_at       timestamptz default now()
+);
+
 -- ── RLS ─────────────────────────────────────────────────────
 
 alter table categories enable row level security;
 alter table products    enable row level security;
 alter table banners     enable row level security;
+alter table orders      enable row level security;
 
 -- Public read
+drop policy if exists "public read categories" on categories;
 create policy "public read categories"
   on categories for select using (true);
 
+drop policy if exists "public read active products" on products;
 create policy "public read active products"
   on products for select using (active = true);
 
+drop policy if exists "public read active banners" on banners;
 create policy "public read active banners"
   on banners for select using (active = true);
 
 -- Authenticated (admin) full access
+drop policy if exists "auth full access categories" on categories;
 create policy "auth full access categories"
   on categories for all using (auth.role() = 'authenticated');
 
+drop policy if exists "auth full access products" on products;
 create policy "auth full access products"
   on products for all using (auth.role() = 'authenticated');
 
+drop policy if exists "auth full access banners" on banners;
 create policy "auth full access banners"
   on banners for all using (auth.role() = 'authenticated');
+
+-- Orders: anyone can insert (checkout), admin can read/update
+drop policy if exists "public insert orders" on orders;
+create policy "public insert orders"
+  on orders for insert with check (true);
+
+drop policy if exists "auth full access orders" on orders;
+create policy "auth full access orders"
+  on orders for all using (auth.role() = 'authenticated');
 
 -- ── SEED: CATEGORIES ────────────────────────────────────────
 

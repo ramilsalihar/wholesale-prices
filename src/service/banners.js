@@ -29,3 +29,8 @@ export async function toggleBannerActive(id, active) {
   const { error } = await supabase.from('banners').update({ active }).eq('id', id);
   if (error) throw error;
 }
+
+export async function deleteBanner(id) {
+  const { error } = await supabase.from('banners').delete().eq('id', id);
+  if (error) throw error;
+}
