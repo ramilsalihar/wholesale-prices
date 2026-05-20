@@ -136,7 +136,7 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
 export function HomeScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
-  const { products, categories, banners } = useData();
+  const { products, categories, banners, features } = useData();
   const isDesk = device === 'desktop';
 
   const [activeCats, setActiveCats] = useState([]);
@@ -173,6 +173,7 @@ export function HomeScreen({ device }) {
           background: t.headerBg, color: t.headerInk,
           padding: '8px 40px', fontSize: 12, fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', letterSpacing: '0.02em',
+          borderRadius: '0 0 16px 16px',
         }}>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: 0.95 }}>
@@ -216,29 +217,29 @@ export function HomeScreen({ device }) {
         {!isDesk && <PromoBanner b={banners[1]} height={120} onClick={() => {}} />}
       </div>
 
-      <div style={{
-        padding: isDesk ? '8px 40px' : '8px 16px',
-        display: 'grid', gap: 8,
-        gridTemplateColumns: 'repeat(2, 1fr)',
-      }}>
-        {[
-          { icon: Icon.truck,   t: 'Доставка завтра',     s: 'по Бишкеку' },
-          { icon: Icon.shield,  t: 'Гарантия оригинала',  s: 'возврат 14 дней' },
-          { icon: Icon.flame,   t: 'Цена дня',             s: 'до −60% ежедневно' },
-          { icon: Icon.heart,   t: '12 000+ отзывов',      s: 'настоящие покупатели' },
-        ].map((u, i) => (
-          <div key={i} style={{
-            background: t.surfaceAlt, padding: isDesk ? '14px 16px' : '10px 12px',
-            borderRadius: 12, display: 'flex', alignItems: 'center', gap: 10,
-          }}>
-            <span style={{ color: t.primary, display: 'flex' }}>{u.icon()}</span>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: t.ink, lineHeight: 1.2 }}>{u.t}</div>
-              <div style={{ fontSize: 11, color: t.muted, marginTop: 2 }}>{u.s}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {features.length > 0 && (
+        <div style={{
+          padding: isDesk ? '8px 40px' : '8px 16px',
+          display: 'grid', gap: 8,
+          gridTemplateColumns: isDesk ? `repeat(${Math.min(features.length, 4)}, 1fr)` : 'repeat(2, 1fr)',
+        }}>
+          {features.map((f) => {
+            const iconFn = Icon[f.icon] ?? Icon.check;
+            return (
+              <div key={f.id} style={{
+                background: t.surfaceAlt, padding: isDesk ? '14px 16px' : '10px 12px',
+                borderRadius: 12, display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                <span style={{ color: t.primary, display: 'flex' }}>{iconFn()}</span>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: t.ink, lineHeight: 1.2 }}>{f.title}</div>
+                  <div style={{ fontSize: 11, color: t.muted, marginTop: 2 }}>{f.subtitle}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {hits.length > 0 && (
         <Section title="Хиты продаж" sub="Покупают чаще всего" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>

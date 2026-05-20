@@ -60,7 +60,7 @@ function DesktopShell({ themeKey, setThemeKey }) {
   const vw = useViewportWidth();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const { screen } = router.route;
-  const showRightPanel = ['home', 'catalog'].includes(screen) && vw >= HIDE_RIGHT_PANEL_BP;
+  const showRightPanel = false;
 
   return (
     <div style={{

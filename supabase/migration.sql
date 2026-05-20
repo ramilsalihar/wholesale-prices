@@ -90,3 +90,32 @@ DROP POLICY IF EXISTS "users read own orders" ON orders;
 CREATE POLICY "users read own orders"
   ON orders FOR SELECT
   USING (auth.uid() = user_id OR auth.role() = 'authenticated');
+
+-- Step 7: Features table
+CREATE TABLE IF NOT EXISTS features (
+  id       text    PRIMARY KEY,
+  icon     text    NOT NULL DEFAULT 'check',
+  title    text    NOT NULL,
+  subtitle text,
+  sort     int4    NOT NULL DEFAULT 0,
+  active   boolean NOT NULL DEFAULT true
+);
+
+ALTER TABLE features ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public read active features" ON features;
+CREATE POLICY "public read active features"
+  ON features FOR SELECT USING (active = true);
+
+DROP POLICY IF EXISTS "auth full access features" ON features;
+CREATE POLICY "auth full access features"
+  ON features FOR ALL USING (auth.role() = 'authenticated');
+
+INSERT INTO features (id, icon, title, subtitle, sort, active) VALUES
+  ('f1', 'truck',  'Доставка завтра',    'по Бишкеку',           0, true),
+  ('f2', 'shield', 'Гарантия оригинала', 'возврат 14 дней',       1, true),
+  ('f3', 'flame',  'Цена дня',           'до −60% ежедневно',     2, true),
+  ('f4', 'heart',  '12 000+ отзывов',    'настоящие покупатели',  3, true)
+ON CONFLICT (id) DO UPDATE SET
+  icon = excluded.icon, title = excluded.title, subtitle = excluded.subtitle,
+  sort = excluded.sort, active = excluded.active;

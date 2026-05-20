@@ -5,6 +5,7 @@ import { BANNERS } from '../entities/banner/model.js';
 import { fetchProducts } from '../service/products.js';
 import { fetchCategories } from '../service/categories.js';
 import { fetchBanners } from '../service/banners.js';
+import { fetchFeatures } from '../service/features.js';
 import { supabase } from '../service/supabase.js';
 
 const DataContext = createContext(null);
@@ -13,13 +14,15 @@ export function DataProvider({ children }) {
   const [products, setProducts] = useState(PRODUCTS);
   const [categories, setCategories] = useState(CATEGORIES);
   const [banners, setBanners] = useState(BANNERS);
+  const [features, setFeatures] = useState([]);
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchCategories(), fetchBanners()])
-      .then(([prods, cats, bans]) => {
+    Promise.all([fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures()])
+      .then(([prods, cats, bans, feats]) => {
         if (prods?.length) setProducts(prods);
         if (cats?.length) setCategories(cats);
         if (bans?.length) setBanners(bans);
+        if (feats?.length) setFeatures(feats);
       })
       .catch((err) => console.error('[DataProvider]', err));
 
@@ -40,13 +43,18 @@ export function DataProvider({ children }) {
           .then((bans) => { if (bans?.length) setBanners(bans); })
           .catch((err) => console.error('[DataProvider realtime banners]', err));
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'features' }, () => {
+        fetchFeatures()
+          .then((feats) => { if (feats?.length) setFeatures(feats); })
+          .catch((err) => console.error('[DataProvider realtime features]', err));
+      })
       .subscribe();
 
     return () => supabase.removeChannel(channel);
   }, []);
 
   return (
-    <DataContext.Provider value={{ products, categories, banners }}>
+    <DataContext.Provider value={{ products, categories, banners, features }}>
       {children}
     </DataContext.Provider>
   );

@@ -7,6 +7,7 @@ const SCREEN_TITLES = {
   products: 'Товары',
   categories: 'Категории',
   banners: 'Баннеры',
+  features: 'Преимущества',
   stores: 'Магазины',
   settings: 'Настройки',
 };

@@ -73,6 +73,15 @@ create table if not exists orders (
   created_at       timestamptz default now()
 );
 
+create table if not exists features (
+  id       text    primary key,
+  icon     text    not null default 'check',
+  title    text    not null,
+  subtitle text,
+  sort     int4    not null default 0,
+  active   boolean not null default true
+);
+
 create table if not exists settings (
   id                       text primary key default 'main',
   store_name               text,
@@ -93,6 +102,7 @@ alter table banners     enable row level security;
 alter table stores      enable row level security;
 alter table orders      enable row level security;
 alter table settings    enable row level security;
+alter table features    enable row level security;
 
 -- Public read
 drop policy if exists "public read categories" on categories;
@@ -145,6 +155,15 @@ create policy "public read settings"
 drop policy if exists "auth full access settings" on settings;
 create policy "auth full access settings"
   on settings for all using (auth.role() = 'authenticated');
+
+-- Features: public read active, auth full access
+drop policy if exists "public read active features" on features;
+create policy "public read active features"
+  on features for select using (active = true);
+
+drop policy if exists "auth full access features" on features;
+create policy "auth full access features"
+  on features for all using (auth.role() = 'authenticated');
 
 -- ── SEED: CATEGORIES ────────────────────────────────────────
 
@@ -213,6 +232,17 @@ on conflict (id) do update set
   name = excluded.name, address = excluded.address, district = excluded.district,
   city = excluded.city, hours = excluded.hours, rating = excluded.rating,
   reviews = excluded.reviews, map_url = excluded.map_url, badge = excluded.badge, sort = excluded.sort;
+
+-- ── SEED: FEATURES ──────────────────────────────────────────
+
+insert into features (id, icon, title, subtitle, sort, active) values
+  ('f1', 'truck',  'Доставка завтра',    'по Бишкеку',              0, true),
+  ('f2', 'shield', 'Гарантия оригинала', 'возврат 14 дней',          1, true),
+  ('f3', 'flame',  'Цена дня',           'до −60% ежедневно',        2, true),
+  ('f4', 'heart',  '12 000+ отзывов',    'настоящие покупатели',     3, true)
+on conflict (id) do update set
+  icon = excluded.icon, title = excluded.title, subtitle = excluded.subtitle,
+  sort = excluded.sort, active = excluded.active;
 
 -- ── SEED: SETTINGS ──────────────────────────────────────────
 

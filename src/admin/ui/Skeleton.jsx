@@ -206,6 +206,37 @@ export function SettingsSkeleton() {
   );
 }
 
+// ── Features list skeleton ───────────────────────────────────────
+
+export function FeaturesSkeleton({ count = 4 }) {
+  return (
+    <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 16, padding: '14px 20px',
+            borderBottom: i < count - 1 ? `1px solid ${AT.border}` : 'none',
+          }}
+        >
+          <Bone w={36} h={36} r={10} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7 }}>
+            <Bone w="40%" h={14} />
+            <Bone w="25%" h={11} />
+          </div>
+          <Bone w={20} h={11} />
+          <Bone w={60} h={22} r={999} />
+          <div style={{ display: 'flex', gap: 6 }}>
+            <Bone w={64} h={30} r={AT.radius} />
+            <Bone w={72} h={30} r={AT.radius} />
+            <Bone w={64} h={30} r={AT.radius} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Dashboard skeleton ───────────────────────────────────────────
 
 export function DashboardSkeleton() {

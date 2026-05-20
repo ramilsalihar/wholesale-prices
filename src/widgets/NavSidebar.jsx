@@ -135,7 +135,7 @@ function SidebarItem({ item, active, open, onClick }) {
 
 const SETTINGS_PANEL = ['theme', 'login', 'lang'];
 
-function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang, visibleCount }) {
+function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang, visibleCount, openLogin }) {
   const t = useTheme();
 
   const items = [
@@ -346,6 +346,7 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
               lang={lang}
               setLang={setLang}
               visibleCount={visibleCount}
+              openLogin={openLogin}
             />
           </div>
         )}

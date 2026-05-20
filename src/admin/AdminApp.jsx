@@ -10,6 +10,7 @@ import { Banners } from './pages/Banners.jsx';
 import { Orders } from './pages/Orders.jsx';
 import { Stores } from './pages/Stores.jsx';
 import { Settings } from './pages/Settings.jsx';
+import { Features } from './pages/Features.jsx';
 import { AT } from './adminTheme.js';
 
 function Placeholder({ screen }) {
@@ -51,6 +52,7 @@ function ScreenContent({ screen }) {
     case 'orders':     return <Orders />;
     case 'stores':     return <Stores />;
     case 'settings':   return <Settings />;
+    case 'features':   return <Features />;
     default:           return <Placeholder screen={screen} />;
   }
 }
