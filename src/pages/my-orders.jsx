@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { useAuth } from '../features/auth.jsx';
+import { useData } from '../features/data.jsx';
 import { fetchMyOrders, statusInfo, ORDER_STATUSES } from '../service/clientOrders.js';
+import { loadGifts, deleteGift } from '../features/giftsStorage.js';
+import { ProductImage } from '../entities/product/ProductImage.jsx';
+import { fmtRub } from '../entities/product/model.js';
 
 const DELIVERY_LABELS = { courier: 'Курьер', pickup: 'Самовывоз', post: 'Почта' };
 const PAY_LABELS      = { card: 'Картой онлайн', cash: 'При получении', sbp: 'СБП', split: 'Долями' };
@@ -166,15 +171,299 @@ function OrderTicket({ order, onBack, isDesk }) {
   );
 }
 
+// ── Gift card (Наборы tab) ────────────────────────────────────────
+
+const RECIPIENTS_MAP = {
+  mama: { label: 'Маме', icon: '👩' }, friend: { label: 'Подруге', icon: '👯' },
+  love: { label: 'Любимой', icon: '💕' }, sister: { label: 'Сестре', icon: '👧' },
+  colleague: { label: 'Коллеге', icon: '💼' }, self: { label: 'Себе', icon: '✨' },
+  other: { label: 'Другому', icon: '🎀' },
+};
+const OCCASIONS_MAP = {
+  birthday: '🎂 День рождения', march8: '🌹 8 Марта',
+  newyear: '🎄 Новый год', justso: '🫶 Просто так', other: '🎊 Другой повод',
+};
+
+function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
+  const t = useTheme();
+  const router = useRouter();
+  const isDraft = gift.status === 'draft';
+  const r = RECIPIENTS_MAP[gift.recipient];
+  const occ = OCCASIONS_MAP[gift.occasion];
+  const items = products.filter(p => (gift.selectedProducts || []).includes(p.id));
+  const total = items.reduce((s, p) => s + p.price, 0);
+
+  function handleDelete() { onDelete(gift.id); onClose(); }
+  function handleEdit() { onClose(); onContinue(gift.id); }
+  function handleRepeat() { onClose(); router.go({ screen: 'gift_builder', repeatId: gift.id }); }
+
+  return ReactDOM.createPortal(
+    <div onClick={onClose} style={{
+      position: 'fixed', inset: 0, zIndex: 200,
+      background: 'rgba(0,0,0,0.55)',
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background: t.bg, borderRadius: '20px 20px 0 0',
+        width: '100%', maxWidth: 600,
+        maxHeight: '90dvh', display: 'flex', flexDirection: 'column',
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+      }}>
+        {/* Handle + header */}
+        <div style={{ padding: '12px 20px 0', flexShrink: 0 }}>
+          <div style={{ width: 40, height: 4, borderRadius: 2, background: t.border, margin: '0 auto 16px' }} />
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 22 }}>{r?.icon ?? '🎁'}</span>
+                <div>
+                  <div style={{ fontSize: 11, color: t.primary, fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                    Подарочный набор
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: t.ink }}>
+                    {gift.recipientName || r?.label || 'Получатель'}
+                  </div>
+                </div>
+              </div>
+              {occ && <div style={{ fontSize: 13, color: t.muted, marginTop: 4, marginLeft: 30 }}>{occ}</div>}
+            </div>
+            <button onClick={onClose} style={{
+              background: t.surfaceAlt, border: 'none', borderRadius: '50%',
+              width: 36, height: 36, fontSize: 18, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.ink, flexShrink: 0,
+            }}>✕</button>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
+          {/* Recipient info block */}
+          {(gift.recipientPhone || gift.recipientName) && (
+            <div style={{
+              background: t.surfaceAlt, borderRadius: 12, padding: '12px 14px',
+              marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 6,
+            }}>
+              {gift.recipientName && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                  <span style={{ color: t.muted, fontWeight: 600 }}>Имя</span>
+                  <span style={{ color: t.ink, fontWeight: 700 }}>{gift.recipientName}</span>
+                </div>
+              )}
+              {gift.recipientPhone && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                  <span style={{ color: t.muted, fontWeight: 600 }}>Телефон</span>
+                  <span style={{ color: t.ink, fontWeight: 700 }}>{gift.recipientPhone}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Product thumbnails */}
+          {items.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, overflowX: 'auto', scrollbarWidth: 'none' }}>
+              {items.map(p => (
+                <div key={p.id} style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 10, overflow: 'hidden', border: `1px solid ${t.border}` }}>
+                  <ProductImage p={p} padding={0} radius={0} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Product list */}
+          {items.length > 0 && (
+            <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${t.border}`, marginBottom: 16 }}>
+              {items.map((p, i) => (
+                <div key={p.id} style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '11px 14px', fontSize: 13,
+                  borderTop: i > 0 ? `1px solid ${t.border}` : 'none',
+                  background: t.surface,
+                }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, textTransform: 'uppercase' }}>{p.brand}</div>
+                    <div style={{ fontWeight: 600, color: t.ink, marginTop: 1,
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 200 }}>
+                      {p.name}
+                    </div>
+                  </div>
+                  <span style={{ color: t.primary, fontWeight: 800, flexShrink: 0, marginLeft: 12 }}>{fmtRub(p.price)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Letter */}
+          {gift.letter?.trim() && (
+            <div style={{
+              background: `${t.primary}0a`, border: `1px solid ${t.primary}30`,
+              borderRadius: 12, padding: '14px 16px', marginBottom: 16,
+            }}>
+              <div style={{ fontSize: 11, color: t.primary, fontWeight: 800, letterSpacing: '0.04em', marginBottom: 6 }}>ПИСЬМО</div>
+              <div style={{ fontSize: 14, color: t.ink, fontStyle: 'italic', lineHeight: 1.6 }}>
+                «{gift.letter.trim()}»
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '14px 20px 24px', borderTop: `1px solid ${t.border}`, flexShrink: 0,
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <button onClick={handleDelete} style={{
+            background: 'transparent', border: `1.5px solid rgba(222,53,11,0.3)`,
+            color: '#DE350B', padding: '11px 14px', borderRadius: 12,
+            fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+          }}>🗑</button>
+          <div style={{ flex: 1 }}>
+            {items.length > 0 && (
+              <div style={{ fontSize: 11, color: t.muted }}>Итого</div>
+            )}
+            {items.length > 0 && (
+              <div style={{ fontSize: 20, fontWeight: 900, color: t.primary, letterSpacing: '-0.02em' }}>{fmtRub(total)}</div>
+            )}
+          </div>
+          {isDraft ? (
+            <button onClick={handleEdit} style={{
+              background: t.primary, color: '#fff', border: 'none',
+              padding: '12px 20px', borderRadius: 12,
+              fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+            }}>✏️ Редактировать</button>
+          ) : (
+            <button onClick={handleRepeat} style={{
+              background: 'transparent', border: `1.5px solid ${t.border}`,
+              color: t.ink, padding: '12px 20px', borderRadius: 12,
+              fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+            }}>Повторить</button>
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+function GiftCard({ gift, products, onContinue, onDelete }) {
+  const t = useTheme();
+  const [showOverlay, setShowOverlay] = React.useState(false);
+  const isDraft = gift.status === 'draft';
+  const r = RECIPIENTS_MAP[gift.recipient];
+  const occ = OCCASIONS_MAP[gift.occasion];
+  const items = products.filter(p => (gift.selectedProducts || []).includes(p.id));
+  const total = items.reduce((s, p) => s + p.price, 0);
+
+  return (
+    <>
+      <div
+        onClick={() => setShowOverlay(true)}
+        style={{
+          background: t.surface, borderRadius: 14,
+          border: `1.5px solid ${isDraft ? t.primary + '50' : t.border}`,
+          overflow: 'hidden', cursor: 'pointer',
+        }}
+      >
+        <div style={{
+          padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          borderBottom: `1px solid ${t.border}`,
+          background: isDraft ? `${t.primary}08` : t.surfaceAlt,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 18 }}>{r?.icon ?? '🎁'}</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: t.ink }}>
+                {r?.label ?? 'Набор'}{occ ? ` · ${occ}` : ''}
+              </div>
+              <div style={{ fontSize: 11, color: t.muted, marginTop: 1 }}>
+                {gift.updatedAt ? new Date(gift.updatedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : ''}
+              </div>
+            </div>
+          </div>
+          <span style={{
+            padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+            background: isDraft ? `${t.primary}18` : 'rgba(0,135,90,0.1)',
+            color: isDraft ? t.primary : '#00875A',
+          }}>
+            {isDraft ? `Черновик · шаг ${gift.step + 1}/5` : 'Завершён'}
+          </span>
+        </div>
+
+        <div style={{ padding: '12px 16px' }}>
+          {items.length > 0 && (
+            <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+              {items.map(p => (
+                <div key={p.id} style={{ width: 48, height: 48, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
+                  <ProductImage p={p} padding={0} radius={0} />
+                </div>
+              ))}
+            </div>
+          )}
+          {gift.letter?.trim() && (
+            <div style={{
+              background: t.surfaceAlt, borderRadius: 8, padding: '7px 10px', marginBottom: 10,
+              fontSize: 12, color: t.muted, fontStyle: 'italic', lineHeight: 1.5,
+              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+            }}>«{gift.letter.trim()}»</div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: t.primary }}>
+              {items.length > 0 ? fmtRub(total) : '—'}
+            </div>
+            <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
+              <button onClick={() => onDelete(gift.id)} style={{
+                padding: '6px 12px', borderRadius: 8, border: `1.5px solid rgba(222,53,11,0.25)`,
+                background: 'transparent', color: '#DE350B',
+                fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              }}>Удалить</button>
+              {isDraft ? (
+                <button onClick={() => onContinue(gift.id)} style={{
+                  padding: '6px 14px', borderRadius: 8, border: 'none',
+                  background: t.primary, color: '#fff',
+                  fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                }}>✏️ Редактировать</button>
+              ) : (
+                <button onClick={e => { e.stopPropagation(); setShowOverlay(true); }} style={{
+                  padding: '6px 14px', borderRadius: 8, border: `1.5px solid ${t.border}`,
+                  background: 'transparent', color: t.ink,
+                  fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                }}>Повторить</button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      {showOverlay && (
+        <GiftDetailOverlay
+          gift={gift} products={products}
+          onClose={() => setShowOverlay(false)}
+          onDelete={id => { onDelete(id); setShowOverlay(false); }}
+          onContinue={onContinue}
+        />
+      )}
+    </>
+  );
+}
+
 // ── Orders list ──────────────────────────────────────────────────
 
 export function MyOrdersScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
   const { user, openLogin } = useAuth();
+  const { products } = useData();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [tab, setTab] = useState(router.route.giftsTab ? 'gifts' : 'orders');
+  const [gifts, setGifts] = useState(() => loadGifts());
+
+  function refreshGifts() { setGifts(loadGifts()); }
+
+  function handleDeleteGift(id) {
+    if (!window.confirm('Удалить набор?')) return;
+    deleteGift(id);
+    refreshGifts();
+  }
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
@@ -222,19 +511,75 @@ export function MyOrdersScreen({ device }) {
     );
   }
 
+  const TabBtn = ({ value, label, count }) => (
+    <button onClick={() => setTab(value)} style={{
+      padding: '8px 18px', borderRadius: 999,
+      border: `1.5px solid ${tab === value ? t.primary : t.border}`,
+      background: tab === value ? t.primary : 'transparent',
+      color: tab === value ? '#fff' : t.ink,
+      fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+      display: 'flex', alignItems: 'center', gap: 6,
+    }}>
+      {label}
+      {count > 0 && (
+        <span style={{
+          background: tab === value ? 'rgba(255,255,255,0.25)' : t.surfaceAlt,
+          borderRadius: 999, fontSize: 11, fontWeight: 800, padding: '1px 6px',
+          color: tab === value ? '#fff' : t.muted,
+        }}>{count}</span>
+      )}
+    </button>
+  );
+
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', padding: pad }}>
-      <h1 style={{ fontSize: isDesk ? 28 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 20px' }}>
-        Мои заказы
-      </h1>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <h1 style={{ fontSize: isDesk ? 28 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>
+          Мои заказы
+        </h1>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <TabBtn value="orders" label="Заказы" count={orders.length} />
+          <TabBtn value="gifts" label="Наборы" count={gifts.length} />
+        </div>
+      </div>
 
-      {loading ? (
+      {tab === 'gifts' && (
+        gifts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 0', color: t.muted }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>🎁</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: t.ink, marginBottom: 8 }}>Наборов пока нет</div>
+            <div style={{ fontSize: 14, marginBottom: 20 }}>Соберите первый подарочный набор</div>
+            <button onClick={() => router.go({ screen: 'gift_builder' })} style={{
+              background: t.primary, color: '#fff', border: 'none', borderRadius: 12,
+              padding: '11px 24px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+            }}>🎁 Собрать набор</button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {gifts.map(g => (
+              <GiftCard
+                key={g.id} gift={g} products={products}
+                onContinue={id => router.go({ screen: 'gift_builder', draftId: id })}
+                onDelete={handleDeleteGift}
+              />
+            ))}
+            <div style={{ textAlign: 'center', marginTop: 8 }}>
+              <button onClick={() => router.go({ screen: 'gift_builder' })} style={{
+                background: t.primary, color: '#fff', border: 'none', borderRadius: 12,
+                padding: '11px 24px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+              }}>+ Новый набор</button>
+            </div>
+          </div>
+        )
+      )}
+
+      {tab === 'orders' && loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[1, 2, 3].map(i => (
             <div key={i} style={{ background: t.surface, borderRadius: 16, padding: 20, boxShadow: `inset 0 0 0 1px ${t.border}`, height: 88 }} />
           ))}
         </div>
-      ) : orders.length === 0 ? (
+      ) : tab === 'orders' && orders.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0', color: t.muted }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: t.ink, marginBottom: 8 }}>Заказов пока нет</div>
@@ -248,7 +593,7 @@ export function MyOrdersScreen({ device }) {
             В каталог
           </button>
         </div>
-      ) : (
+      ) : tab === 'orders' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {orders.map(order => {
             const s = statusInfo(order.status);

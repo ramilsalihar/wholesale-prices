@@ -6,23 +6,35 @@ export const useCart = () => React.useContext(CartContext);
 
 export function CartProvider({ children }) {
   const [items, setItems] = React.useState({});
+  const [giftBoxes, setGiftBoxes] = React.useState([]);
+
   const add = (id, qty = 1) => setItems((s) => ({ ...s, [id]: (s[id] || 0) + qty }));
   const remove = (id) => setItems((s) => { const next = { ...s }; delete next[id]; return next; });
   const setQty = (id, qty) => setItems((s) => {
     if (qty <= 0) { const next = { ...s }; delete next[id]; return next; }
     return { ...s, [id]: qty };
   });
-  const clear = () => setItems({});
-  const count = Object.values(items).reduce((a, b) => a + b, 0);
+  const clear = () => { setItems({}); setGiftBoxes([]); };
+
+  const addGiftBox = (box) => setGiftBoxes(prev => [...prev, { ...box, id: 'gb_' + Date.now() }]);
+  const removeGiftBox = (id) => setGiftBoxes(prev => prev.filter(b => b.id !== id));
+
   const list = Object.entries(items).map(([id, qty]) => {
     const p = PRODUCTS.find((x) => x.id === id);
     return p ? { ...p, qty } : null;
   }).filter(Boolean);
-  const subtotal = list.reduce((a, x) => a + x.price * x.qty, 0);
+
+  const subtotal = list.reduce((a, x) => a + x.price * x.qty, 0)
+    + giftBoxes.reduce((a, b) => a + b.totalPrice, 0);
   const oldTotal = list.reduce((a, x) => a + (x.old || x.price) * x.qty, 0);
-  const saved = oldTotal - subtotal;
+  const saved = oldTotal - list.reduce((a, x) => a + x.price * x.qty, 0);
+  const count = Object.values(items).reduce((a, b) => a + b, 0) + giftBoxes.length;
+
   return (
-    <CartContext.Provider value={{ items, list, add, remove, setQty, clear, count, subtotal, saved }}>
+    <CartContext.Provider value={{
+      items, list, add, remove, setQty, clear, count, subtotal, saved,
+      giftBoxes, addGiftBox, removeGiftBox,
+    }}>
       {children}
     </CartContext.Provider>
   );

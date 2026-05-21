@@ -32,6 +32,20 @@ export function GiftsScreen({ device }) {
         <div style={{ fontSize: isDesk ? 15 : 13, marginTop: 6, opacity: 0.9 }}>
           Лучшие скидки и подарочные наборы
         </div>
+        <button
+          onClick={() => router.go({ screen: 'gift_builder' })}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            marginTop: 18, padding: '12px 22px', borderRadius: 12,
+            background: '#fff', color: t.primary,
+            border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+            fontWeight: 800, fontSize: 15,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+          }}
+        >
+          🎁 Собрать подарочный набор
+        </button>
+
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
           {[
             { label: 'Скидки до 60%', icon: '🔥' },
