@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../shared/theme.jsx';
 import { useAuth } from '../features/auth.jsx';
+import { useRouter } from '../shared/router.jsx';
 import { signInWithGoogle } from '../service/auth.js';
 
 const GOOGLE_CLIENT_ID = '877634120515-imgb8trcfmcg794l1al4v2941m022329.apps.googleusercontent.com';
@@ -49,6 +50,7 @@ function Avatar({ user, size = 40 }) {
 export function LoginModal() {
   const t = useTheme();
   const { user, modalOpen, closeLogin, signOut } = useAuth();
+  const router = useRouter();
   const btnRef = useRef(null);
   const [error, setError] = useState('');
   const [signingOut, setSigningOut] = useState(false);
@@ -137,6 +139,17 @@ export function LoginModal() {
               <div style={{ fontSize: 13, color: t.muted, marginTop: 4 }}>{email}</div>
             </div>
             <div style={{ width: '100%', height: 1, background: t.border }} />
+            <button
+              onClick={() => { closeLogin(); router.go({ screen: 'profile' }); }}
+              style={{
+                width: '100%', padding: '12px 0',
+                background: t.primary, color: '#fff',
+                border: 'none', borderRadius: 10, cursor: 'pointer',
+                fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
+              }}
+            >
+              ✏️ Редактировать профиль
+            </button>
             <button
               onClick={async () => {
                 setSigningOut(true);

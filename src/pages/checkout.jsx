@@ -7,6 +7,7 @@ import { fmtRub } from '../entities/product/model.js';
 import { Button } from '../shared/ui/Button.jsx';
 import { ProductImage } from '../entities/product/ProductImage.jsx';
 import { createOrder } from '../service/orders.js';
+import { fetchProfile } from '../service/profile.js';
 
 function Stepper({ step, steps }) {
   const t = useTheme();
@@ -113,6 +114,23 @@ export function CheckoutScreen({ device }) {
   const [addr, setAddr] = React.useState('');
   const [placing, setPlacing] = React.useState(false);
   const [fieldErrors, setFieldErrors] = React.useState({});
+  const [savedProfile, setSavedProfile] = React.useState(null);
+  const [profileApplied, setProfileApplied] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!user) return;
+    fetchProfile(user.id).then(p => {
+      if (p && (p.full_name || p.phone || p.address)) setSavedProfile(p);
+    }).catch(() => {});
+  }, [user?.id]);
+
+  function applyProfile() {
+    if (!savedProfile) return;
+    if (savedProfile.full_name) setName(savedProfile.full_name);
+    if (savedProfile.phone) setPhone(savedProfile.phone);
+    if (savedProfile.address) setAddr(savedProfile.address);
+    setProfileApplied(true);
+  }
 
   const deliveryFee = delivery === 'pickup' ? 0 : (cart.subtotal >= 1500 ? 0 : 199);
   const total = cart.subtotal + deliveryFee;
@@ -187,6 +205,26 @@ export function CheckoutScreen({ device }) {
         <div>
           <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Оформление</h1>
           <Stepper step={1} steps={['Контакты', 'Доставка', 'Оплата']} />
+
+          {savedProfile && !profileApplied && (
+            <div style={{
+              background: `${t.primary}0c`, border: `1.5px solid ${t.primary}30`,
+              borderRadius: 14, padding: '12px 14px', marginBottom: 12,
+              display: 'flex', alignItems: 'center', gap: 12,
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: t.primary, marginBottom: 3 }}>💾 Сохранённые данные</div>
+                <div style={{ fontSize: 12, color: t.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {[savedProfile.full_name, savedProfile.phone, savedProfile.address].filter(Boolean).join(' · ')}
+                </div>
+              </div>
+              <button onClick={applyProfile} style={{
+                background: t.primary, color: '#fff', border: 'none',
+                padding: '8px 14px', borderRadius: 10,
+                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+              }}>Применить</button>
+            </div>
+          )}
 
           <Block title="1. Контактные данные">
             <Field
