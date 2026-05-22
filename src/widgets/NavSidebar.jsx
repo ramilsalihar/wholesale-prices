@@ -125,8 +125,8 @@ function SidebarItem({ item, active, open, onClick }) {
       )}
       {item.badge > 0 && (
         <span style={{
-          position: 'absolute', top: 6,
-          ...(open ? { right: 10 } : { right: 4, top: 4 }),
+          position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+          right: open ? 10 : 4,
           minWidth: 18, height: 18, padding: '0 4px', borderRadius: 9,
           background: active ? '#fff' : t.primary,
           color: active ? t.primary : '#fff',

@@ -5,6 +5,52 @@ import { useAuth } from '../features/auth.jsx';
 import { useNotification } from '../features/notification.jsx';
 import { fetchProfile, upsertProfile } from '../service/profile.js';
 
+function Skel({ w = '100%', h = 14, r = 8, mb = 0 }) {
+  const t = useTheme();
+  return (
+    <div style={{
+      width: w, height: h, borderRadius: r, marginBottom: mb, flexShrink: 0,
+      background: `linear-gradient(90deg, ${t.surfaceAlt} 25%, ${t.border} 50%, ${t.surfaceAlt} 75%)`,
+      backgroundSize: '200% 100%',
+      animation: 'skel-shimmer 1.4s ease infinite',
+    }} />
+  );
+}
+
+function SkelField() {
+  const t = useTheme();
+  return (
+    <div>
+      <Skel w={80} h={11} r={6} mb={8} />
+      <Skel w="100%" h={46} r={12} />
+    </div>
+  );
+}
+
+function SkelSection({ fields = 2 }) {
+  const t = useTheme();
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <Skel w={120} h={11} r={6} mb={12} />
+      <div style={{ background: t.surface, borderRadius: 16, padding: '16px', boxShadow: `inset 0 0 0 1px ${t.border}`, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {Array.from({ length: fields }).map((_, i) => <SkelField key={i} />)}
+      </div>
+    </div>
+  );
+}
+
+function ProfileSkeleton({ isDesk }) {
+  return (
+    <>
+      <style>{`@keyframes skel-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
+      <SkelSection fields={3} />
+      <SkelSection fields={2} />
+      <Skel w="100%" h={52} r={14} mb={12} />
+      <Skel w="100%" h={46} r={14} />
+    </>
+  );
+}
+
 function Section({ title, children }) {
   const t = useTheme();
   return (
@@ -127,7 +173,7 @@ export function ProfileScreen({ device }) {
 
       <div style={{ padding: isDesk ? '28px 40px' : '20px 16px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 40, color: t.muted, fontSize: 14 }}>Загружаем профиль…</div>
+          <ProfileSkeleton isDesk={isDesk} />
         ) : (
           <>
             <Section title="Контактные данные">

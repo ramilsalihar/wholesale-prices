@@ -8,9 +8,6 @@ const PLANS = [
     id: 'basic',
     name: 'Базовый',
     badge: 'Старт',
-    price: '15 000',
-    suffix: 'с/мес',
-    note: 'или 75 000 с единоразово',
     desc: 'Клиентская витрина и панель управления',
     accentKey: 'muted',
     highlight: false,
@@ -28,9 +25,6 @@ const PLANS = [
     id: 'business',
     name: 'Бизнес',
     badge: 'Популярный',
-    price: '35 000',
-    suffix: 'с/мес',
-    note: 'или 180 000 с единоразово',
     desc: 'Полный бэкенд и программа лояльности',
     accentKey: 'primary',
     highlight: true,
@@ -40,7 +34,8 @@ const PLANS = [
       'Личный кабинет покупателя',
       'Программа лояльности',
       'Push-уведомления',
-      'Аналитика и отчёты',
+      'Аналитика продаж и отчёты',
+      'Дашборд с ключевыми метриками',
       'Интеграция платёжных систем',
     ],
     cta: 'Выбрать',
@@ -49,17 +44,17 @@ const PLANS = [
     id: 'advanced',
     name: 'Расширенный',
     badge: 'Максимум',
-    price: '80 000',
-    suffix: 'с/мес',
-    note: 'или 400 000 с единоразово',
     desc: 'AI-ассистент и мобильное приложение',
     accentKey: 'accent2',
     highlight: false,
     features: [
       'Всё из Бизнес',
       'AI-чат ассистент',
+      'Генерация фото товаров (AI)',
       'Мобильное приложение iOS + Android',
+      'Расширенная программа лояльности',
       'Персонализация рекомендаций',
+      'Расширенная аналитика и прогнозы',
       'Поддержка 24/7',
       'Ежемесячный аудит',
       'A/B тестирование',
@@ -70,9 +65,6 @@ const PLANS = [
     id: 'partner',
     name: 'Партнёрство',
     badge: 'Без риска',
-    price: '5%',
-    suffix: 'с транзакции',
-    note: 'Нет стартовых вложений',
     desc: 'Мы строим — вы платите только с продаж',
     accentKey: 'primaryDark',
     highlight: false,
@@ -164,22 +156,6 @@ function PlanCard({ plan, t }) {
         <div style={{ fontSize: 13, color: t.muted, lineHeight: 1.5 }}>
           {plan.desc}
         </div>
-      </div>
-
-      <div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <span style={{ fontSize: 34, fontWeight: 900, color: accent, letterSpacing: '-0.03em', lineHeight: 1 }}>
-            {plan.price}
-          </span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: t.muted }}>
-            {plan.suffix}
-          </span>
-        </div>
-        {plan.note && (
-          <div style={{ fontSize: 11, color: t.muted, marginTop: 5, opacity: 0.8 }}>
-            {plan.note}
-          </div>
-        )}
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9 }}>

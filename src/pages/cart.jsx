@@ -285,7 +285,7 @@ export function CartScreen({ device }) {
       </div>
       <Button block size="lg" onClick={() => router.go({ screen: 'checkout' })}>Оформить заказ</Button>
       <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-        <PayBadge>Visa</PayBadge><PayBadge>МИР</PayBadge><PayBadge>СБП</PayBadge><PayBadge>Долями</PayBadge>
+        <PayBadge>Visa</PayBadge><PayBadge>Финик</PayBadge>
       </div>
     </div>
   );

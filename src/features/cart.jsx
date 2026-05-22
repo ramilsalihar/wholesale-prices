@@ -1,10 +1,11 @@
 import React from 'react';
-import { PRODUCTS } from '../entities/product/model.js';
+import { useData } from './data.jsx';
 
 export const CartContext = React.createContext(null);
 export const useCart = () => React.useContext(CartContext);
 
 export function CartProvider({ children }) {
+  const { products } = useData();
   const [items, setItems] = React.useState({});
   const [giftBoxes, setGiftBoxes] = React.useState([]);
 
@@ -20,7 +21,7 @@ export function CartProvider({ children }) {
   const removeGiftBox = (id) => setGiftBoxes(prev => prev.filter(b => b.id !== id));
 
   const list = Object.entries(items).map(([id, qty]) => {
-    const p = PRODUCTS.find((x) => x.id === id);
+    const p = products.find((x) => x.id === id);
     return p ? { ...p, qty } : null;
   }).filter(Boolean);
 

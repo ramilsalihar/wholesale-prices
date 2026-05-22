@@ -19,7 +19,14 @@ export function DataProvider({ children }) {
   useEffect(() => {
     Promise.all([fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures()])
       .then(([prods, cats, bans, feats]) => {
-        if (prods?.length) setProducts(prods);
+        if (prods?.length) {
+          setProducts(prev => prev.map(local => {
+            const remote = prods.find(r => r.id === local.id);
+            const imgs = Array.isArray(remote?.images) ? remote.images : (remote?.images ? [remote.images] : []);
+            const firstImage = imgs[0] ?? null;
+            return remote ? { ...local, image_url: firstImage, images: imgs } : local;
+          }));
+        }
         if (cats?.length) setCategories(cats);
         if (bans?.length) setBanners(bans);
         if (feats?.length) setFeatures(feats);
@@ -30,7 +37,15 @@ export function DataProvider({ children }) {
       .channel('storefront-sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
         fetchProducts()
-          .then((prods) => { if (prods?.length) setProducts(prods); })
+          .then((prods) => {
+            if (prods?.length) {
+              setProducts(prev => prev.map(local => {
+                const remote = prods.find(r => r.id === local.id);
+                const firstImage = Array.isArray(remote?.images) ? remote.images[0] : remote?.images ?? null;
+                return remote ? { ...local, image_url: firstImage } : local;
+              }));
+            }
+          })
           .catch((err) => console.error('[DataProvider realtime products]', err));
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {

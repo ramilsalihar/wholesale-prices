@@ -259,7 +259,7 @@ export function CheckoutScreen({ device }) {
           </Block>
 
           <Block title="3. Оплата">
-            <RadioRow checked={pay === 'card'} onClick={() => setPay('card')} t="Картой онлайн" s="Visa, Mastercard, Элкарт" />
+            <RadioRow checked={pay === 'card'} onClick={() => setPay('card')} t="Картой онлайн" s="Visa, Финик" />
             <RadioRow checked={pay === 'cash'} onClick={() => setPay('cash')} t="При получении"  s="Наличными или картой курьеру" />
           </Block>
 
