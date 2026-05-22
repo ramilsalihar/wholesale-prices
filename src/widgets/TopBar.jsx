@@ -60,7 +60,7 @@ export function TopBar() {
   const cart = useCart();
   const { user, openLogin } = useAuth();
 
-  const NAV_SCREENS = ['home', 'catalog', 'gifts', 'shops', 'cart', 'favorites'];
+  const NAV_SCREENS = ['home', 'catalog', 'gifts', 'shops', 'cart', 'favorites', 'pricing'];
   const canGoBack = !NAV_SCREENS.includes(router.route.screen);
 
   return (

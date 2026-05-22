@@ -6,6 +6,15 @@ import { useFavorites } from '../features/favorites.jsx';
 import { useAuth } from '../features/auth.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 
+function PriceTagIcon(props) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+      <line x1="7" y1="7" x2="7.01" y2="7"/>
+    </svg>
+  );
+}
+
 function OrdersIcon(props) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -36,6 +45,7 @@ export function MobileTabBar() {
       icon: user ? () => <OrdersIcon /> : Icon.user,
       action: user ? () => router.go({ screen: 'my_orders' }) : openLogin,
     },
+    { id: 'pricing', label: 'Тарифы', icon: () => <PriceTagIcon />, action: () => router.go({ screen: 'pricing' }) },
   ];
 
   const active = router.route.screen;
