@@ -25,7 +25,7 @@ export function Section({ title, sub, children, device, onSeeAll }) {
   );
 }
 
-export function Carousel({ children, device, autoScroll = false }) {
+export function Carousel({ children, device, autoScroll = false, speed = 0.4 }) {
   const isDesk = device === 'desktop';
   const pad = isDesk ? 40 : 16;
   const gap = isDesk ? 16 : 10;
@@ -38,13 +38,12 @@ export function Carousel({ children, device, autoScroll = false }) {
     if (!autoScroll || !scrollRef.current) return;
     const el = scrollRef.current;
 
-    // Wait one frame so scrollWidth is measured after layout
     const startRaf = requestAnimationFrame(() => {
       const halfWidth = el.scrollWidth / 2;
 
       const tick = () => {
         if (!paused.current) {
-          el.scrollLeft += 0.4;
+          el.scrollLeft += speed;
           if (el.scrollLeft >= halfWidth) el.scrollLeft -= halfWidth;
         }
         rafRef.current = requestAnimationFrame(tick);
@@ -59,6 +58,14 @@ export function Carousel({ children, device, autoScroll = false }) {
     el.addEventListener('touchstart', pause, { passive: true });
     el.addEventListener('touchend', resume);
 
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaX;
+      }
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+
     return () => {
       cancelAnimationFrame(startRaf);
       cancelAnimationFrame(rafRef.current);
@@ -66,8 +73,9 @@ export function Carousel({ children, device, autoScroll = false }) {
       el.removeEventListener('mouseleave', resume);
       el.removeEventListener('touchstart', pause);
       el.removeEventListener('touchend', resume);
+      el.removeEventListener('wheel', onWheel);
     };
-  }, [autoScroll]);
+  }, [autoScroll, speed]);
 
   if (autoScroll) {
     return (
@@ -75,8 +83,9 @@ export function Carousel({ children, device, autoScroll = false }) {
         ref={scrollRef}
         style={{
           display: 'flex', gap,
-          overflowX: 'hidden',
+          overflowX: 'auto',
           scrollbarWidth: 'none',
+          WebkitOverflowScrolling: 'touch',
           paddingBottom: 8,
         }}
       >

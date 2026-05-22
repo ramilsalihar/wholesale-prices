@@ -240,7 +240,7 @@ export function HomeScreen({ device }) {
 
       {sale.length > 0 && (
         <Section title="Скидки до 60%" sub="Только сегодня" device={device} onSeeAll={() => router.go({ screen: 'catalog' })}>
-          <Carousel device={device}>
+          <Carousel device={device} autoScroll speed={0.2}>
             {sale.map((p) => (
               <div key={p.id} style={{ width: isDesk ? 240 : 168, flexShrink: 0 }}>
                 <ProductCard p={p} onClick={() => router.go({ screen: 'pdp', id: p.id })} />

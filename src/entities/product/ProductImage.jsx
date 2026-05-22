@@ -26,10 +26,10 @@ export function ProductImage({ p, padding = 20, radius = 12, src }) {
           alt={p?.name}
           style={{
             position: 'absolute',
-            top: padding, right: padding, bottom: padding, left: padding,
-            width: `calc(100% - ${padding * 2}px)`,
-            height: `calc(100% - ${padding * 2}px)`,
-            objectFit: 'contain',
+            top: 0, right: 0, bottom: 0, left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
           }}
           onError={e => { e.currentTarget.style.display = 'none'; }}
         />
