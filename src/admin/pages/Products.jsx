@@ -7,11 +7,131 @@ import { ProductsTableSkeleton } from '../ui/Skeleton.jsx';
 
 const SHAPES = ['jar', 'bottle', 'tube', 'flask', 'lipstick', 'palette', 'pencil', 'stick', 'spray', 'bar'];
 
+const firstImg = (p) => Array.isArray(p?.images) ? (p.images[0] ?? null) : (p?.images ?? p?.image_url ?? null);
+
+const allImgs = (p) => Array.isArray(p?.images) ? p.images.filter(Boolean) : (p?.images ? [p.images] : (p?.image_url ? [p.image_url] : []));
+
+function ImagesEditor({ images, onChange }) {
+  const [preview, setPreview] = React.useState(0);
+  const idx = Math.min(preview, images.length - 1);
+  const mainUrl = images[idx]?.trim() ?? '';
+
+  const update = (i, val) => { const n = [...images]; n[i] = val; onChange(n); };
+  const remove = (i) => { onChange(images.filter((_, j) => j !== i)); setPreview(0); };
+  const add = () => onChange([...images, '']);
+
+  return (
+    <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
+      <div style={{ background: mainUrl ? '#F8F8F8' : AT.surfaceAlt, aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {mainUrl ? (
+          <img src={mainUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.currentTarget.style.opacity = '0.2'} />
+        ) : (
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="10" y="8" width="28" height="34" rx="4" fill="#C8C8C8" />
+            <rect x="16" y="16" width="16" height="10" rx="2" fill="white" opacity="0.7" />
+            <circle cx="24" cy="33" r="4" fill="white" opacity="0.5" />
+          </svg>
+        )}
+      </div>
+
+      {images.filter(u => u.trim()).length > 1 && (
+        <div style={{ display: 'flex', gap: 6, padding: '8px 12px 0', flexWrap: 'wrap' }}>
+          {images.map((url, i) => url.trim() ? (
+            <div key={i} onClick={() => setPreview(i)} style={{
+              width: 44, height: 44, borderRadius: 7, overflow: 'hidden', cursor: 'pointer', flexShrink: 0,
+              border: `2px solid ${i === idx ? AT.primary : AT.border}`,
+              opacity: i === idx ? 1 : 0.55, transition: 'border-color 0.15s, opacity 0.15s',
+            }}>
+              <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          ) : null)}
+        </div>
+      )}
+
+      <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em' }}>ФОТОГРАФИИ</div>
+        {images.map((url, i) => (
+          <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            {url.trim() && (
+              <img src={url} alt="" style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6, border: `1px solid ${AT.border}`, flexShrink: 0, cursor: 'pointer' }}
+                onClick={() => setPreview(i)} onError={e => e.currentTarget.style.display = 'none'} />
+            )}
+            <input
+              style={inp({ flex: 1 })}
+              value={url}
+              onChange={e => update(i, e.target.value)}
+              onFocus={() => setPreview(i)}
+              placeholder="https://..."
+            />
+            {images.length > 1 && (
+              <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: AT.muted, fontSize: 18, lineHeight: 1, padding: '0 2px', flexShrink: 0 }}>×</button>
+            )}
+          </div>
+        ))}
+        <button onClick={add} style={{
+          background: 'none', border: `1.5px dashed ${AT.border}`, borderRadius: AT.radius,
+          color: AT.muted, fontSize: 13, fontWeight: 700, cursor: 'pointer',
+          padding: '7px', width: '100%', fontFamily: 'Manrope, sans-serif',
+        }}>+ Добавить фото</button>
+      </div>
+    </div>
+  );
+}
+
+function ProductGallery({ product }) {
+  const imgs = allImgs(product);
+  const [selected, setSelected] = React.useState(0);
+
+  React.useEffect(() => setSelected(0), [product?.id]);
+
+  const main = imgs[selected] ?? null;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{
+        background: main ? '#F8F8F8' : AT.surfaceAlt,
+        borderRadius: AT.radiusLg, border: `1px solid ${AT.border}`,
+        aspectRatio: '1 / 1', overflow: 'hidden',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {main ? (
+          <img src={main} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="10" y="8" width="28" height="34" rx="4" fill="#C8C8C8" />
+            <rect x="16" y="16" width="16" height="10" rx="2" fill="white" opacity="0.7" />
+            <circle cx="24" cy="33" r="4" fill="white" opacity="0.5" />
+          </svg>
+        )}
+      </div>
+      {imgs.length > 1 && (
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {imgs.map((url, i) => (
+            <div
+              key={i}
+              onClick={() => setSelected(i)}
+              style={{
+                width: 52, height: 52, borderRadius: 8, overflow: 'hidden',
+                border: `2px solid ${i === selected ? AT.primary : AT.border}`,
+                cursor: 'pointer', flexShrink: 0,
+                opacity: i === selected ? 1 : 0.6,
+                transition: 'border-color 0.15s, opacity 0.15s',
+              }}
+            >
+              <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const EMPTY_FORM = {
   id: '', cat: '', brand_id: '', brand: '', name: '', vol: '',
   price: '', old: '', rating: '4.8', reviews: '0',
   hit: false, hue: [300, 50, 75], shape: 'bottle', active: true,
-  description: '', ingredients: '', image_url: '', stock: '0', sku: '',
+  description: '', ingredients: '', images: [''], stock: '0', sku: '',
 };
 
 const inp = (extra = {}) => ({
@@ -96,22 +216,7 @@ function ProductDetail({ product, cats, brands, onEdit, onBack, onToggleActive }
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr)', gap: 24, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{
-            background: product.image_url ? '#F8F8F8' : AT.surfaceAlt,
-            borderRadius: AT.radiusLg, border: `1px solid ${AT.border}`,
-            aspectRatio: '1 / 1', overflow: 'hidden',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            {product.image_url ? (
-              <img src={product.image_url} alt={product.name} style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
-            ) : (
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <rect x="10" y="8" width="28" height="34" rx="4" fill="#C8C8C8" />
-                <rect x="16" y="16" width="16" height="10" rx="2" fill="white" opacity="0.7" />
-                <circle cx="24" cy="33" r="4" fill="white" opacity="0.5" />
-              </svg>
-            )}
-          </div>
+          <ProductGallery product={product} />
 
           <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em', marginBottom: 10 }}>
@@ -233,32 +338,11 @@ function ProductForm({ form, setForm, cats, brands, editId, saving, error, onSav
         {/* Left column — mirrors ProductDetail left */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-          {/* Image preview + URL input */}
-          <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
-            <div style={{
-              background: form.image_url ? '#F8F8F8' : AT.surfaceAlt,
-              aspectRatio: '1 / 1',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              {form.image_url ? (
-                <img src={form.image_url} alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }}
-                  onError={e => e.currentTarget.style.opacity = '0.2'} />
-              ) : (
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect x="10" y="8" width="28" height="34" rx="4" fill="#C8C8C8" />
-                  <rect x="16" y="16" width="16" height="10" rx="2" fill="white" opacity="0.7" />
-                  <circle cx="24" cy="33" r="4" fill="white" opacity="0.5" />
-                </svg>
-              )}
-            </div>
-            <div style={{ padding: 12 }}>
-              <Field label="URL фото">
-                <input style={inp()} value={form.image_url}
-                  onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
-                  placeholder="https://..." />
-              </Field>
-            </div>
-          </div>
+          {/* Multi-image editor */}
+          <ImagesEditor
+            images={form.images}
+            onChange={imgs => setForm(f => ({ ...f, images: imgs }))}
+          />
 
           {/* HSL color */}
           <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 16 }}>
@@ -317,8 +401,7 @@ function ProductForm({ form, setForm, cats, brands, editId, saving, error, onSav
             <div style={{ fontSize: 13, fontWeight: 700, color: AT.ink, marginBottom: 16 }}>ОСНОВНОЕ</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Field label="ID">
-                <input style={inp()} value={form.id}
-                  onChange={e => setForm(f => ({ ...f, id: e.target.value }))} disabled={!!editId} />
+                <input style={inp({ background: AT.surfaceAlt, color: AT.muted, cursor: 'not-allowed' })} value={form.id} readOnly />
               </Field>
               <Field label="Название" required>
                 <input style={inp()} value={form.name}
@@ -355,12 +438,10 @@ function ProductForm({ form, setForm, cats, brands, editId, saving, error, onSav
                     onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="SKU-001" />
                 </Field>
                 <Field label="Рейтинг">
-                  <input style={inp()} type="number" step="0.1" min="1" max="5" value={form.rating}
-                    onChange={e => setForm(f => ({ ...f, rating: e.target.value }))} />
+                  <input style={inp({ background: AT.surfaceAlt, color: AT.muted, cursor: 'not-allowed' })} value={form.rating} readOnly />
                 </Field>
                 <Field label="Отзывов">
-                  <input style={inp()} type="number" value={form.reviews}
-                    onChange={e => setForm(f => ({ ...f, reviews: e.target.value }))} />
+                  <input style={inp({ background: AT.surfaceAlt, color: AT.muted, cursor: 'not-allowed' })} value={form.reviews} readOnly />
                 </Field>
               </div>
               <div style={{ display: 'flex', gap: 10, paddingTop: 4, flexWrap: 'wrap' }}>
@@ -447,7 +528,7 @@ export function Products() {
       hit: !!p.hit, hue: p.hue ?? [300, 50, 75], shape: p.shape ?? 'bottle',
       active: p.active !== false,
       description: p.description ?? '', ingredients: p.ingredients ?? '',
-      image_url: p.image_url ?? '', stock: String(p.stock ?? '0'), sku: p.sku ?? '',
+      images: allImgs(p).length ? allImgs(p) : [''], stock: String(p.stock ?? '0'), sku: p.sku ?? '',
     });
     setFormError('');
     setView('edit');
@@ -464,34 +545,36 @@ export function Products() {
     if (!form.cat) { setFormError('Выберите категорию'); return; }
     if (!form.name.trim()) { setFormError('Название обязательно'); return; }
     if (!form.price) { setFormError('Цена обязательна'); return; }
-    setSaving(true);
     setFormError('');
+
+    const selectedBrand = brands.find(b => b.id === form.brand_id);
+    const optimistic = {
+      id: form.id, cat: form.cat,
+      brand_id: form.brand_id || null,
+      brand: selectedBrand ? selectedBrand.name : form.brand.trim(),
+      name: form.name.trim(), vol: form.vol.trim(),
+      price: Number(form.price), old: form.old ? Number(form.old) : null,
+      rating: Number(form.rating), reviews: Number(form.reviews),
+      hit: form.hit, hue: form.hue, shape: form.shape, active: form.active,
+      description: form.description.trim() || null,
+      ingredients: form.ingredients.trim() || null,
+      images: form.images.filter(u => u.trim()).length ? form.images.filter(u => u.trim()) : null,
+      stock: Number(form.stock), sku: form.sku.trim() || null,
+    };
+
+    setProducts(ps => ps.some(p => p.id === optimistic.id)
+      ? ps.map(p => p.id === optimistic.id ? optimistic : p)
+      : [...ps, optimistic]);
+    setSelectedProduct(optimistic);
+    setView('detail');
+
+    setSaving(true);
     try {
-      const selectedBrand = brands.find(b => b.id === form.brand_id);
-      const saved = await upsertProduct({
-        id: form.id, cat: form.cat,
-        brand_id: form.brand_id || null,
-        brand: selectedBrand ? selectedBrand.name : form.brand.trim(),
-        name: form.name.trim(), vol: form.vol.trim(),
-        price: Number(form.price), old: form.old ? Number(form.old) : null,
-        rating: Number(form.rating), reviews: Number(form.reviews),
-        hit: form.hit, hue: form.hue, shape: form.shape, active: form.active,
-        description: form.description.trim() || null,
-        ingredients: form.ingredients.trim() || null,
-        image_url: form.image_url.trim() || null,
-        stock: Number(form.stock), sku: form.sku.trim() || null,
-      });
-      await load();
-      if (selectedProduct) {
-        const refreshed = products.find(p => p.id === saved.id) ?? saved;
-        setSelectedProduct(refreshed);
-        setView('detail');
-      } else {
-        setSelectedProduct(saved);
-        setView('detail');
-      }
+      await upsertProduct(optimistic);
     } catch (e) {
       setFormError(e.message);
+      setView('edit');
+      await load();
     } finally {
       setSaving(false);
     }
@@ -617,8 +700,8 @@ export function Products() {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <td style={{ padding: '10px 14px' }}>
-                      {p.image_url ? (
-                        <img src={p.image_url} alt="" style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 6, border: `1px solid ${AT.border}` }} />
+                      {firstImg(p) ? (
+                        <img src={firstImg(p)} alt="" style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6, border: `1px solid ${AT.border}` }} />
                       ) : (
                         <div style={{ width: 36, height: 36, borderRadius: 6, background: `hsl(${(p.hue ?? [300])[0]}, 40%, 88%)`, border: `1px solid ${AT.border}` }} />
                       )}

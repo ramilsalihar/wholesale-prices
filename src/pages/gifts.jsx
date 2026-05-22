@@ -43,7 +43,7 @@ export function GiftsScreen({ device }) {
             boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
           }}
         >
-          🎁 Собрать подарочный набор
+          Собрать подарочный набор
         </button>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
