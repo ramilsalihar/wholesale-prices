@@ -32,7 +32,18 @@ function Field({ label, children, required }) {
   );
 }
 
+function useMobile() {
+  const [mobile, setMobile] = React.useState(() => window.innerWidth < 700);
+  React.useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 700);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, []);
+  return mobile;
+}
+
 export function Features() {
+  const isMobile = useMobile();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(null);
@@ -96,14 +107,14 @@ export function Features() {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 14 : 24 }}>
+        <h1 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
           Преимущества
         </h1>
         <button
           onClick={openNew}
           style={{
-            padding: '8px 18px', background: AT.primary, color: '#fff',
+            padding: isMobile ? '8px 14px' : '8px 18px', background: AT.primary, color: '#fff',
             border: 'none', borderRadius: AT.radius, fontSize: 14,
             fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: 'pointer',
           }}
@@ -134,7 +145,7 @@ export function Features() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 12 : 16, marginBottom: 16 }}>
             <Field label="Название" required>
               <input
                 style={inp()}
@@ -221,71 +232,75 @@ export function Features() {
             <div
               key={item.id}
               style={{
-                display: 'flex', alignItems: 'center', gap: 16,
-                padding: '14px 20px',
+                padding: isMobile ? '12px 14px' : '14px 20px',
                 borderBottom: i < items.length - 1 ? `1px solid ${AT.border}` : 'none',
                 background: item.active ? AT.surface : AT.surfaceAlt,
               }}
             >
-              <div style={{
-                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                background: item.active ? `${AT.primary}15` : AT.border,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 16,
-              }}>
-                {ICON_OPTIONS.find(o => o.value === item.icon)?.label.split(' ')[0] ?? '?'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                  background: item.active ? `${AT.primary}15` : AT.border,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 16,
+                }}>
+                  {ICON_OPTIONS.find(o => o.value === item.icon)?.label.split(' ')[0] ?? '?'}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: item.active ? AT.ink : AT.muted }}>{item.title}</div>
+                  {item.subtitle && <div style={{ fontSize: 12, color: AT.muted, marginTop: 1 }}>{item.subtitle}</div>}
+                </div>
+
+                {!isMobile && (
+                  <>
+                    <div style={{ fontSize: 11, color: AT.muted, fontWeight: 600 }}>#{item.sort}</div>
+                    <span style={{
+                      padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+                      background: item.active ? 'rgba(0,135,90,0.1)' : 'rgba(100,100,100,0.1)',
+                      color: item.active ? '#00875A' : AT.muted,
+                    }}>
+                      {item.active ? 'АКТИВЕН' : 'СКРЫТ'}
+                    </span>
+                  </>
+                )}
+
+                {!isMobile && (
+                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                    <button onClick={() => handleToggle(item.id, !item.active)} style={{ padding: '6px 12px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                      {item.active ? 'Скрыть' : 'Показать'}
+                    </button>
+                    <button onClick={() => openEdit(item)} style={{ padding: '6px 12px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                      Изменить
+                    </button>
+                    <button onClick={() => handleDelete(item.id)} style={{ padding: '6px 12px', background: 'transparent', border: `1.5px solid rgba(222,53,11,0.3)`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.danger, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                      Удалить
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: item.active ? AT.ink : AT.muted }}>{item.title}</div>
-                {item.subtitle && <div style={{ fontSize: 12, color: AT.muted, marginTop: 2 }}>{item.subtitle}</div>}
-              </div>
-
-              <div style={{ fontSize: 11, color: AT.muted, fontWeight: 600 }}>#{item.sort}</div>
-
-              <span style={{
-                padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
-                background: item.active ? 'rgba(0,135,90,0.1)' : 'rgba(100,100,100,0.1)',
-                color: item.active ? '#00875A' : AT.muted,
-              }}>
-                {item.active ? 'АКТИВЕН' : 'СКРЫТ'}
-              </span>
-
-              <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                <button
-                  onClick={() => handleToggle(item.id, !item.active)}
-                  style={{
-                    padding: '6px 12px', background: 'transparent',
-                    border: `1.5px solid ${AT.border}`, borderRadius: AT.radius,
-                    fontSize: 12, fontWeight: 600, color: AT.inkLight,
-                    fontFamily: 'Manrope, sans-serif', cursor: 'pointer',
-                  }}
-                >
-                  {item.active ? 'Скрыть' : 'Показать'}
-                </button>
-                <button
-                  onClick={() => openEdit(item)}
-                  style={{
-                    padding: '6px 12px', background: 'transparent',
-                    border: `1.5px solid ${AT.border}`, borderRadius: AT.radius,
-                    fontSize: 12, fontWeight: 600, color: AT.inkLight,
-                    fontFamily: 'Manrope, sans-serif', cursor: 'pointer',
-                  }}
-                >
-                  Изменить
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  style={{
-                    padding: '6px 12px', background: 'transparent',
-                    border: `1.5px solid rgba(222,53,11,0.3)`, borderRadius: AT.radius,
-                    fontSize: 12, fontWeight: 600, color: AT.danger,
-                    fontFamily: 'Manrope, sans-serif', cursor: 'pointer',
-                  }}
-                >
-                  Удалить
-                </button>
-              </div>
+              {isMobile && (
+                <div style={{ display: 'flex', gap: 6, marginTop: 10, alignItems: 'center' }}>
+                  <span style={{
+                    padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+                    background: item.active ? 'rgba(0,135,90,0.1)' : 'rgba(100,100,100,0.1)',
+                    color: item.active ? '#00875A' : AT.muted, flexShrink: 0,
+                  }}>
+                    {item.active ? 'АКТИВЕН' : 'СКРЫТ'}
+                  </span>
+                  <div style={{ flex: 1 }} />
+                  <button onClick={() => handleToggle(item.id, !item.active)} style={{ padding: '6px 10px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                    {item.active ? 'Скрыть' : 'Показать'}
+                  </button>
+                  <button onClick={() => openEdit(item)} style={{ padding: '6px 10px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                    Изменить
+                  </button>
+                  <button onClick={() => handleDelete(item.id)} style={{ padding: '6px 10px', background: AT.dangerBg, color: AT.danger, border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                    Удалить
+                  </button>
+                </div>
+              )}
             </div>
           ))
         )}

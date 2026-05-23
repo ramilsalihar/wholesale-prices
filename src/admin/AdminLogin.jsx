@@ -129,23 +129,21 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {import.meta.env.DEV && (
-          <div style={{
-            marginTop: 24,
-            padding: '12px 14px',
-            background: '#FFFBEB',
-            border: '1px solid #FDE68A',
-            borderRadius: AT.radius,
-            fontSize: 12,
-            color: '#92400E',
-            fontWeight: 500,
-            lineHeight: 1.6,
-          }}>
-            <div style={{ fontWeight: 700, marginBottom: 4 }}>Тестовые данные (только dev)</div>
-            <div>Email: <code style={{ background: '#FEF3C7', padding: '1px 4px', borderRadius: 3 }}>admin@gmail.com</code></div>
-            <div>Пароль: <code style={{ background: '#FEF3C7', padding: '1px 4px', borderRadius: 3 }}>admin123</code></div>
-          </div>
-        )}
+        <div style={{
+          marginTop: 24,
+          padding: '12px 14px',
+          background: '#FFFBEB',
+          border: '1px solid #FDE68A',
+          borderRadius: AT.radius,
+          fontSize: 12,
+          color: '#92400E',
+          fontWeight: 500,
+          lineHeight: 1.6,
+        }}>
+          <div style={{ fontWeight: 700, marginBottom: 4 }}>Trial admin credentials:</div>
+          <div>Email: <code style={{ background: '#FEF3C7', padding: '1px 4px', borderRadius: 3 }}>admin@gmail.com</code></div>
+          <div>Password: <code style={{ background: '#FEF3C7', padding: '1px 4px', borderRadius: 3 }}>admin123</code></div>
+        </div>
       </div>
     </div>
   );
