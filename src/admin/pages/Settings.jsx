@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
+
+function useMobile() {
+  const [mobile, setMobile] = React.useState(() => window.innerWidth < 700);
+  React.useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 700);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, []);
+  return mobile;
+}
 import { fetchSettings, saveSettings, DEFAULT_SETTINGS } from '../../service/settings.js';
 import { SettingsSkeleton } from '../ui/Skeleton.jsx';
 
@@ -41,6 +51,7 @@ function Card({ title, children }) {
 }
 
 export function Settings() {
+  const isMobile = useMobile();
   const [form, setForm] = useState(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -86,24 +97,18 @@ export function Settings() {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 16 : 24, flexWrap: 'wrap', gap: 10 }}>
+        <h1 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
           Настройки
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {saved && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: AT.success }}>
-              ✓ Сохранено
-            </span>
-          )}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{ padding: '9px 22px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}
-          >
-            {saving ? 'Сохранение...' : 'Сохранить'}
-          </button>
-        </div>
+        {!isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {saved && <span style={{ fontSize: 13, fontWeight: 700, color: AT.success }}>✓ Сохранено</span>}
+            <button onClick={handleSave} disabled={saving} style={{ padding: '9px 22px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+              {saving ? 'Сохранение...' : 'Сохранить'}
+            </button>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -112,7 +117,7 @@ export function Settings() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1fr)', gap: 20, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2fr) minmax(0,1fr)', gap: isMobile ? 14 : 20, alignItems: 'start', paddingBottom: isMobile ? 80 : 0 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
           <Card title="МАГАЗИН">
@@ -139,7 +144,7 @@ export function Settings() {
                 <span style={{ fontSize: 13, color: AT.muted }}>с</span>
               </div>
             </Field>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: 12 }}>
               <Field label="Бишкек (с)" hint="Стоимость курьера">
                 <input style={inp()} type="number" min="0" value={form.delivery_bishkek} onChange={e => set('delivery_bishkek', Number(e.target.value))} />
               </Field>
@@ -195,6 +200,19 @@ export function Settings() {
           </Card>
         </div>
       </div>
+
+      {isMobile && (
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0,
+          background: AT.surface, borderTop: `1px solid ${AT.border}`,
+          padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, zIndex: 100,
+        }}>
+          {saved && <span style={{ fontSize: 13, fontWeight: 700, color: AT.success }}>✓ Сохранено</span>}
+          <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '13px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 15, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+            {saving ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

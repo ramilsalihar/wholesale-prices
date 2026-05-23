@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { AT } from '../adminTheme.js';
+
+function useMobile() {
+  const [mobile, setMobile] = React.useState(() => window.innerWidth < 700);
+  React.useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 700);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, []);
+  return mobile;
+}
 import { fetchAllStores, upsertStore, deleteStore, toggleStoreActive } from '../../service/stores.js';
 import { StoresSkeleton } from '../ui/Skeleton.jsx';
 
@@ -98,6 +108,7 @@ function StorePreview({ store }) {
 }
 
 export function Stores() {
+  const isMobile = useMobile();
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -192,26 +203,35 @@ export function Stores() {
 
   if (view === 'edit') {
     return (
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+      <div style={{ paddingBottom: isMobile ? 80 : 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: isMobile ? 16 : 24 }}>
           <button onClick={() => setView('list')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, padding: '7px 14px', fontSize: 13, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
             ← Назад
           </button>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: isMobile ? 16 : 20, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {editId ? 'Редактировать магазин' : 'Новый магазин'}
           </h1>
         </div>
 
         {formError && (
-          <div style={{ background: AT.dangerBg, border: `1px solid rgba(222,53,11,0.2)`, color: AT.danger, borderRadius: AT.radius, padding: '10px 14px', fontSize: 13, marginBottom: 16 }}>
+          <div style={{ background: AT.dangerBg, border: `1px solid rgba(222,53,11,0.2)`, color: AT.danger, borderRadius: AT.radius, padding: '10px 14px', fontSize: 13, marginBottom: 14 }}>
             {formError}
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 24, alignItems: 'start' }}>
-          {/* Left: form */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,1fr) minmax(0,1fr)', gap: isMobile ? 12 : 24, alignItems: 'start' }}>
+          {/* Form fields */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16 }}>
+
+            {/* Preview on mobile — shows first */}
+            {isMobile && (
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.06em', marginBottom: 8 }}>ПРЕДПРОСМОТР</div>
+                <StorePreview store={form} />
+              </div>
+            )}
+
+            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: isMobile ? 14 : 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: AT.ink, marginBottom: 4 }}>ОСНОВНОЕ</div>
               <Field label="ID">
                 <input style={inp()} value={form.id} onChange={e => setForm(f => ({ ...f, id: e.target.value }))} disabled={!!editId} />
@@ -219,10 +239,10 @@ export function Stores() {
               <Field label="Название" required>
                 <input style={inp()} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Оптовые цены 01 · Киевская" />
               </Field>
-              <Field label="Метка (badge)">
-                <input style={inp()} value={form.badge} onChange={e => setForm(f => ({ ...f, badge: e.target.value }))} placeholder="Главный" />
-              </Field>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Field label="Метка (badge)">
+                  <input style={inp()} value={form.badge} onChange={e => setForm(f => ({ ...f, badge: e.target.value }))} placeholder="Главный" />
+                </Field>
                 <Field label="Порядок">
                   <input style={inp()} type="number" value={form.sort} onChange={e => setForm(f => ({ ...f, sort: e.target.value }))} />
                 </Field>
@@ -233,23 +253,25 @@ export function Stores() {
               </button>
             </div>
 
-            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: isMobile ? 14 : 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: AT.ink, marginBottom: 4 }}>АДРЕС</div>
               <Field label="Адрес" required>
                 <input style={inp()} value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="ул. Киевская, 69, 1 этаж" />
               </Field>
-              <Field label="Район">
-                <input style={inp()} value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} placeholder="Первомайский район" />
-              </Field>
-              <Field label="Город">
-                <input style={inp()} value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Бишкек, 720040" />
-              </Field>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Field label="Район">
+                  <input style={inp()} value={form.district} onChange={e => setForm(f => ({ ...f, district: e.target.value }))} placeholder="Первомайский р-н" />
+                </Field>
+                <Field label="Город">
+                  <input style={inp()} value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Бишкек" />
+                </Field>
+              </div>
               <Field label="Ссылка 2GIS">
                 <input style={inp()} value={form.map_url} onChange={e => setForm(f => ({ ...f, map_url: e.target.value }))} placeholder="https://2gis.kg/..." />
               </Field>
             </div>
 
-            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: isMobile ? 14 : 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: AT.ink, marginBottom: 4 }}>ЧАСЫ И РЕЙТИНГ</div>
               <Field label="Часы работы">
                 <input style={inp()} value={form.hours} onChange={e => setForm(f => ({ ...f, hours: e.target.value }))} placeholder="09:00 – 21:00" />
@@ -264,36 +286,50 @@ export function Stores() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={save} disabled={saving} style={{ padding: '10px 22px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
-                {saving ? 'Сохранение...' : 'Сохранить'}
-              </button>
-              <button onClick={() => setView('list')} style={{ padding: '10px 22px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 14, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
-                Отмена
-              </button>
-            </div>
+            {!isMobile && (
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={save} disabled={saving} style={{ padding: '10px 22px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+                  {saving ? 'Сохранение...' : 'Сохранить'}
+                </button>
+                <button onClick={() => setView('list')} style={{ padding: '10px 22px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 14, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                  Отмена
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Right: live preview */}
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.06em', marginBottom: 10 }}>
-              ПРЕДПРОСМОТР
+          {/* Right: live preview (desktop only) */}
+          {!isMobile && (
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.06em', marginBottom: 10 }}>ПРЕДПРОСМОТР</div>
+              <StorePreview store={form} />
             </div>
-            <StorePreview store={form} />
-          </div>
+          )}
         </div>
+
+        {/* Mobile sticky save */}
+        {isMobile && (
+          <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: AT.surface, borderTop: `1px solid ${AT.border}`, padding: '12px 16px', display: 'flex', gap: 10, zIndex: 100 }}>
+            <button onClick={save} disabled={saving} style={{ flex: 1, padding: '13px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 15, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+              {saving ? 'Сохранение...' : 'Сохранить'}
+            </button>
+            <button onClick={() => setView('list')} style={{ padding: '13px 18px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 15, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+              Отмена
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
-          Магазины <span style={{ fontSize: 14, fontWeight: 600, color: AT.muted }}>({stores.length})</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 14 : 24, flexWrap: 'wrap', gap: 10 }}>
+        <h1 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
+          Магазины <span style={{ fontSize: 13, fontWeight: 600, color: AT.muted }}>({stores.length})</span>
         </h1>
-        <button onClick={openNew} style={{ padding: '9px 18px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
-          + Добавить магазин
+        <button onClick={openNew} style={{ padding: isMobile ? '8px 14px' : '9px 18px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+          + Добавить
         </button>
       </div>
 
