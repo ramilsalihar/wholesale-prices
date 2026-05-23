@@ -49,7 +49,7 @@ export function PDPScreen({ device }) {
   const similar = products.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, isDesk ? 5 : 4);
 
   return (
-    <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
+    <div style={{ background: t.bg, color: t.ink, minHeight: '100%', overflowX: 'hidden', width: '100%' }}>
       <div style={{
         display: 'grid',
         gridTemplateColumns: isDesk ? '1.1fr 1fr' : '1fr',

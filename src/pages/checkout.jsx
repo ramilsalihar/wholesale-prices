@@ -195,7 +195,7 @@ export function CheckoutScreen({ device }) {
   );
 
   return (
-    <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
+    <div style={{ background: t.bg, color: t.ink, minHeight: '100%', overflowX: 'hidden', width: '100%' }}>
       <div style={{
         display: 'grid',
         gridTemplateColumns: isDesk ? '1.4fr 1fr' : '1fr',
