@@ -57,7 +57,7 @@ function CartLine({ p }) {
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.name}</div>
         <div style={{ fontSize: 12, color: t.muted, marginTop: 2 }}>{p.vol}</div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, flexShrink: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, flexShrink: 0, minWidth: 0 }}>
         <PriceTag price={p.price * p.qty} old={p.old ? p.old * p.qty : null} size="sm" />
         <div style={{ display: 'flex', alignItems: 'center', background: t.surfaceAlt, borderRadius: 999, padding: 3 }}>
           <button onClick={() => cart.setQty(p.id, p.qty - 1)} style={{ ...qtyBtn(t), color: p.qty === 1 ? t.muted : t.ink }}>
@@ -321,7 +321,7 @@ export function CartScreen({ device }) {
   }
 
   return (
-    <div style={{ background: t.bg, color: t.ink, display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+    <div style={{ background: t.bg, color: t.ink, display: 'flex', flexDirection: 'column', minHeight: '100%', width: '100%', overflowX: 'hidden' }}>
       <div style={{ flex: 1 }}>
         <h1 style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.02em', margin: 0, padding: '14px 16px 8px' }}>
           Корзина · {cart.count} {cart.count === 1 ? 'товар' : (cart.count < 5 ? 'товара' : 'товаров')}
