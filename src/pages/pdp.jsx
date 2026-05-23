@@ -102,14 +102,14 @@ export function PDPScreen({ device }) {
             <div>
               <div style={{ fontSize: isDesk ? 38 : 30, fontWeight: 900, color: t.primary, letterSpacing: '-0.03em', lineHeight: 1 }}>{fmtRub(p.price)}</div>
               {p.old && (
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 6 }}>
-                  <span style={{ fontSize: 14, color: t.muted, textDecoration: 'line-through' }}>{fmtRub(p.old)}</span>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: t.accent2 }}>−{fmtRub(p.old - p.price)} (−{pctOff(p.price, p.old)}%)</span>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 14, color: t.muted, textDecoration: 'line-through', flexShrink: 0 }}>{fmtRub(p.old)}</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: t.accent2, flexShrink: 0 }}>−{fmtRub(p.old - p.price)} (−{pctOff(p.price, p.old)}%)</span>
                 </div>
               )}
             </div>
-            <div style={{ flex: 1 }} />
-            <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, maxWidth: 220, fontWeight: 500 }}>
+            {isDesk && <div style={{ flex: 1 }} />}
+            <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, fontWeight: 500 }}>
               <span style={{ color: t.ink, fontWeight: 700 }}>На складе:</span> {p.stock != null ? `${p.stock} шт` : '—'}<br/>
               <span style={{ color: t.ink, fontWeight: 700 }}>Объём:</span> {p.vol}
             </div>
@@ -145,21 +145,21 @@ export function PDPScreen({ device }) {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginTop: 16 }}>
             {[
               { icon: Icon.truck,   t: 'Завтра',         s: 'доставим в Бишкеке' },
               { icon: Icon.shield,  t: 'Оригинал',        s: 'гарантия от поставщика' },
               { icon: Icon.heart,   t: 'Возврат 14 дней', s: 'без объяснения причин' },
             ].map((u, i) => (
               <div key={i} style={{
-                background: t.surface, padding: '12px 14px', borderRadius: 12,
-                display: 'flex', alignItems: 'center', gap: 10, flex: '1 1 120px', minWidth: 0,
+                background: t.surface, padding: isDesk ? '12px 14px' : '10px 8px', borderRadius: 12,
+                display: 'flex', alignItems: 'flex-start', gap: isDesk ? 10 : 6, minWidth: 0,
                 boxShadow: `inset 0 0 0 1px ${t.border}`,
               }}>
-                <span style={{ color: t.primary, display: 'flex' }}>{u.icon()}</span>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 800 }}>{u.t}</div>
-                  <div style={{ fontSize: 11, color: t.muted }}>{u.s}</div>
+                <span style={{ color: t.primary, display: 'flex', flexShrink: 0, marginTop: 1 }}>{u.icon()}</span>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: isDesk ? 13 : 11, fontWeight: 800, lineHeight: 1.3 }}>{u.t}</div>
+                  <div style={{ fontSize: isDesk ? 11 : 10, color: t.muted, lineHeight: 1.3, marginTop: 2 }}>{u.s}</div>
                 </div>
               </div>
             ))}

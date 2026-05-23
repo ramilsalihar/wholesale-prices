@@ -6,8 +6,15 @@ export const useCart = () => React.useContext(CartContext);
 
 export function CartProvider({ children }) {
   const { products } = useData();
-  const [items, setItems] = React.useState({});
-  const [giftBoxes, setGiftBoxes] = React.useState([]);
+  const [items, setItems] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('cart_items') || '{}'); } catch { return {}; }
+  });
+  const [giftBoxes, setGiftBoxes] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('cart_giftboxes') || '[]'); } catch { return []; }
+  });
+
+  React.useEffect(() => { localStorage.setItem('cart_items', JSON.stringify(items)); }, [items]);
+  React.useEffect(() => { localStorage.setItem('cart_giftboxes', JSON.stringify(giftBoxes)); }, [giftBoxes]);
 
   const add = (id, qty = 1) => setItems((s) => ({ ...s, [id]: (s[id] || 0) + qty }));
   const remove = (id) => setItems((s) => { const next = { ...s }; delete next[id]; return next; });

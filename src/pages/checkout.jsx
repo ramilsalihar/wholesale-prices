@@ -12,18 +12,18 @@ import { fetchProfile } from '../service/profile.js';
 function Stepper({ step, steps }) {
   const t = useTheme();
   return (
-    <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
+    <div style={{ display: 'flex', gap: 4, marginBottom: 18, width: '100%', overflow: 'hidden' }}>
       {steps.map((s, i) => (
-        <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div key={i} style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{
-            width: 26, height: 26, borderRadius: '50%',
+            width: 24, height: 24, borderRadius: '50%',
             background: i + 1 <= step ? t.primary : t.surfaceAlt,
             color: i + 1 <= step ? '#fff' : t.muted,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 900, fontSize: 13, flexShrink: 0,
+            fontWeight: 900, fontSize: 12, flexShrink: 0,
           }}>{i + 1}</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: i + 1 <= step ? t.ink : t.muted }}>{s}</div>
-          {i < steps.length - 1 && <div style={{ flex: 1, height: 2, background: t.border, marginLeft: 4 }} />}
+          <div style={{ fontSize: 12, fontWeight: 700, color: i + 1 <= step ? t.ink : t.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{s}</div>
+          {i < steps.length - 1 && <div style={{ flex: 1, minWidth: 8, height: 2, background: t.border }} />}
         </div>
       ))}
     </div>

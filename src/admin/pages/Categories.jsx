@@ -5,6 +5,16 @@ import { CategoriesTableSkeleton } from '../ui/Skeleton.jsx';
 
 const EMPTY = { id: '', ru: '', emoji: '', sort: 0 };
 
+function useMobile() {
+  const [mobile, setMobile] = React.useState(() => window.innerWidth < 700);
+  React.useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 700);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, []);
+  return mobile;
+}
+
 function Field({ label, children }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -31,6 +41,7 @@ const inp = (extra = {}) => ({
 });
 
 export function Categories() {
+  const isMobile = useMobile();
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(EMPTY);
@@ -96,116 +107,201 @@ export function Categories() {
   const isEditing = editId !== null;
 
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
+    <div style={{ paddingBottom: isMobile && isEditing ? 80 : 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? 14 : 24 }}>
+        <h1 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: AT.ink, margin: 0, letterSpacing: '-0.02em' }}>
           Категории
         </h1>
         {!isEditing && (
           <button
             onClick={() => { setEditId('__new__'); setForm(EMPTY); setError(''); }}
             style={{
-              padding: '9px 18px', background: AT.primary, color: '#fff',
+              padding: isMobile ? '8px 14px' : '9px 18px', background: AT.primary, color: '#fff',
               border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700,
               fontFamily: 'Manrope, sans-serif', cursor: 'pointer',
             }}
           >
-            + Добавить категорию
+            + Добавить
           </button>
         )}
       </div>
 
       {error && (
-        <div style={{ background: AT.dangerBg, border: `1px solid rgba(222,53,11,0.2)`, color: AT.danger, borderRadius: AT.radius, padding: '10px 14px', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+        <div style={{ background: AT.dangerBg, border: `1px solid rgba(222,53,11,0.2)`, color: AT.danger, borderRadius: AT.radius, padding: '10px 14px', fontSize: 13, fontWeight: 500, marginBottom: 14 }}>
           {error}
         </div>
       )}
 
       {isEditing && (
-        <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: 24, marginBottom: 24 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: AT.ink, marginBottom: 20 }}>
+        <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: isMobile ? 14 : 24, marginBottom: isMobile ? 14 : 24 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: AT.ink, marginBottom: isMobile ? 14 : 20 }}>
             {isNew ? 'Новая категория' : `Редактировать: ${editId}`}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 80px 80px', gap: 16, marginBottom: 20 }}>
-            <Field label="ID (slug)">
-              <input
-                style={inp()}
-                value={form.id}
-                onChange={e => setForm(f => ({ ...f, id: e.target.value }))}
-                disabled={!isNew}
-                placeholder="face"
-              />
-            </Field>
-            <Field label="Название">
-              <input style={inp()} value={form.ru} onChange={e => setForm(f => ({ ...f, ru: e.target.value }))} placeholder="Уход за лицом" />
-            </Field>
-            <Field label="Эмодзи">
-              <input style={inp()} value={form.emoji} onChange={e => setForm(f => ({ ...f, emoji: e.target.value }))} placeholder="🌸" />
-            </Field>
-            <Field label="Порядок">
-              <input style={inp()} type="number" value={form.sort} onChange={e => setForm(f => ({ ...f, sort: e.target.value }))} />
-            </Field>
-          </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={save} disabled={saving} style={{ padding: '9px 20px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
-              {saving ? 'Сохранение...' : 'Сохранить'}
-            </button>
-            <button onClick={cancelEdit} style={{ padding: '9px 20px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 14, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
-              Отмена
-            </button>
-          </div>
+
+          {isMobile ? (
+            /* Mobile: stacked fields */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px', gap: 10 }}>
+                <Field label="ID (slug)">
+                  <input
+                    style={inp()}
+                    value={form.id}
+                    onChange={e => setForm(f => ({ ...f, id: e.target.value }))}
+                    disabled={!isNew}
+                    placeholder="face"
+                  />
+                </Field>
+                <Field label="Эмодзи">
+                  <input style={inp({ textAlign: 'center', fontSize: 20 })} value={form.emoji} onChange={e => setForm(f => ({ ...f, emoji: e.target.value }))} placeholder="🌸" />
+                </Field>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px', gap: 10 }}>
+                <Field label="Название">
+                  <input style={inp()} value={form.ru} onChange={e => setForm(f => ({ ...f, ru: e.target.value }))} placeholder="Уход за лицом" />
+                </Field>
+                <Field label="Порядок">
+                  <input style={inp()} type="number" value={form.sort} onChange={e => setForm(f => ({ ...f, sort: e.target.value }))} />
+                </Field>
+              </div>
+            </div>
+          ) : (
+            /* Desktop: 4-col row */
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 80px 80px', gap: 16, marginBottom: 20 }}>
+              <Field label="ID (slug)">
+                <input
+                  style={inp()}
+                  value={form.id}
+                  onChange={e => setForm(f => ({ ...f, id: e.target.value }))}
+                  disabled={!isNew}
+                  placeholder="face"
+                />
+              </Field>
+              <Field label="Название">
+                <input style={inp()} value={form.ru} onChange={e => setForm(f => ({ ...f, ru: e.target.value }))} placeholder="Уход за лицом" />
+              </Field>
+              <Field label="Эмодзи">
+                <input style={inp()} value={form.emoji} onChange={e => setForm(f => ({ ...f, emoji: e.target.value }))} placeholder="🌸" />
+              </Field>
+              <Field label="Порядок">
+                <input style={inp()} type="number" value={form.sort} onChange={e => setForm(f => ({ ...f, sort: e.target.value }))} />
+              </Field>
+            </div>
+          )}
+
+          {!isMobile && (
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={save} disabled={saving} style={{ padding: '9px 20px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 14, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+                {saving ? 'Сохранение...' : 'Сохранить'}
+              </button>
+              <button onClick={cancelEdit} style={{ padding: '9px 20px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 14, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                Отмена
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
-          <thead>
-            <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
-              {['', 'ID', 'Название', 'Порядок', ''].map((h, i) => (
-                <th key={i} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em' }}>
-                  {h.toUpperCase()}
-                </th>
-              ))}
-            </tr>
-          </thead>
+      {/* List */}
+      {isMobile ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {loading ? (
-            <CategoriesTableSkeleton />
+            <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <CategoriesTableSkeleton />
+              </table>
+            </div>
           ) : cats.length === 0 ? (
-            <tbody>
-              <tr><td colSpan={5} style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет категорий</td></tr>
-            </tbody>
+            <div style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14, background: AT.surface, borderRadius: AT.radiusLg, border: `1px solid ${AT.border}` }}>
+              Нет категорий
+            </div>
           ) : (
-            <tbody>
-              {cats.map((cat, i) => (
-                <tr key={cat.id} style={{ borderBottom: i < cats.length - 1 ? `1px solid ${AT.border}` : 'none' }}>
-                  <td style={{ padding: '12px 16px', fontSize: 22, width: 48 }}>{cat.emoji}</td>
-                  <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 700, color: AT.muted, fontFamily: 'monospace' }}>{cat.id}</td>
-                  <td style={{ padding: '12px 16px', fontSize: 14, fontWeight: 600, color: AT.ink }}>{cat.ru}</td>
-                  <td style={{ padding: '12px 16px', fontSize: 13, color: AT.muted }}>{cat.sort}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                      <button
-                        onClick={() => startEdit(cat)}
-                        style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}
-                      >
-                        Изменить
-                      </button>
-                      {deleteConfirm === cat.id ? (
-                        <>
-                          <button onClick={() => confirmDelete(cat.id)} style={{ padding: '5px 14px', background: AT.danger, border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 700, color: '#fff', fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Удалить</button>
-                          <button onClick={() => setDeleteConfirm(null)} style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Отмена</button>
-                        </>
-                      ) : (
-                        <button onClick={() => setDeleteConfirm(cat.id)} style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.danger, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Удалить</button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            cats.map(cat => (
+              <div key={cat.id} style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: 26, flexShrink: 0, width: 36, textAlign: 'center' }}>{cat.emoji}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: AT.ink }}>{cat.ru}</div>
+                  <div style={{ fontSize: 11, color: AT.muted, fontFamily: 'monospace', marginTop: 1 }}>{cat.id} · #{cat.sort}</div>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <button
+                    onClick={() => startEdit(cat)}
+                    style={{ padding: '6px 12px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}
+                  >
+                    Изм.
+                  </button>
+                  {deleteConfirm === cat.id ? (
+                    <>
+                      <button onClick={() => confirmDelete(cat.id)} style={{ padding: '6px 10px', background: AT.danger, border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 700, color: '#fff', fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Да</button>
+                      <button onClick={() => setDeleteConfirm(null)} style={{ padding: '6px 10px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Нет</button>
+                    </>
+                  ) : (
+                    <button onClick={() => setDeleteConfirm(cat.id)} style={{ padding: '6px 10px', background: AT.dangerBg, border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.danger, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Удал.</button>
+                  )}
+                </div>
+              </div>
+            ))
           )}
-        </table>
-      </div>
+        </div>
+      ) : (
+        <div style={{ background: AT.surface, border: `1px solid ${AT.border}`, borderRadius: AT.radiusLg, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Manrope, sans-serif' }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${AT.border}`, background: AT.surfaceAlt }}>
+                {['', 'ID', 'Название', 'Порядок', ''].map((h, i) => (
+                  <th key={i} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: AT.muted, letterSpacing: '0.04em' }}>
+                    {h.toUpperCase()}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {loading ? (
+              <CategoriesTableSkeleton />
+            ) : cats.length === 0 ? (
+              <tbody>
+                <tr><td colSpan={5} style={{ padding: 40, textAlign: 'center', color: AT.muted, fontSize: 14 }}>Нет категорий</td></tr>
+              </tbody>
+            ) : (
+              <tbody>
+                {cats.map((cat, i) => (
+                  <tr key={cat.id} style={{ borderBottom: i < cats.length - 1 ? `1px solid ${AT.border}` : 'none' }}>
+                    <td style={{ padding: '12px 16px', fontSize: 22, width: 48 }}>{cat.emoji}</td>
+                    <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 700, color: AT.muted, fontFamily: 'monospace' }}>{cat.id}</td>
+                    <td style={{ padding: '12px 16px', fontSize: 14, fontWeight: 600, color: AT.ink }}>{cat.ru}</td>
+                    <td style={{ padding: '12px 16px', fontSize: 13, color: AT.muted }}>{cat.sort}</td>
+                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                        <button onClick={() => startEdit(cat)} style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+                          Изменить
+                        </button>
+                        {deleteConfirm === cat.id ? (
+                          <>
+                            <button onClick={() => confirmDelete(cat.id)} style={{ padding: '5px 14px', background: AT.danger, border: 'none', borderRadius: AT.radius, fontSize: 12, fontWeight: 700, color: '#fff', fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Удалить</button>
+                            <button onClick={() => setDeleteConfirm(null)} style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.inkLight, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Отмена</button>
+                          </>
+                        ) : (
+                          <button onClick={() => setDeleteConfirm(cat.id)} style={{ padding: '5px 14px', background: 'transparent', border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 12, fontWeight: 600, color: AT.danger, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>Удалить</button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
+      )}
+
+      {/* Mobile sticky save bar */}
+      {isMobile && isEditing && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: AT.surface, borderTop: `1px solid ${AT.border}`, padding: '12px 16px', display: 'flex', gap: 10, zIndex: 100 }}>
+          <button onClick={save} disabled={saving} style={{ flex: 1, padding: '13px', background: AT.primary, color: '#fff', border: 'none', borderRadius: AT.radius, fontSize: 15, fontWeight: 700, fontFamily: 'Manrope, sans-serif', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+            {saving ? 'Сохранение...' : 'Сохранить'}
+          </button>
+          <button onClick={cancelEdit} style={{ padding: '13px 18px', background: 'transparent', color: AT.inkLight, border: `1.5px solid ${AT.border}`, borderRadius: AT.radius, fontSize: 15, fontWeight: 600, fontFamily: 'Manrope, sans-serif', cursor: 'pointer' }}>
+            Отмена
+          </button>
+        </div>
+      )}
     </div>
   );
 }
