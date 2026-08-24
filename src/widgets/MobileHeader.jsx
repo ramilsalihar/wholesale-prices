@@ -32,7 +32,7 @@ export function MobileHeader({ title, showBack = false }) {
         ) : (
           <div>
             <div style={{ fontWeight: 900, fontSize: 15, letterSpacing: '0.06em' }}>ОПТОВЫЕ ЦЕНЫ</div>
-            <div style={{ fontSize: 11, opacity: 0.85, marginTop: -1 }}>выбор · косметика · доставка от 1 дня</div>
+            <div style={{ fontSize: 11, opacity: 0.85, marginTop: -1 }}>выбор · живые цветы · доставка от 1 часа</div>
           </div>
         )}
       </div>

@@ -88,7 +88,7 @@ export function TopBar() {
           }}
         >
           <span style={{ color: t.muted, display: 'flex' }}>{Icon.search()}</span>
-          <span style={{ flex: 1, fontSize: 14, color: t.muted }}>Поиск косметики, брендов…</span>
+          <span style={{ flex: 1, fontSize: 14, color: t.muted }}>Поиск цветов, букетов…</span>
         </div>
       )}
 

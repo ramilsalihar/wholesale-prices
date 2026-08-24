@@ -5,7 +5,7 @@ import { Logo } from '../shared/ui/Logo.jsx';
 
 const LINKS = {
   'О нас':    { screen: 'about' },
-  'Магазины': { screen: 'shops' },
+  // 'Магазины': { screen: 'shops' },
 };
 
 const IgIcon = () => (
@@ -29,12 +29,12 @@ export function DesktopFooter() {
             </div>
           </div>
           <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6, maxWidth: 320 }}>
-            Косметика и парфюмерия по оптовым ценам. Прямые поставки от производителей. 100% оригинал, гарантия качества.
+            Свежие цветы и авторская флористика. Собственные теплицы и прямые поставки. Доставка день в день по Бишкеку.
           </div>
         </div>
         {[
           { h: 'Покупателям', l: ['Доставка и оплата', 'Возврат', 'Гарантия', 'Программа лояльности'] },
-          { h: 'Компания',    l: ['О нас', 'Магазины', 'Вакансии', 'Контакты'] },
+          { h: 'Компания',    l: ['О нас', 'Вакансии', 'Контакты'] },
           { h: 'Контакты',    l: ['Instagram: @optovye_ceny01_', 'Бишкек, Кыргызстан', 'пн-вс · 9:00–22:00'] },
         ].map((col) => (
           <div key={col.h}>
@@ -62,7 +62,7 @@ export function DesktopFooter() {
       </div>
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 16, display: 'flex',
         justifyContent: 'space-between', fontSize: 12, opacity: 0.7 }}>
-        <span>© 2026 Оптовые Цены. Все права защищены.</span>
+        <span>© 2026 Цветочный Дом. Все права защищены.</span>
         <span>Политика конфиденциальности · Оферта</span>
       </div>
     </div>
