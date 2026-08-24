@@ -7,13 +7,13 @@
 
 /** @type {Category[]} */
 export const CATEGORIES = [
-  { id: 'face',   ru: 'Уход за лицом',  emoji: '🌸' },
-  { id: 'hair',   ru: 'Волосы',          emoji: '💇' },
-  { id: 'body',   ru: 'Тело',            emoji: '🧴' },
-  { id: 'makeup', ru: 'Макияж',          emoji: '💄' },
-  { id: 'parfum', ru: 'Парфюмерия',      emoji: '🌷' },
-  { id: 'mens',   ru: 'Мужское',         emoji: '🪒' },
-  { id: 'kids',   ru: 'Детское',         emoji: '🧸' },
-  { id: 'home',   ru: 'Дом',             emoji: '🏠' },
-  { id: 'gifts',  ru: 'Подарки',         emoji: '🎁' },
+  { id: 'bouquets',   ru: 'Букеты',                 emoji: '💐' },
+  { id: 'box',        ru: 'Композиции в коробках',  emoji: '🎁' },
+  { id: 'mono',       ru: 'Моно-букеты',             emoji: '🌷' },
+  { id: 'wedding',    ru: 'Свадебная флористика',    emoji: '👰' },
+  { id: 'plants',     ru: 'Комнатные растения',      emoji: '🪴' },
+  { id: 'potted',     ru: 'Кашпо и горшечные',       emoji: '🏺' },
+  { id: 'sympathy',   ru: 'Траурные композиции',     emoji: '🕊️' },
+  { id: 'seasonal',   ru: 'Сезонные предложения',    emoji: '🌸' },
+  { id: 'gifts',      ru: 'Подарочные наборы',       emoji: '🎀' },
 ];

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '../theme.jsx';
 import { Icon } from './Icon.jsx';
 
-export function SearchField({ placeholder = 'Поиск косметики, брендов…', onFocus }) {
+export function SearchField({ placeholder = 'Поиск цветов, букетов…', onFocus }) {
   const t = useTheme();
   return (
     <div onClick={onFocus} style={{

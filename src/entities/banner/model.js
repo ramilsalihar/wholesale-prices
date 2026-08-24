@@ -12,7 +12,7 @@
 
 /** @type {Banner[]} */
 export const BANNERS = [
-  { id: 'b1', kicker: 'Скидка дня',       title: '−40% на всю декоративку',  sub: 'Maybelline · Loreal · Essence', cta: 'Забрать',   accent: 'primary' },
-  { id: 'b2', kicker: 'Привет, новенький', title: '300 с на первый заказ',    sub: 'Промокод: ПЕРВЫЙ',              cta: 'Применить', accent: 'accent' },
-  { id: 'b3', kicker: 'Новинки',          title: 'Корейский уход уже у нас',  sub: 'COSRX · Mizon · The Saem',      cta: 'Смотреть',  accent: 'orange' },
+  { id: 'b1', kicker: 'Скидка дня',       title: '−30% на все монобукеты',    sub: 'Розы · Тюльпаны · Пионы',      cta: 'Забрать',   accent: 'primary' },
+  { id: 'b2', kicker: 'Привет, новенький', title: '300 с на первый заказ',     sub: 'Промокод: ПЕРВЫЙ',              cta: 'Применить', accent: 'accent' },
+  { id: 'b3', kicker: 'Ко Дню всех влюблённых', title: 'Романтичные букеты уже в каталоге', sub: 'Доставка день в день', cta: 'Смотреть',  accent: 'orange' },
 ];

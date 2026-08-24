@@ -299,7 +299,7 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
     { id: 'home',      icon: () => NI.home(),         label: 'Главная',     to: { screen: 'home' } },
     { id: 'catalog',   icon: () => NI.grid(),         label: 'Каталог',     to: { screen: 'catalog' } },
     { id: 'gifts',     icon: () => NI.gift(),         label: 'Подарки',     to: { screen: 'gifts' } },
-    { id: 'shops',     icon: () => NI.store(),        label: 'Магазины',    to: { screen: 'shops' } },
+    // { id: 'shops',     icon: () => NI.store(),        label: 'Магазины',    to: { screen: 'shops' } },
     { id: 'cart',      icon: () => Icon.cart(),       label: 'Корзина',     to: { screen: 'cart' },      badge: cart.count },
     { id: 'favorites', icon: () => NI.heart(favs?.count > 0), label: 'Избранное', to: { screen: 'favorites' }, badge: favs?.count },
     { id: 'pricing',   icon: () => NI.pricetag(),             label: 'Тарифы',    to: { screen: 'pricing' } },
