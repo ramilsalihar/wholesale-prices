@@ -79,3 +79,13 @@ npm run build
 | `/project:new-screen` | Add a new screen (pass screen name) |
 | `/project:new-theme`  | Add a new theme variant             |
 | `/project:add-product`| Add products to catalog             |
+
+## Agent skills
+
+### Issue tracker
+
+Issues tracked as GitHub issues (`github.com/ramilsalihar/wholesale-prices`), via `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout (root `CONTEXT.md` + `docs/adr/`, created lazily when needed). See `docs/agents/domain.md`.

@@ -27,10 +27,9 @@ export function ToastContainer() {
     }}>
       {notify.toasts.map((toast) => (
         <div key={toast.id} style={{
-          background: toast.type === 'fav' ? t.primary : t.ink,
-          color: '#fff', borderRadius: 12,
-          padding: '10px 16px', fontSize: 13, fontWeight: 700,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
+          background: t.ink, color: t.bg, borderRadius: 4,
+          padding: '10px 16px', fontSize: 13, fontWeight: 600,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.12)',
           display: 'flex', alignItems: 'center', gap: 8,
           maxWidth: 280,
         }}>

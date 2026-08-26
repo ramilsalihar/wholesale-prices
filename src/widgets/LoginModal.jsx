@@ -38,9 +38,9 @@ function Avatar({ user, size = 40 }) {
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
-      background: t.primary, color: '#fff',
+      background: t.discountBg, color: t.primaryDark,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: size * 0.35, fontWeight: 800, flexShrink: 0,
+      fontSize: size * 0.35, fontWeight: 600, flexShrink: 0,
     }}>
       {initials}
     </div>
@@ -109,11 +109,11 @@ export function LoginModal() {
         transform: 'translate(-50%, -50%)',
         zIndex: 1001,
         background: t.surface,
-        borderRadius: 20,
-        boxShadow: '0 24px 80px rgba(0,0,0,0.22)',
+        borderRadius: 4,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
         width: 'calc(100% - 32px)', maxWidth: 380,
         padding: '28px 24px',
-        fontFamily: 'Manrope, sans-serif',
+        fontFamily: "'Lora', Georgia, 'Times New Roman', serif",
         boxSizing: 'border-box',
       }}>
         {/* Close */}
@@ -122,7 +122,7 @@ export function LoginModal() {
           style={{
             position: 'absolute', top: 16, right: 16,
             background: t.surfaceAlt, border: 'none', cursor: 'pointer',
-            width: 32, height: 32, borderRadius: 8,
+            width: 32, height: 32, borderRadius: 4,
             color: t.muted, fontSize: 18, lineHeight: 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
@@ -135,7 +135,7 @@ export function LoginModal() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center' }}>
             <Avatar user={user} size={64} />
             <div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: t.ink, letterSpacing: '-0.01em' }}>{name}</div>
+              <div style={{ fontSize: 18, fontWeight: 600, color: t.ink, letterSpacing: '-0.01em' }}>{name}</div>
               <div style={{ fontSize: 13, color: t.muted, marginTop: 4 }}>{email}</div>
             </div>
             <div style={{ width: '100%', height: 1, background: t.border }} />
@@ -143,9 +143,9 @@ export function LoginModal() {
               onClick={() => { closeLogin(); router.go({ screen: 'profile' }); }}
               style={{
                 width: '100%', padding: '12px 0',
-                background: t.primary, color: '#fff',
-                border: 'none', borderRadius: 10, cursor: 'pointer',
-                fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
+                background: 'transparent', color: t.btnInk,
+                border: `1.5px solid ${t.btnBorder}`, borderRadius: 4, cursor: 'pointer',
+                fontSize: 14, fontWeight: 600, fontFamily: 'inherit',
               }}
             >
               ✏️ Редактировать профиль
@@ -160,8 +160,8 @@ export function LoginModal() {
                 width: '100%', padding: '12px 0',
                 background: 'transparent',
                 border: `1.5px solid ${t.border}`,
-                borderRadius: 10, cursor: 'pointer',
-                fontSize: 14, fontWeight: 700, color: t.ink,
+                borderRadius: 4, cursor: 'pointer',
+                fontSize: 14, fontWeight: 600, color: t.ink,
                 fontFamily: 'inherit',
                 opacity: signingOut ? 0.6 : 1,
               }}
@@ -175,15 +175,15 @@ export function LoginModal() {
             {/* Logo / branding */}
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                width: 56, height: 56, borderRadius: 16,
-                background: t.primary, color: '#fff',
+                width: 56, height: 56, borderRadius: 4,
+                background: t.discountBg, color: t.primaryDark,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 12px',
                 fontSize: 26,
               }}>
-                💄
+                🌷
               </div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: t.ink, letterSpacing: '-0.02em' }}>
+              <div style={{ fontSize: 20, fontWeight: 600, color: t.ink, letterSpacing: '-0.02em' }}>
                 Войти
               </div>
               <div style={{ fontSize: 13, color: t.muted, marginTop: 6, lineHeight: 1.5 }}>
@@ -196,7 +196,7 @@ export function LoginModal() {
                 width: '100%', padding: '10px 14px',
                 background: 'rgba(222,53,11,0.06)',
                 border: '1px solid rgba(222,53,11,0.2)',
-                borderRadius: 8, fontSize: 13, color: '#DE350B',
+                borderRadius: 4, fontSize: 13, color: '#DE350B',
               }}>
                 {error}
               </div>

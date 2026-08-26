@@ -34,22 +34,22 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
   if (layout === 'list') {
     return (
       <div onClick={onClick} style={{
-        background: t.cardBg, borderRadius: 14, padding: 12,
+        background: t.cardBg, borderRadius: 4, border: `1px solid ${t.border}`, padding: 12,
         display: 'flex', gap: 12, cursor: 'pointer',
-        boxShadow: `0 1px 0 ${t.border}`,
       }}>
         <div style={{ width: 96, flexShrink: 0 }}><ProductImage p={p} /></div>
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
+          <div style={{ fontSize: 11, color: t.muted, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
           <div style={{ fontSize: 14, color: t.ink, fontWeight: 600, lineHeight: 1.25, marginTop: 2,
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.name}</div>
           <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
             <PriceTag price={p.price} old={p.old} />
             <button onClick={handleAddCart} style={{
-              background: inCart ? t.accent : t.btnBg, color: inCart ? '#1A0A14' : t.btnInk,
-              border: 'none', cursor: 'pointer', borderRadius: 10, padding: '8px 12px',
-              fontWeight: 800, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 4,
-            }}>{inCart ? Icon.check() : Icon.plus()} {inCart ? 'В корзине' : 'В корзину'}</button>
+              background: inCart ? t.discountBg : 'transparent',
+              color: inCart ? t.primaryDark : t.btnInk,
+              border: `1.5px solid ${inCart ? 'transparent' : t.btnBorder}`, cursor: 'pointer', borderRadius: 4, padding: '8px 12px',
+              fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 4,
+            }}>{inCart ? Icon.check({ width: 16, height: 16 }) : Icon.plus({ width: 16, height: 16 })} {inCart ? 'В корзине' : 'В корзину'}</button>
           </div>
         </div>
       </div>
@@ -58,9 +58,8 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
 
   return (
     <div onClick={onClick} style={{
-      background: t.cardBg, borderRadius: 14,
+      background: t.cardBg, borderRadius: 4, border: `1px solid ${t.border}`,
       cursor: 'pointer', position: 'relative',
-      boxShadow: `0 1px 0 ${t.border}`,
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
     }}>
@@ -73,22 +72,21 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
         <button onClick={handleFav} style={{
           position: 'absolute', top: 8, right: 8,
           width: 32, height: 32, borderRadius: '50%',
-          background: isFav ? t.primary : 'rgba(255,255,255,0.9)',
-          border: 'none', cursor: 'pointer',
+          background: isFav ? t.discountBg : t.surface,
+          border: `1px solid ${isFav ? 'transparent' : t.border}`, cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: isFav ? '#fff' : t.muted,
-          boxShadow: isFav ? `0 2px 8px rgba(0,0,0,0.2)` : 'none',
+          color: isFav ? t.primaryDark : t.muted,
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24"
             fill={isFav ? 'currentColor' : 'none'}
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.8 5.6a5.5 5.5 0 0 0-8.8.7 5.5 5.5 0 0 0-8.8-.7 5.7 5.7 0 0 0 0 7.9L12 22.4l8.8-8.9a5.7 5.7 0 0 0 0-7.9z" />
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
           </svg>
         </button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '8px 10px 0' }}>
         <StarRating rating={p.rating} reviews={p.reviews} compact />
-        <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
+        <div style={{ fontSize: 11, color: t.muted, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
         <div style={{ fontSize: 13, color: t.ink, fontWeight: 600, lineHeight: 1.25,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 32 }}>{p.name}</div>
         <div style={{ fontSize: 11, color: t.muted }}>{p.vol}</div>
@@ -97,11 +95,11 @@ export function ProductCard({ p, onClick, layout = 'grid' }) {
         <PriceTag price={p.price} old={p.old} />
         <button onClick={handleAddCart} style={{
           width: 36, height: 36, borderRadius: '50%',
-          background: inCart ? t.accent : t.btnBg, color: inCart ? '#1A0A14' : t.btnInk,
-          border: 'none', cursor: 'pointer', flexShrink: 0,
+          background: inCart ? t.discountBg : 'transparent',
+          color: inCart ? t.primaryDark : t.btnInk,
+          border: `1.5px solid ${inCart ? 'transparent' : t.btnBorder}`, cursor: 'pointer', flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
-        }}>{inCart ? Icon.check() : Icon.plus()}</button>
+        }}>{inCart ? Icon.check({ width: 16, height: 16 }) : Icon.plus({ width: 16, height: 16 })}</button>
       </div>
     </div>
   );

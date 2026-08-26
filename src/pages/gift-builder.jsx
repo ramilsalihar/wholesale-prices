@@ -43,11 +43,11 @@ function Chip({ active, onClick, icon, label, large }) {
       display: 'flex', flexDirection: large ? 'column' : 'row',
       alignItems: 'center', gap: large ? 6 : 8,
       padding: large ? '14px 16px' : '8px 16px',
-      borderRadius: 14,
+      borderRadius: 4,
       border: `2px solid ${active ? t.primary : t.border}`,
       background: active ? `${t.primary}12` : t.surface,
       color: active ? t.primary : t.ink,
-      fontSize: large ? 13 : 14, fontWeight: 700,
+      fontSize: large ? 13 : 14, fontWeight: 600,
       cursor: 'pointer', fontFamily: 'inherit',
       transition: 'border-color 0.12s, background 0.12s, color 0.12s',
       flexShrink: 0,
@@ -65,7 +65,7 @@ function ProgressBar({ step }) {
     <div style={{ display: 'flex', gap: 6, marginBottom: 28 }}>
       {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
         <div key={i} style={{
-          flex: 1, height: 4, borderRadius: 2,
+          flex: 1, height: 4, borderRadius: 4,
           background: i < step ? t.primary : i === step ? `${t.primary}60` : t.border,
           transition: 'background 0.3s',
         }} />
@@ -78,7 +78,7 @@ function StepLabel({ step }) {
   const t = useTheme();
   const labels = ['Кому и повод', 'Получатель', 'Бюджет', 'Выбор товаров', 'Письмо'];
   return (
-    <div style={{ fontSize: 12, fontWeight: 700, color: t.muted, letterSpacing: '0.04em', marginBottom: 6 }}>
+    <div style={{ fontSize: 12, fontWeight: 600, color: t.muted, letterSpacing: '0.04em', marginBottom: 6 }}>
       ШАГ {step + 1} / {TOTAL_STEPS} · {labels[step].toUpperCase()}
     </div>
   );
@@ -190,14 +190,17 @@ export function GiftBuilderScreen({ device }) {
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: 80 }}>
       {/* Header */}
       <div style={{
-        background: `linear-gradient(135deg, ${t.primary} 0%, #b8005f 100%)`,
+        background: t.surface, borderBottom: `1px solid ${t.border}`,
         padding: isDesk ? '28px 40px 24px' : '20px 16px 18px',
-        color: '#fff',
+        color: t.ink,
       }}>
-        <div style={{ fontSize: isDesk ? 28 : 22, fontWeight: 900, letterSpacing: '-0.02em' }}>
+        <div style={{
+          fontSize: isDesk ? 28 : 22, fontWeight: 600, letterSpacing: '-0.02em',
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+        }}>
           🎁 Собрать подарочный набор
         </div>
-        <div style={{ fontSize: 13, marginTop: 4, opacity: 0.85 }}>
+        <div style={{ fontSize: 13, marginTop: 4, color: t.muted }}>
           Персональный подарок за несколько шагов
         </div>
       </div>
@@ -211,7 +214,7 @@ export function GiftBuilderScreen({ device }) {
       {step === 0 && (
         <div style={{ padding: pad, paddingTop: 0 }}>
           <div style={{ padding: isDesk ? '0 0 20px' : '0 0 20px' }}>
-            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900, marginBottom: 6 }}>Кому дарим?</div>
+            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600, marginBottom: 6 }}>Кому дарим?</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {RECIPIENTS.map(r => (
                 <Chip key={r.key} large active={recipient === r.key}
@@ -220,7 +223,7 @@ export function GiftBuilderScreen({ device }) {
             </div>
           </div>
           <div style={{ marginTop: 24 }}>
-            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900, marginBottom: 6 }}>Какой повод?</div>
+            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600, marginBottom: 6 }}>Какой повод?</div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {OCCASIONS.map(o => (
                 <Chip key={o.key} large active={occasion === o.key}
@@ -234,13 +237,13 @@ export function GiftBuilderScreen({ device }) {
       {/* Step 1: Данные получателя */}
       {step === 1 && (
         <div style={{ padding: pad, paddingTop: 0 }}>
-          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900, marginBottom: 6 }}>Данные получателя</div>
+          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600, marginBottom: 6 }}>Данные получателя</div>
           <div style={{ fontSize: 13, color: t.muted, marginBottom: 20 }}>
             Чтобы правильно оформить и доставить набор
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: t.muted, marginBottom: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: t.muted, marginBottom: 8 }}>
                 Имя получателя *
               </div>
               <input
@@ -248,7 +251,7 @@ export function GiftBuilderScreen({ device }) {
                 onChange={e => setRecipientName(e.target.value)}
                 placeholder="Например, Айгуль"
                 style={{
-                  width: '100%', padding: '13px 16px', borderRadius: 12,
+                  width: '100%', padding: '13px 16px', borderRadius: 4,
                   border: `1.5px solid ${recipientName.trim() ? t.primary : t.border}`,
                   background: t.surface, color: t.ink,
                   fontSize: 15, fontFamily: 'inherit', outline: 'none',
@@ -258,7 +261,7 @@ export function GiftBuilderScreen({ device }) {
               />
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: t.muted, marginBottom: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: t.muted, marginBottom: 8 }}>
                 Телефон получателя
                 <span style={{ fontWeight: 400, marginLeft: 6 }}>— необязательно</span>
               </div>
@@ -273,7 +276,7 @@ export function GiftBuilderScreen({ device }) {
                 placeholder="+996 (___) ___-___"
                 type="tel"
                 style={{
-                  width: '100%', padding: '13px 16px', borderRadius: 12,
+                  width: '100%', padding: '13px 16px', borderRadius: 4,
                   border: `1.5px solid ${t.border}`,
                   background: t.surface, color: t.ink,
                   fontSize: 15, fontFamily: 'inherit', outline: 'none',
@@ -288,7 +291,7 @@ export function GiftBuilderScreen({ device }) {
       {/* Step 2: Бюджет */}
       {step === 2 && (
         <div style={{ padding: pad, paddingTop: 0 }}>
-          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900, marginBottom: 6 }}>Какой бюджет?</div>
+          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600, marginBottom: 6 }}>Какой бюджет?</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {BUDGETS.map(b => (
               <Chip key={b.key} active={budget === b.key}
@@ -307,7 +310,7 @@ export function GiftBuilderScreen({ device }) {
       {step === 3 && (
         <div>
           <div style={{ padding: isDesk ? '0 40px 12px' : '0 16px 12px', paddingTop: 0 }}>
-            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900 }}>Выберите товары</div>
+            <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600 }}>Выберите товары</div>
             <div style={{ fontSize: 13, color: t.muted, marginTop: 4 }}>
               Выбрано {selected.length} из {MAX_ITEMS} · {fmtRub(totalPrice)}
             </div>
@@ -320,22 +323,22 @@ export function GiftBuilderScreen({ device }) {
             }}>
               {selectedProducts.map(p => (
                 <div key={p.id} onClick={() => toggleProduct(p.id)} style={{
-                  width: 60, height: 60, flexShrink: 0, borderRadius: 10, overflow: 'hidden',
+                  width: 60, height: 60, flexShrink: 0, borderRadius: 4, overflow: 'hidden',
                   outline: `2px solid ${t.primary}`, cursor: 'pointer', position: 'relative',
                 }}>
                   <ProductImage p={p} padding={0} radius={0} />
                   <div style={{
                     position: 'absolute', top: 2, right: 2,
                     width: 16, height: 16, borderRadius: '50%',
-                    background: t.primary, color: '#fff',
-                    fontSize: 9, fontWeight: 800,
+                    background: t.discountBg, color: t.primaryDark,
+                    fontSize: 9, fontWeight: 600,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>✕</div>
                 </div>
               ))}
               {Array.from({ length: MAX_ITEMS - selected.length }).map((_, i) => (
                 <div key={i} style={{
-                  width: 60, height: 60, flexShrink: 0, borderRadius: 10,
+                  width: 60, height: 60, flexShrink: 0, borderRadius: 4,
                   border: `2px dashed ${t.border}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 20, color: t.border,
@@ -353,7 +356,7 @@ export function GiftBuilderScreen({ device }) {
               const isSelected = selected.includes(p.id);
               return (
                 <div key={p.id} onClick={() => toggleProduct(p.id)} style={{
-                  cursor: 'pointer', borderRadius: 14, overflow: 'hidden',
+                  cursor: 'pointer', borderRadius: 4, overflow: 'hidden',
                   outline: isSelected ? `3px solid ${t.primary}` : `1px solid ${t.border}`,
                   background: t.cardBg,
                   opacity: !isSelected && selected.length >= MAX_ITEMS ? 0.4 : 1,
@@ -369,20 +372,20 @@ export function GiftBuilderScreen({ device }) {
                       }}>
                         <div style={{
                           width: 36, height: 36, borderRadius: '50%',
-                          background: t.primary, color: '#fff',
+                          background: t.discountBg, color: t.primaryDark,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 18, fontWeight: 900,
+                          fontSize: 18, fontWeight: 600,
                         }}>✓</div>
                       </div>
                     )}
                   </div>
                   <div style={{ padding: '8px 10px 10px' }}>
-                    <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, textTransform: 'uppercase' }}>{p.brand}</div>
+                    <div style={{ fontSize: 11, color: t.muted, fontWeight: 600, textTransform: 'uppercase' }}>{p.brand}</div>
                     <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.25, marginTop: 2,
                       display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {p.name}
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: t.primary, marginTop: 6 }}>{fmtRub(p.price)}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: t.primary, marginTop: 6 }}>{fmtRub(p.price)}</div>
                   </div>
                 </div>
               );
@@ -394,7 +397,7 @@ export function GiftBuilderScreen({ device }) {
       {/* Step 4: Письмо + превью */}
       {step === 4 && (
         <div style={{ padding: pad, paddingTop: 0 }}>
-          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 900, marginBottom: 6 }}>Добавьте письмо</div>
+          <div style={{ fontSize: isDesk ? 22 : 18, fontWeight: 600, marginBottom: 6 }}>Добавьте письмо</div>
           <div style={{ fontSize: 13, color: t.muted, marginBottom: 14 }}>
             Личное сообщение будет напечатано и вложено в набор
           </div>
@@ -405,7 +408,7 @@ export function GiftBuilderScreen({ device }) {
             placeholder={`Дорогая ${RECIPIENTS.find(r => r.key === recipient)?.label ?? ''}!\nЖелаю тебе...`}
             maxLength={300}
             style={{
-              width: '100%', height: 120, borderRadius: 12,
+              width: '100%', height: 120, borderRadius: 4,
               border: `1.5px solid ${t.border}`, background: t.surface,
               color: t.ink, padding: '12px 14px', fontSize: 14,
               fontFamily: 'inherit', resize: 'none', outline: 'none',
@@ -418,10 +421,10 @@ export function GiftBuilderScreen({ device }) {
 
           {/* Box preview */}
           <div style={{
-            marginTop: 24, background: t.surfaceAlt, borderRadius: 16,
+            marginTop: 24, background: t.surfaceAlt, borderRadius: 4,
             padding: isDesk ? '20px 24px' : '16px',
           }}>
-            <div style={{ fontWeight: 900, fontSize: 16, marginBottom: 4 }}>🎁 Ваш набор</div>
+            <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 4 }}>🎁 Ваш набор</div>
             {recipientName && (
               <div style={{ fontSize: 13, color: t.muted, marginBottom: 12 }}>
                 Для: <strong style={{ color: t.ink }}>{recipientName}</strong>
@@ -430,7 +433,7 @@ export function GiftBuilderScreen({ device }) {
             )}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
               {selectedProducts.map(p => (
-                <div key={p.id} style={{ width: 56, height: 56, borderRadius: 10, overflow: 'hidden', flexShrink: 0 }}>
+                <div key={p.id} style={{ width: 56, height: 56, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
                   <ProductImage p={p} padding={0} radius={0} />
                 </div>
               ))}
@@ -445,7 +448,7 @@ export function GiftBuilderScreen({ device }) {
             </div>
             {letter.trim() && (
               <div style={{
-                background: t.surface, borderRadius: 10, padding: '10px 12px',
+                background: t.surface, borderRadius: 4, padding: '10px 12px',
                 fontSize: 13, color: t.ink, fontStyle: 'italic', lineHeight: 1.5, marginBottom: 12,
               }}>
                 «{letter.trim()}»
@@ -454,12 +457,12 @@ export function GiftBuilderScreen({ device }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `1px solid ${t.border}`, paddingTop: 12 }}>
               <div>
                 <div style={{ fontSize: 12, color: t.muted }}>Итого</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: t.primary }}>{fmtRub(totalPrice)}</div>
+                <div style={{ fontSize: 22, fontWeight: 600, color: t.primary }}>{fmtRub(totalPrice)}</div>
               </div>
               <button onClick={handleFinish} style={{
-                background: t.primary, color: '#fff', border: 'none',
-                padding: '12px 24px', borderRadius: 12,
-                fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit',
+                background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`,
+                padding: '12px 24px', borderRadius: 4,
+                fontWeight: 600, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 🛒 В корзину
               </button>
@@ -477,16 +480,16 @@ export function GiftBuilderScreen({ device }) {
       }}>
         {step === 0 ? (
           <button onClick={handleSaveDraft} style={{
-            flex: '0 0 auto', padding: '12px 14px', borderRadius: 12,
+            flex: '0 0 auto', padding: '12px 14px', borderRadius: 4,
             border: `1.5px solid ${t.border}`, background: 'transparent',
-            fontSize: 13, fontWeight: 700, color: t.muted,
+            fontSize: 13, fontWeight: 600, color: t.muted,
             cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
           }}>💾 Сохранить</button>
         ) : (
           <button onClick={() => setStep(s => s - 1)} style={{
-            flex: '0 0 auto', padding: '12px 20px', borderRadius: 12,
+            flex: '0 0 auto', padding: '12px 20px', borderRadius: 4,
             border: `1.5px solid ${t.border}`, background: 'transparent',
-            fontSize: 14, fontWeight: 700, color: t.ink,
+            fontSize: 14, fontWeight: 600, color: t.ink,
             cursor: 'pointer', fontFamily: 'inherit',
           }}>← Назад</button>
         )}
@@ -495,10 +498,11 @@ export function GiftBuilderScreen({ device }) {
             onClick={() => setStep(s => s + 1)}
             disabled={!canNext()}
             style={{
-              flex: 1, padding: '13px 24px', borderRadius: 12, border: 'none',
-              background: canNext() ? t.primary : t.border,
-              color: canNext() ? '#fff' : t.muted,
-              fontSize: 15, fontWeight: 800, cursor: canNext() ? 'pointer' : 'default',
+              flex: 1, padding: '13px 24px', borderRadius: 4,
+              border: `1.5px solid ${canNext() ? t.btnBorder : t.border}`,
+              background: 'transparent',
+              color: canNext() ? t.btnInk : t.muted,
+              fontSize: 15, fontWeight: 600, cursor: canNext() ? 'pointer' : 'default',
               fontFamily: 'inherit', transition: 'background 0.15s',
             }}
           >
@@ -507,9 +511,9 @@ export function GiftBuilderScreen({ device }) {
         )}
         {step === TOTAL_STEPS - 1 && letter.trim() === '' && (
           <button onClick={handleFinish} style={{
-            flex: 1, padding: '13px 24px', borderRadius: 12, border: 'none',
+            flex: 1, padding: '13px 24px', borderRadius: 4, border: 'none',
             background: t.border, color: t.muted,
-            fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+            fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
           }}>Пропустить письмо →</button>
         )}
       </div>

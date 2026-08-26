@@ -6,7 +6,6 @@ import { useFavorites } from '../features/favorites.jsx';
 import { useAuth } from '../features/auth.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { Logo } from '../shared/ui/Logo.jsx';
-import { SWATCHES } from './ThemeSwitcher.jsx';
 
 const NI = {
   home: (p = {}) => (
@@ -111,27 +110,27 @@ function SidebarItem({ item, active, open, onClick }) {
         display: 'flex', alignItems: 'center',
         justifyContent: open ? 'flex-start' : 'center',
         gap: 12, padding: open ? '10px 12px' : '10px 0',
-        background: active ? t.primary : 'transparent',
-        color: active ? '#fff' : (item.to == null ? t.muted : t.ink),
+        background: active ? t.discountBg : 'transparent',
+        color: active ? t.primaryDark : (item.to == null ? t.muted : t.ink),
         border: 'none', cursor: item.to ? 'pointer' : 'default',
-        borderRadius: 10, width: '100%', textAlign: 'left',
+        borderRadius: 4, width: '100%', textAlign: 'left',
         fontFamily: 'inherit', position: 'relative',
         transition: 'background 0.12s',
       }}
     >
       <span style={{ display: 'flex', flexShrink: 0 }}>{item.icon()}</span>
       {open && (
-        <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', flex: 1 }}>{item.label}</span>
+        <span style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', flex: 1 }}>{item.label}</span>
       )}
       {item.badge > 0 && (
         <span style={{
           position: 'absolute', top: '50%', transform: 'translateY(-50%)',
           right: open ? 10 : 4,
-          minWidth: 18, height: 18, padding: '0 4px', borderRadius: 9,
-          background: active ? '#fff' : t.primary,
-          color: active ? t.primary : '#fff',
+          minWidth: 18, height: 18, padding: '0 4px', borderRadius: 4,
+          background: active ? t.surface : t.discountBg,
+          color: t.primaryDark,
           border: `2px solid ${t.surface}`,
-          fontSize: 10, fontWeight: 900,
+          fontSize: 10, fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>{item.badge}</span>
       )}
@@ -139,36 +138,12 @@ function SidebarItem({ item, active, open, onClick }) {
   );
 }
 
-const SETTINGS_PANEL = ['theme', 'login', 'lang'];
+const SETTINGS_PANEL = ['login', 'lang'];
 
-function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang, visibleCount, openLogin }) {
+function SettingsPanel({ open: sidebarOpen, lang, setLang, visibleCount, openLogin }) {
   const t = useTheme();
 
   const items = [
-    {
-      key: 'theme',
-      icon: NI.palette,
-      label: 'Тема',
-      content: (
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-          {SWATCHES.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => setThemeKey(s.key)}
-              title={s.key}
-              style={{
-                width: 22, height: 22, borderRadius: '50%', border: 'none',
-                cursor: 'pointer', padding: 0, background: s.dot, flexShrink: 0,
-                boxShadow: s.key === themeKey
-                  ? '0 0 0 2px #fff, 0 0 0 4px #E6097A'
-                  : s.outline ? 'inset 0 0 0 1.5px rgba(0,0,0,0.2)' : 'none',
-                transition: 'box-shadow 0.15s',
-              }}
-            />
-          ))}
-        </div>
-      ),
-    },
     {
       key: 'login',
       icon: NI.user,
@@ -177,8 +152,8 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
         <button
           onClick={openLogin}
           style={{
-            background: t.primary, color: '#fff', border: 'none', cursor: 'pointer',
-            borderRadius: 8, padding: '6px 14px', fontWeight: 800, fontSize: 12,
+            background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, cursor: 'pointer',
+            borderRadius: 4, padding: '6px 14px', fontWeight: 600, fontSize: 12,
             fontFamily: 'inherit', whiteSpace: 'nowrap',
           }}
         >
@@ -197,11 +172,11 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
               key={l}
               onClick={() => setLang(l)}
               style={{
-                background: lang === l ? t.primary : t.surfaceAlt,
-                color: lang === l ? '#fff' : t.muted,
+                background: lang === l ? t.discountBg : t.surfaceAlt,
+                color: lang === l ? t.primaryDark : t.muted,
                 border: 'none', cursor: 'pointer',
-                borderRadius: 6, padding: '4px 8px',
-                fontWeight: 800, fontSize: 11, fontFamily: 'inherit',
+                borderRadius: 4, padding: '4px 8px',
+                fontWeight: 600, fontSize: 11, fontFamily: 'inherit',
                 transition: 'background 0.15s, color 0.15s',
               }}
             >
@@ -226,7 +201,7 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
               transition: `opacity 0.22s ease, transform 0.22s ease`,
               pointerEvents: visible ? 'auto' : 'none',
               background: t.surfaceAlt,
-              borderRadius: 10,
+              borderRadius: 4,
               padding: sidebarOpen ? '10px 12px' : '10px 0',
               display: 'flex',
               alignItems: 'center',
@@ -238,7 +213,7 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
             <span style={{ display: 'flex', flexShrink: 0, color: t.primary }}>{item.icon()}</span>
             {sidebarOpen && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                   {item.label}
                 </span>
                 {item.content}
@@ -252,7 +227,7 @@ function SettingsPanel({ open: sidebarOpen, themeKey, setThemeKey, lang, setLang
   );
 }
 
-export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
+export function NavSidebar({ open, setOpen }) {
   const t = useTheme();
   const router = useRouter();
   const cart = useCart();
@@ -324,9 +299,8 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
       }}>
         <Logo size={36} />
         {open && (
-          <div style={{ color: t.ink, lineHeight: 1.25 }}>
-            <div style={{ fontWeight: 900, fontSize: 12, letterSpacing: '0.06em' }}>ОПТОВЫЕ</div>
-            <div style={{ fontWeight: 900, fontSize: 12, letterSpacing: '0.06em', color: t.primary }}>ЦЕНЫ</div>
+          <div style={{ color: t.primary, lineHeight: 1.25 }}>
+            <div style={{ fontWeight: 600, fontSize: 15, letterSpacing: '0.08em' }}>FLOWO</div>
           </div>
         )}
       </div>
@@ -348,8 +322,6 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
           <div style={{ padding: '0 0 6px' }}>
             <SettingsPanel
               open={open}
-              themeKey={themeKey}
-              setThemeKey={setThemeKey}
               lang={lang}
               setLang={setLang}
               visibleCount={visibleCount}
@@ -364,10 +336,10 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
             display: 'flex', alignItems: 'center',
             justifyContent: open ? 'flex-start' : 'center',
             gap: 12, padding: open ? '10px 12px' : '10px 0',
-            background: settingsOpen ? t.primary : 'transparent',
-            color: settingsOpen ? '#fff' : t.ink,
+            background: settingsOpen ? t.discountBg : 'transparent',
+            color: settingsOpen ? t.primaryDark : t.ink,
             border: 'none', cursor: 'pointer',
-            borderRadius: 10, width: '100%', fontFamily: 'inherit',
+            borderRadius: 4, width: '100%', fontFamily: 'inherit',
             transition: 'background 0.15s, color 0.15s',
           }}
         >
@@ -375,7 +347,7 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
             {settingsOpen ? NI.close() : NI.settings()}
           </span>
           {open && (
-            <span style={{ fontSize: 13, fontWeight: 700, flex: 1, textAlign: 'left' }}>
+            <span style={{ fontSize: 13, fontWeight: 600, flex: 1, textAlign: 'left' }}>
               {settingsOpen ? 'Закрыть' : 'Настройки'}
             </span>
           )}
@@ -388,14 +360,14 @@ export function NavSidebar({ open, setOpen, themeKey, setThemeKey }) {
             justifyContent: open ? 'space-between' : 'center',
             padding: open ? '10px 12px' : '10px 0',
             background: 'transparent', border: 'none', cursor: 'pointer',
-            borderRadius: 10, color: t.muted, width: '100%', fontFamily: 'inherit',
+            borderRadius: 4, color: t.muted, width: '100%', fontFamily: 'inherit',
             gap: 8,
           }}
         >
           {open ? (
             <>
               <span style={{ display: 'flex' }}>{NI.logout()}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, flex: 1, textAlign: 'left' }}>Свернуть</span>
+              <span style={{ fontSize: 13, fontWeight: 600, flex: 1, textAlign: 'left' }}>Свернуть</span>
               <span style={{ display: 'flex' }}>{NI.left()}</span>
             </>
           ) : (

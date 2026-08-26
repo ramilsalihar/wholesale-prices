@@ -22,25 +22,27 @@ export function GiftsScreen({ device }) {
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', paddingBottom: isDesk ? 60 : 16 }}>
       <div style={{
-        background: `linear-gradient(135deg, ${t.primary} 0%, #b8005f 100%)`,
+        background: t.surface, borderBottom: `1px solid ${t.border}`,
         padding: isDesk ? '40px 40px 32px' : '24px 16px 20px',
-        color: '#fff',
+        color: t.ink,
       }}>
-        <div style={{ fontSize: isDesk ? 32 : 24, fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+        <div style={{
+          fontSize: isDesk ? 32 : 24, fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.1,
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+        }}>
           🎁 Подарки и акции
         </div>
-        <div style={{ fontSize: isDesk ? 15 : 13, marginTop: 6, opacity: 0.9 }}>
+        <div style={{ fontSize: isDesk ? 15 : 13, marginTop: 6, color: t.muted }}>
           Лучшие скидки и подарочные наборы
         </div>
         <button
           onClick={() => router.go({ screen: 'gift_builder' })}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
-            marginTop: 18, padding: '12px 22px', borderRadius: 12,
-            background: '#fff', color: t.primary,
-            border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-            fontWeight: 800, fontSize: 15,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+            marginTop: 18, padding: '12px 22px', borderRadius: 4,
+            background: 'transparent', color: t.btnInk,
+            border: `1.5px solid ${t.btnBorder}`, cursor: 'pointer', fontFamily: 'inherit',
+            fontWeight: 600, fontSize: 15,
           }}
         >
           Собрать подарочный набор
@@ -53,8 +55,8 @@ export function GiftsScreen({ device }) {
             { label: 'Красивая упаковка', icon: '🎀' },
           ].map((b) => (
             <div key={b.label} style={{
-              background: 'rgba(255,255,255,0.18)', borderRadius: 999,
-              padding: '5px 12px', fontSize: 12, fontWeight: 700,
+              background: t.discountBg, color: t.primaryDark, borderRadius: 4,
+              padding: '5px 12px', fontSize: 12, fontWeight: 600,
               display: 'inline-flex', alignItems: 'center', gap: 6,
             }}>
               <span>{b.icon}</span>{b.label}
@@ -88,7 +90,7 @@ export function GiftsScreen({ device }) {
 
       <div style={{ padding: isDesk ? '32px 40px' : '20px 16px' }}>
         <div style={{
-          background: t.surfaceAlt, borderRadius: 16,
+          background: t.surfaceAlt, borderRadius: 4,
           padding: isDesk ? '24px 28px' : '16px 20px',
           display: 'flex', flexDirection: isDesk ? 'row' : 'column',
           alignItems: isDesk ? 'center' : 'flex-start',
@@ -96,7 +98,7 @@ export function GiftsScreen({ device }) {
         }}>
           <div style={{ fontSize: isDesk ? 48 : 36 }}>🎀</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 900, fontSize: isDesk ? 18 : 16, color: t.ink }}>
+            <div style={{ fontWeight: 600, fontSize: isDesk ? 18 : 16, color: t.ink }}>
               Подарочная упаковка
             </div>
             <div style={{ fontSize: 13, color: t.muted, marginTop: 4 }}>
@@ -106,8 +108,8 @@ export function GiftsScreen({ device }) {
           <button
             onClick={() => router.go({ screen: 'catalog' })}
             style={{
-              background: t.primary, color: '#fff', border: 'none', cursor: 'pointer',
-              padding: '12px 20px', borderRadius: 12, fontWeight: 800, fontSize: 14,
+              background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, cursor: 'pointer',
+              padding: '12px 20px', borderRadius: 4, fontWeight: 600, fontSize: 14,
               fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
             }}
           >

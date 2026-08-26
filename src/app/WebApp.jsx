@@ -12,7 +12,6 @@ import { NavSidebar } from '../widgets/NavSidebar.jsx';
 import { TopBar } from '../widgets/TopBar.jsx';
 import { RightPanel } from '../widgets/RightPanel.jsx';
 import { ToastContainer } from '../widgets/ToastContainer.jsx';
-import { ThemeSwitcher, SWATCHES } from '../widgets/ThemeSwitcher.jsx';
 import { LoginModal } from '../widgets/LoginModal.jsx';
 import { HomeScreen } from '../pages/home.jsx';
 import { CatalogScreen } from '../pages/catalog.jsx';
@@ -62,7 +61,7 @@ function ScreenContent({ screen, device }) {
   return <HomeScreen device={device} />;
 }
 
-function DesktopShell({ themeKey, setThemeKey }) {
+function DesktopShell() {
   const t = useTheme();
   const router = useRouter();
   const vw = useViewportWidth();
@@ -79,9 +78,9 @@ function DesktopShell({ themeKey, setThemeKey }) {
     <div style={{
       display: 'flex', minHeight: '100dvh',
       background: t.bg, color: t.ink,
-      fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily: "'Lora', Georgia, 'Times New Roman', serif",
     }}>
-      <NavSidebar open={sidebarOpen} setOpen={setSidebarOpen} themeKey={themeKey} setThemeKey={setThemeKey} />
+      <NavSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
         <TopBar />
         <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
@@ -97,7 +96,7 @@ function DesktopShell({ themeKey, setThemeKey }) {
   );
 }
 
-function MobileShell({ themeKey, setThemeKey }) {
+function MobileShell() {
   const t = useTheme();
   const router = useRouter();
   const { screen } = router.route;
@@ -131,30 +130,10 @@ function MobileShell({ themeKey, setThemeKey }) {
     <div style={{
       height: '100dvh', display: 'flex', flexDirection: 'column',
       background: t.bg, color: t.ink,
-      fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif",
+      fontFamily: "'Lora', Georgia, 'Times New Roman', serif",
       overflow: 'hidden',
     }}>
       {!headerCfg.hide && <MobileHeader title={headerCfg.title} showBack={headerCfg.showBack} />}
-      {screen === 'home' && (
-        <div style={{
-          background: t.surface, borderBottom: `1px solid ${t.border}`,
-          padding: '5px 16px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8,
-          flexShrink: 0,
-        }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: t.muted, letterSpacing: '0.06em' }}>ТЕМА</span>
-          <div style={{ display: 'flex', gap: 5 }}>
-            {SWATCHES.map((s) => (
-              <button key={s.key} onClick={() => setThemeKey(s.key)} style={{
-                width: 16, height: 16, borderRadius: '50%', border: 'none',
-                cursor: 'pointer', padding: 0, background: s.dot,
-                boxShadow: s.key === themeKey
-                  ? '0 0 0 2px #fff, 0 0 0 3.5px #E6097A'
-                  : s.outline ? 'inset 0 0 0 1.5px rgba(0,0,0,0.2)' : 'none',
-              }} />
-            ))}
-          </div>
-        </div>
-      )}
       <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', minHeight: 0, WebkitOverflowScrolling: 'touch' }}>
         <ScreenContent screen={screen} device="mobile" />
       </div>
@@ -165,24 +144,21 @@ function MobileShell({ themeKey, setThemeKey }) {
   );
 }
 
-function AppShell({ themeKey, setThemeKey }) {
+function AppShell() {
   const vw = useViewportWidth();
-  return vw < MOBILE_BP
-    ? <MobileShell themeKey={themeKey} setThemeKey={setThemeKey} />
-    : <DesktopShell themeKey={themeKey} setThemeKey={setThemeKey} />;
+  return vw < MOBILE_BP ? <MobileShell /> : <DesktopShell />;
 }
 
 export default function WebApp() {
-  const [themeKey, setThemeKey] = React.useState('magnit');
   return (
-    <ThemeContext.Provider value={THEMES[themeKey]}>
+    <ThemeContext.Provider value={THEMES.classical}>
       <AuthProvider>
         <DataProvider>
           <NotificationProvider>
             <FavoritesProvider>
               <CartProvider>
                 <RouterProvider initial={{ screen: 'home' }}>
-                  <AppShell themeKey={themeKey} setThemeKey={setThemeKey} />
+                  <AppShell />
                 </RouterProvider>
               </CartProvider>
             </FavoritesProvider>

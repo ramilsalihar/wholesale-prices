@@ -30,9 +30,9 @@ function StatusTrack({ status }) {
   if (status === 'cancelled') {
     const s = statusInfo('cancelled');
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: s.bg, borderRadius: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: s.bg, borderRadius: 4 }}>
         <div style={{ width: 10, height: 10, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-        <span style={{ fontSize: 13, fontWeight: 700, color: s.color }}>Заказ отменён</span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: s.color }}>Заказ отменён</span>
       </div>
     );
   }
@@ -63,7 +63,7 @@ function StatusTrack({ status }) {
                 )}
                 {active && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff' }} />}
               </div>
-              <span style={{ fontSize: 10, fontWeight: active ? 800 : 600, color: done ? (active ? s.color : t.ink) : t.muted, textAlign: 'center', letterSpacing: '0.01em' }}>
+              <span style={{ fontSize: 10, fontWeight: active ? 600 : 400, color: done ? (active ? s.color : t.ink) : t.muted, textAlign: 'center', letterSpacing: '0.01em' }}>
                 {labels[key]}
               </span>
             </div>
@@ -88,21 +88,21 @@ function OrderTicket({ order, onBack, isDesk }) {
     <div>
       <button
         onClick={onBack}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.muted, fontSize: 13, fontWeight: 700, padding: '0 0 16px', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}
+        style={{ background: 'none', border: 'none', cursor: 'pointer', color: t.muted, fontSize: 13, fontWeight: 600, padding: '0 0 16px', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}
       >
         ← Назад к заказам
       </button>
 
       {/* Ticket card */}
-      <div style={{ background: t.surface, borderRadius: 20, overflow: 'hidden', boxShadow: `inset 0 0 0 1.5px ${t.border}` }}>
+      <div style={{ background: t.surface, borderRadius: 4, overflow: 'hidden', boxShadow: `inset 0 0 0 1.5px ${t.border}` }}>
         {/* Header */}
         <div style={{
-          background: `linear-gradient(135deg, ${t.primary} 0%, #8b004a 100%)`,
-          padding: '24px 24px 20px', color: '#fff',
+          background: t.discountBg, color: t.primaryDark,
+          padding: '24px 24px 20px', borderBottom: `1px solid ${t.border}`,
         }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', opacity: 0.8, marginBottom: 6 }}>ЗАКАЗ</div>
-          <div style={{ fontSize: 26, fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.05em' }}>#{shortId(order.id)}</div>
-          <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>{fmtDate(order.created_at)}</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', opacity: 0.75, marginBottom: 6 }}>ЗАКАЗ</div>
+          <div style={{ fontSize: 26, fontWeight: 600, fontFamily: 'monospace', letterSpacing: '0.05em' }}>#{shortId(order.id)}</div>
+          <div style={{ fontSize: 12, opacity: 0.75, marginTop: 4 }}>{fmtDate(order.created_at)}</div>
         </div>
 
         {/* Dashed separator */}
@@ -119,16 +119,16 @@ function OrderTicket({ order, onBack, isDesk }) {
           <div style={{ height: 1, background: t.border, margin: '12px 0 20px' }} />
 
           {/* Items */}
-          <div style={{ fontSize: 12, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 10 }}>ТОВАРЫ</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: t.muted, letterSpacing: '0.06em', marginBottom: 10 }}>ТОВАРЫ</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
             {items.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: t.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: t.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
                   {item.brand && <div style={{ fontSize: 11, color: t.muted }}>{item.brand}</div>}
                 </div>
                 <div style={{ fontSize: 12, color: t.muted, flexShrink: 0 }}>×{item.qty}</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: t.ink, flexShrink: 0 }}>{fmtMoney(item.price * item.qty)}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: t.ink, flexShrink: 0 }}>{fmtMoney(item.price * item.qty)}</div>
               </div>
             ))}
           </div>
@@ -143,7 +143,7 @@ function OrderTicket({ order, onBack, isDesk }) {
                 <span style={{ color: t.ink }}>{v}</span>
               </div>
             ))}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 900, marginTop: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 600, marginTop: 6 }}>
               <span style={{ color: t.ink }}>Итого</span>
               <span style={{ color: t.primary }}>{fmtMoney(order.total)}</span>
             </div>
@@ -160,7 +160,7 @@ function OrderTicket({ order, onBack, isDesk }) {
               order.phone   && ['Телефон', order.phone],
             ].filter(Boolean).map(([k, v]) => v ? (
               <div key={k}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 3 }}>{k.toUpperCase()}</div>
+                <div style={{ fontSize: 10, fontWeight: 600, color: t.muted, letterSpacing: '0.06em', marginBottom: 3 }}>{k.toUpperCase()}</div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: t.ink }}>{v}</div>
               </div>
             ) : null)}
@@ -211,16 +211,16 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
       }}>
         {/* Handle + header */}
         <div style={{ padding: '12px 20px 0', flexShrink: 0 }}>
-          <div style={{ width: 40, height: 4, borderRadius: 2, background: t.border, margin: '0 auto 16px' }} />
+          <div style={{ width: 40, height: 4, borderRadius: 4, background: t.border, margin: '0 auto 16px' }} />
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 22 }}>{r?.icon ?? '🎁'}</span>
                 <div>
-                  <div style={{ fontSize: 11, color: t.primary, fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: 11, color: t.primary, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                     Подарочный набор
                   </div>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: t.ink }}>
+                  <div style={{ fontSize: 18, fontWeight: 600, color: t.ink }}>
                     {gift.recipientName || r?.label || 'Получатель'}
                   </div>
                 </div>
@@ -240,19 +240,19 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
           {/* Recipient info block */}
           {(gift.recipientPhone || gift.recipientName) && (
             <div style={{
-              background: t.surfaceAlt, borderRadius: 12, padding: '12px 14px',
+              background: t.surfaceAlt, borderRadius: 4, padding: '12px 14px',
               marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 6,
             }}>
               {gift.recipientName && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                   <span style={{ color: t.muted, fontWeight: 600 }}>Имя</span>
-                  <span style={{ color: t.ink, fontWeight: 700 }}>{gift.recipientName}</span>
+                  <span style={{ color: t.ink, fontWeight: 600 }}>{gift.recipientName}</span>
                 </div>
               )}
               {gift.recipientPhone && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                   <span style={{ color: t.muted, fontWeight: 600 }}>Телефон</span>
-                  <span style={{ color: t.ink, fontWeight: 700 }}>{gift.recipientPhone}</span>
+                  <span style={{ color: t.ink, fontWeight: 600 }}>{gift.recipientPhone}</span>
                 </div>
               )}
             </div>
@@ -262,7 +262,7 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
           {items.length > 0 && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12, overflowX: 'auto', scrollbarWidth: 'none' }}>
               {items.map(p => (
-                <div key={p.id} style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 10, overflow: 'hidden', border: `1px solid ${t.border}` }}>
+                <div key={p.id} style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 4, overflow: 'hidden', border: `1px solid ${t.border}` }}>
                   <ProductImage p={p} padding={0} radius={0} />
                 </div>
               ))}
@@ -271,7 +271,7 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
 
           {/* Product list */}
           {items.length > 0 && (
-            <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${t.border}`, marginBottom: 16 }}>
+            <div style={{ borderRadius: 4, overflow: 'hidden', border: `1px solid ${t.border}`, marginBottom: 16 }}>
               {items.map((p, i) => (
                 <div key={p.id} style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -280,13 +280,13 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
                   background: t.surface,
                 }}>
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontSize: 11, color: t.muted, fontWeight: 700, textTransform: 'uppercase' }}>{p.brand}</div>
+                    <div style={{ fontSize: 11, color: t.muted, fontWeight: 600, textTransform: 'uppercase' }}>{p.brand}</div>
                     <div style={{ fontWeight: 600, color: t.ink, marginTop: 1,
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 200 }}>
                       {p.name}
                     </div>
                   </div>
-                  <span style={{ color: t.primary, fontWeight: 800, flexShrink: 0, marginLeft: 12 }}>{fmtRub(p.price)}</span>
+                  <span style={{ color: t.primary, fontWeight: 600, flexShrink: 0, marginLeft: 12 }}>{fmtRub(p.price)}</span>
                 </div>
               ))}
             </div>
@@ -296,9 +296,9 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
           {gift.letter?.trim() && (
             <div style={{
               background: `${t.primary}0a`, border: `1px solid ${t.primary}30`,
-              borderRadius: 12, padding: '14px 16px', marginBottom: 16,
+              borderRadius: 4, padding: '14px 16px', marginBottom: 16,
             }}>
-              <div style={{ fontSize: 11, color: t.primary, fontWeight: 800, letterSpacing: '0.04em', marginBottom: 6 }}>ПИСЬМО</div>
+              <div style={{ fontSize: 11, color: t.primary, fontWeight: 600, letterSpacing: '0.04em', marginBottom: 6 }}>ПИСЬМО</div>
               <div style={{ fontSize: 14, color: t.ink, fontStyle: 'italic', lineHeight: 1.6 }}>
                 «{gift.letter.trim()}»
               </div>
@@ -313,28 +313,28 @@ function GiftDetailOverlay({ gift, products, onClose, onDelete, onContinue }) {
         }}>
           <button onClick={handleDelete} style={{
             background: 'transparent', border: `1.5px solid rgba(222,53,11,0.3)`,
-            color: '#DE350B', padding: '11px 14px', borderRadius: 12,
-            fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+            color: '#DE350B', padding: '11px 14px', borderRadius: 4,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
           }}>🗑</button>
           <div style={{ flex: 1 }}>
             {items.length > 0 && (
               <div style={{ fontSize: 11, color: t.muted }}>Итого</div>
             )}
             {items.length > 0 && (
-              <div style={{ fontSize: 20, fontWeight: 900, color: t.primary, letterSpacing: '-0.02em' }}>{fmtRub(total)}</div>
+              <div style={{ fontSize: 20, fontWeight: 600, color: t.primary, letterSpacing: '-0.02em' }}>{fmtRub(total)}</div>
             )}
           </div>
           {isDraft ? (
             <button onClick={handleEdit} style={{
-              background: t.primary, color: '#fff', border: 'none',
-              padding: '12px 20px', borderRadius: 12,
-              fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+              background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`,
+              padding: '12px 20px', borderRadius: 4,
+              fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}>✏️ Редактировать</button>
           ) : (
             <button onClick={handleRepeat} style={{
               background: 'transparent', border: `1.5px solid ${t.border}`,
-              color: t.ink, padding: '12px 20px', borderRadius: 12,
-              fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              color: t.ink, padding: '12px 20px', borderRadius: 4,
+              fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}>Повторить</button>
           )}
         </div>
@@ -358,7 +358,7 @@ function GiftCard({ gift, products, onContinue, onDelete }) {
       <div
         onClick={() => setShowOverlay(true)}
         style={{
-          background: t.surface, borderRadius: 14,
+          background: t.surface, borderRadius: 4,
           border: `1.5px solid ${isDraft ? t.primary + '50' : t.border}`,
           overflow: 'hidden', cursor: 'pointer',
         }}
@@ -371,7 +371,7 @@ function GiftCard({ gift, products, onContinue, onDelete }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 18 }}>{r?.icon ?? '🎁'}</span>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: t.ink }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: t.ink }}>
                 {r?.label ?? 'Набор'}{occ ? ` · ${occ}` : ''}
               </div>
               <div style={{ fontSize: 11, color: t.muted, marginTop: 1 }}>
@@ -380,7 +380,7 @@ function GiftCard({ gift, products, onContinue, onDelete }) {
             </div>
           </div>
           <span style={{
-            padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+            padding: '3px 10px', borderRadius: 4, fontSize: 11, fontWeight: 600,
             background: isDraft ? `${t.primary}18` : 'rgba(0,135,90,0.1)',
             color: isDraft ? t.primary : '#00875A',
           }}>
@@ -392,7 +392,7 @@ function GiftCard({ gift, products, onContinue, onDelete }) {
           {items.length > 0 && (
             <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
               {items.map(p => (
-                <div key={p.id} style={{ width: 48, height: 48, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
+                <div key={p.id} style={{ width: 48, height: 48, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
                   <ProductImage p={p} padding={0} radius={0} />
                 </div>
               ))}
@@ -400,32 +400,32 @@ function GiftCard({ gift, products, onContinue, onDelete }) {
           )}
           {gift.letter?.trim() && (
             <div style={{
-              background: t.surfaceAlt, borderRadius: 8, padding: '7px 10px', marginBottom: 10,
+              background: t.surfaceAlt, borderRadius: 4, padding: '7px 10px', marginBottom: 10,
               fontSize: 12, color: t.muted, fontStyle: 'italic', lineHeight: 1.5,
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
             }}>«{gift.letter.trim()}»</div>
           )}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: t.primary }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: t.primary }}>
               {items.length > 0 ? fmtRub(total) : '—'}
             </div>
             <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
               <button onClick={() => onDelete(gift.id)} style={{
-                padding: '6px 12px', borderRadius: 8, border: `1.5px solid rgba(222,53,11,0.25)`,
+                padding: '6px 12px', borderRadius: 4, border: `1.5px solid rgba(222,53,11,0.25)`,
                 background: 'transparent', color: '#DE350B',
-                fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
               }}>Удалить</button>
               {isDraft ? (
                 <button onClick={() => onContinue(gift.id)} style={{
-                  padding: '6px 14px', borderRadius: 8, border: 'none',
-                  background: t.primary, color: '#fff',
-                  fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                  padding: '6px 14px', borderRadius: 4, border: `1.5px solid ${t.btnBorder}`,
+                  background: 'transparent', color: t.btnInk,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                 }}>✏️ Редактировать</button>
               ) : (
                 <button onClick={e => { e.stopPropagation(); setShowOverlay(true); }} style={{
-                  padding: '6px 14px', borderRadius: 8, border: `1.5px solid ${t.border}`,
+                  padding: '6px 14px', borderRadius: 4, border: `1.5px solid ${t.border}`,
                   background: 'transparent', color: t.ink,
-                  fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                 }}>Повторить</button>
               )}
             </div>
@@ -497,13 +497,13 @@ export function MyOrdersScreen({ device }) {
     return (
       <div style={{ background: t.bg, color: t.ink, minHeight: '100%', padding: pad, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, textAlign: 'center' }}>
         <div style={{ fontSize: 48 }}>📦</div>
-        <div style={{ fontSize: 20, fontWeight: 900, color: t.ink, letterSpacing: '-0.02em' }}>Мои заказы</div>
+        <div style={{ fontSize: 20, fontWeight: 600, color: t.ink, letterSpacing: '-0.02em' }}>Мои заказы</div>
         <div style={{ fontSize: 14, color: t.muted, maxWidth: 300, lineHeight: 1.6 }}>
           Войдите, чтобы увидеть историю заказов и отслеживать их статус
         </div>
         <button
           onClick={openLogin}
-          style={{ background: t.primary, color: '#fff', border: 'none', borderRadius: 12, padding: '12px 28px', fontSize: 15, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}
+          style={{ background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4, padding: '12px 28px', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' }}
         >
           Войти
         </button>
@@ -513,19 +513,19 @@ export function MyOrdersScreen({ device }) {
 
   const TabBtn = ({ value, label, count }) => (
     <button onClick={() => setTab(value)} style={{
-      padding: '8px 18px', borderRadius: 999,
-      border: `1.5px solid ${tab === value ? t.primary : t.border}`,
-      background: tab === value ? t.primary : 'transparent',
-      color: tab === value ? '#fff' : t.ink,
-      fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+      padding: '8px 18px', borderRadius: 4,
+      border: `1.5px solid ${tab === value ? 'transparent' : t.border}`,
+      background: tab === value ? t.discountBg : 'transparent',
+      color: tab === value ? t.primaryDark : t.ink,
+      fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
       display: 'flex', alignItems: 'center', gap: 6,
     }}>
       {label}
       {count > 0 && (
         <span style={{
-          background: tab === value ? 'rgba(255,255,255,0.25)' : t.surfaceAlt,
-          borderRadius: 999, fontSize: 11, fontWeight: 800, padding: '1px 6px',
-          color: tab === value ? '#fff' : t.muted,
+          background: tab === value ? 'rgba(0,0,0,0.08)' : t.surfaceAlt,
+          borderRadius: 4, fontSize: 11, fontWeight: 600, padding: '1px 6px',
+          color: tab === value ? t.primaryDark : t.muted,
         }}>{count}</span>
       )}
     </button>
@@ -534,7 +534,7 @@ export function MyOrdersScreen({ device }) {
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%', padding: pad }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ fontSize: isDesk ? 28 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>
+        <h1 style={{ fontSize: isDesk ? 28 : 22, fontWeight: 600, letterSpacing: '-0.02em', margin: 0 }}>
           Мои заказы
         </h1>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -547,11 +547,11 @@ export function MyOrdersScreen({ device }) {
         gifts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px 0', color: t.muted }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>🎁</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: t.ink, marginBottom: 8 }}>Наборов пока нет</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: t.ink, marginBottom: 8 }}>Наборов пока нет</div>
             <div style={{ fontSize: 14, marginBottom: 20 }}>Соберите первый подарочный набор</div>
             <button onClick={() => router.go({ screen: 'gift_builder' })} style={{
-              background: t.primary, color: '#fff', border: 'none', borderRadius: 12,
-              padding: '11px 24px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+              background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4,
+              padding: '11px 24px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}>🎁 Собрать набор</button>
           </div>
         ) : (
@@ -565,8 +565,8 @@ export function MyOrdersScreen({ device }) {
             ))}
             <div style={{ textAlign: 'center', marginTop: 8 }}>
               <button onClick={() => router.go({ screen: 'gift_builder' })} style={{
-                background: t.primary, color: '#fff', border: 'none', borderRadius: 12,
-                padding: '11px 24px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4,
+                padding: '11px 24px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
               }}>+ Новый набор</button>
             </div>
           </div>
@@ -576,19 +576,19 @@ export function MyOrdersScreen({ device }) {
       {tab === 'orders' && loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[1, 2, 3].map(i => (
-            <div key={i} style={{ background: t.surface, borderRadius: 16, padding: 20, boxShadow: `inset 0 0 0 1px ${t.border}`, height: 88 }} />
+            <div key={i} style={{ background: t.surface, borderRadius: 4, padding: 20, boxShadow: `inset 0 0 0 1px ${t.border}`, height: 88 }} />
           ))}
         </div>
       ) : tab === 'orders' && orders.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0', color: t.muted }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: t.ink, marginBottom: 8 }}>Заказов пока нет</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: t.ink, marginBottom: 8 }}>Заказов пока нет</div>
           <div style={{ fontSize: 14, lineHeight: 1.6, maxWidth: 280, margin: '0 auto 20px' }}>
             Оформите первый заказ — он появится здесь
           </div>
           <button
             onClick={() => router.go({ screen: 'catalog' })}
-            style={{ background: t.primary, color: '#fff', border: 'none', borderRadius: 12, padding: '12px 24px', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}
+            style={{ background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4, padding: '12px 24px', fontSize: 14, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' }}
           >
             В каталог
           </button>
@@ -604,7 +604,7 @@ export function MyOrdersScreen({ device }) {
                 key={order.id}
                 onClick={() => setSelected(order)}
                 style={{
-                  background: t.surface, borderRadius: 16, padding: '16px 20px',
+                  background: t.surface, borderRadius: 4, padding: '16px 20px',
                   boxShadow: `inset 0 0 0 1.5px ${t.border}`, cursor: 'pointer',
                   border: 'none', fontFamily: 'inherit', textAlign: 'left', width: '100%',
                   display: 'flex', alignItems: 'center', gap: 16,
@@ -616,9 +616,9 @@ export function MyOrdersScreen({ device }) {
                 {/* Order info */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                    <span style={{ fontSize: 14, fontWeight: 900, color: t.ink, fontFamily: 'monospace' }}>#{shortId(order.id)}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: t.ink, fontFamily: 'monospace' }}>#{shortId(order.id)}</span>
                     <span style={{
-                      padding: '2px 8px', borderRadius: 999, fontSize: 10, fontWeight: 700,
+                      padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 600,
                       background: s.bg, color: s.color, letterSpacing: '0.04em',
                     }}>{s.label.toUpperCase()}</span>
                   </div>

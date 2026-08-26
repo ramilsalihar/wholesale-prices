@@ -17,12 +17,12 @@ function Stepper({ step, steps }) {
         <div key={i} style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{
             width: 24, height: 24, borderRadius: '50%',
-            background: i + 1 <= step ? t.primary : t.surfaceAlt,
-            color: i + 1 <= step ? '#fff' : t.muted,
+            background: i + 1 <= step ? t.discountBg : t.surfaceAlt,
+            color: i + 1 <= step ? t.primaryDark : t.muted,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 900, fontSize: 12, flexShrink: 0,
+            fontWeight: 600, fontSize: 12, flexShrink: 0,
           }}>{i + 1}</div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: i + 1 <= step ? t.ink : t.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{s}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: i + 1 <= step ? t.ink : t.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{s}</div>
           {i < steps.length - 1 && <div style={{ flex: 1, minWidth: 8, height: 2, background: t.border }} />}
         </div>
       ))}
@@ -33,8 +33,8 @@ function Stepper({ step, steps }) {
 function Block({ title, children }) {
   const t = useTheme();
   return (
-    <div style={{ background: t.surface, borderRadius: 16, padding: 18, marginBottom: 12, boxShadow: `inset 0 0 0 1px ${t.border}` }}>
-      <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 12 }}>{title}</div>
+    <div style={{ background: t.surface, borderRadius: 4, padding: 18, marginBottom: 12, boxShadow: `inset 0 0 0 1px ${t.border}` }}>
+      <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{title}</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>{children}</div>
     </div>
   );
@@ -44,7 +44,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', required, e
   const t = useTheme();
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontSize: 12, color: error ? '#DE350B' : t.muted, fontWeight: 700, marginBottom: 4 }}>
+      <div style={{ fontSize: 12, color: error ? '#DE350B' : t.muted, fontWeight: 600, marginBottom: 4 }}>
         {label}{required && <span style={{ color: '#DE350B' }}> *</span>}
       </div>
       <input
@@ -53,7 +53,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', required, e
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          width: '100%', padding: '12px 14px', borderRadius: 10,
+          width: '100%', padding: '12px 14px', borderRadius: 4,
           border: `1.5px solid ${error ? '#DE350B' : t.border}`,
           background: error ? 'rgba(222,53,11,0.04)' : t.bg,
           color: t.ink, fontSize: 14, fontFamily: 'inherit',
@@ -72,17 +72,17 @@ function RadioRow({ checked, onClick, t: title, s: sub }) {
     <button onClick={onClick} style={{
       background: checked ? t.surfaceAlt : 'transparent',
       border: `1.5px solid ${checked ? t.primary : t.border}`, cursor: 'pointer',
-      padding: '12px 14px', borderRadius: 12, textAlign: 'left',
+      padding: '12px 14px', borderRadius: 4, textAlign: 'left',
       display: 'flex', alignItems: 'center', gap: 12, fontFamily: 'inherit', width: '100%',
     }}>
       <div style={{
         width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
         border: `2px solid ${checked ? t.primary : t.border}`,
-        background: checked ? t.primary : 'transparent',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
-      }}>{checked && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff' }} />}</div>
+        background: 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>{checked && <div style={{ width: 10, height: 10, borderRadius: '50%', background: t.primary }} />}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 800, color: t.ink }}>{title}</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: t.ink }}>{title}</div>
         <div style={{ fontSize: 12, color: t.muted, marginTop: 2 }}>{sub}</div>
       </div>
     </button>
@@ -94,7 +94,7 @@ function Row({ k, v, accent }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 14 }}>
       <span style={{ color: t.muted }}>{k}</span>
-      <span style={{ fontWeight: 800, color: accent ? t.accent2 : t.ink }}>{v}</span>
+      <span style={{ fontWeight: 600, color: accent ? t.accent2 : t.ink }}>{v}</span>
     </div>
   );
 }
@@ -203,25 +203,25 @@ export function CheckoutScreen({ device }) {
         padding: isDesk ? '24px 40px 40px' : '14px 16px 16px',
       }}>
         <div>
-          <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Оформление</h1>
+          <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 600, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Оформление</h1>
           <Stepper step={1} steps={['Контакты', 'Доставка', 'Оплата']} />
 
           {savedProfile && !profileApplied && (
             <div style={{
               background: `${t.primary}0c`, border: `1.5px solid ${t.primary}30`,
-              borderRadius: 14, padding: '12px 14px', marginBottom: 12,
+              borderRadius: 4, padding: '12px 14px', marginBottom: 12,
               display: 'flex', alignItems: 'center', gap: 12,
             }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: t.primary, marginBottom: 3 }}>💾 Сохранённые данные</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: t.primary, marginBottom: 3 }}>💾 Сохранённые данные</div>
                 <div style={{ fontSize: 12, color: t.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {[savedProfile.full_name, savedProfile.phone, savedProfile.address].filter(Boolean).join(' · ')}
                 </div>
               </div>
               <button onClick={applyProfile} style={{
-                background: t.primary, color: '#fff', border: 'none',
-                padding: '8px 14px', borderRadius: 10,
-                fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`,
+                padding: '8px 14px', borderRadius: 4,
+                fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
               }}>Применить</button>
             </div>
           )}
@@ -264,7 +264,7 @@ export function CheckoutScreen({ device }) {
           </Block>
 
           {fieldErrors.submit && (
-            <div style={{ background: 'rgba(222,53,11,0.06)', border: '1px solid rgba(222,53,11,0.2)', color: '#DE350B', borderRadius: 10, padding: '10px 14px', fontSize: 13, marginBottom: 12 }}>
+            <div style={{ background: 'rgba(222,53,11,0.06)', border: '1px solid rgba(222,53,11,0.2)', color: '#DE350B', borderRadius: 4, padding: '10px 14px', fontSize: 13, marginBottom: 12 }}>
               {fieldErrors.submit}
             </div>
           )}
@@ -273,8 +273,8 @@ export function CheckoutScreen({ device }) {
         </div>
 
         <div style={{ position: isDesk ? 'sticky' : 'static', top: 20, alignSelf: 'flex-start' }}>
-          <div style={{ background: t.surface, borderRadius: 16, padding: 20, boxShadow: `inset 0 0 0 1.5px ${t.border}` }}>
-            <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 12 }}>Ваш заказ</div>
+          <div style={{ background: t.surface, borderRadius: 4, padding: 20, boxShadow: `inset 0 0 0 1.5px ${t.border}` }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>Ваш заказ</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12, maxHeight: 220, overflowY: 'auto' }}>
               {cart.list.slice(0, 4).map((p) => (
                 <div key={p.id} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -283,7 +283,7 @@ export function CheckoutScreen({ device }) {
                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
                     <div style={{ color: t.muted }}>×{p.qty}</div>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>{fmtRub(p.price * p.qty)}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}>{fmtRub(p.price * p.qty)}</div>
                 </div>
               ))}
               {cart.list.length > 4 && <div style={{ fontSize: 12, color: t.muted }}>и ещё {cart.list.length - 4}…</div>}
@@ -293,8 +293,8 @@ export function CheckoutScreen({ device }) {
             <Row k="Доставка" v={deliveryFee === 0 ? 'Бесплатно' : fmtRub(deliveryFee)} />
             <div style={{ borderTop: `1.5px dashed ${t.border}`, margin: '10px 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-              <span style={{ fontSize: 14, fontWeight: 700 }}>К оплате</span>
-              <span style={{ fontSize: 24, fontWeight: 900, color: t.primary }}>{fmtRub(total)}</span>
+              <span style={{ fontSize: 14, fontWeight: 600 }}>К оплате</span>
+              <span style={{ fontSize: 24, fontWeight: 600, color: t.primary }}>{fmtRub(total)}</span>
             </div>
             {isDesk && <PlaceButton block />}
             <div style={{ fontSize: 11, color: t.muted, textAlign: 'center', marginTop: 10 }}>

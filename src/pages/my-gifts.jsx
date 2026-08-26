@@ -40,7 +40,7 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
 
   return (
     <div style={{
-      background: t.surface, borderRadius: 16,
+      background: t.surface, borderRadius: 4,
       border: `1px solid ${isDraft ? t.primary + '40' : t.border}`,
       overflow: 'hidden',
     }}>
@@ -56,7 +56,7 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 20 }}>{recipient?.icon ?? '🎁'}</span>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: t.ink }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: t.ink }}>
               {recipient?.label ?? 'Набор'}{occasion ? ` · ${occasion.label}` : ''}
             </div>
             <div style={{ fontSize: 11, color: t.muted, marginTop: 1 }}>{fmtDate(gift.updatedAt)}</div>
@@ -64,9 +64,9 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{
-            padding: '3px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
-            background: isDraft ? `${t.primary}18` : 'rgba(0,135,90,0.1)',
-            color: isDraft ? t.primary : '#00875A',
+            padding: '3px 10px', borderRadius: 4, fontSize: 11, fontWeight: 600,
+            background: isDraft ? t.discountBg : 'rgba(0,135,90,0.1)',
+            color: isDraft ? t.primaryDark : '#00875A',
           }}>
             {isDraft ? `Черновик · шаг ${gift.step + 1}/${stepsTotal}` : 'Завершён'}
           </span>
@@ -78,7 +78,7 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
         {selectedProducts.length > 0 ? (
           <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
             {selectedProducts.map(p => (
-              <div key={p.id} style={{ width: 52, height: 52, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
+              <div key={p.id} style={{ width: 52, height: 52, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
                 <ProductImage p={p} padding={0} radius={0} />
               </div>
             ))}
@@ -93,7 +93,7 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
         {/* Letter preview */}
         {gift.letter?.trim() && (
           <div style={{
-            background: t.surfaceAlt, borderRadius: 8, padding: '8px 12px',
+            background: t.surfaceAlt, borderRadius: 4, padding: '8px 12px',
             fontSize: 12, color: t.muted, fontStyle: 'italic',
             lineHeight: 1.5, marginBottom: 12,
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
@@ -104,34 +104,34 @@ function GiftCard({ gift, products, onContinue, onDelete, isDesk }) {
 
         {/* Footer: total + actions */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <div style={{ fontSize: 16, fontWeight: 900, color: t.primary }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: t.primaryDark }}>
             {selectedProducts.length > 0 ? fmtRub(selectedProducts.reduce((s, p) => s + p.price, 0)) : '—'}
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             <button
               onClick={() => onDelete(gift.id)}
               style={{
-                padding: '7px 12px', borderRadius: 8, border: `1.5px solid rgba(222,53,11,0.25)`,
+                padding: '7px 12px', borderRadius: 4, border: `1.5px solid rgba(222,53,11,0.25)`,
                 background: 'transparent', color: '#DE350B',
-                fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >Удалить</button>
             {isDraft ? (
               <button
                 onClick={() => onContinue(gift.id)}
                 style={{
-                  padding: '7px 16px', borderRadius: 8, border: 'none',
-                  background: t.primary, color: '#fff',
-                  fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+                  padding: '7px 16px', borderRadius: 4, border: `1.5px solid ${t.btnBorder}`,
+                  background: 'transparent', color: t.btnInk,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >Продолжить →</button>
             ) : (
               <button
                 onClick={() => router.go({ screen: 'gift_builder', repeatId: gift.id })}
                 style={{
-                  padding: '7px 16px', borderRadius: 8, border: `1.5px solid ${t.border}`,
+                  padding: '7px 16px', borderRadius: 4, border: `1.5px solid ${t.border}`,
                   background: 'transparent', color: t.ink,
-                  fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >Повторить</button>
             )}
@@ -168,20 +168,20 @@ export function MyGiftsScreen({ device }) {
 
   const TabBtn = ({ value, label, count }) => (
     <button onClick={() => setTab(value)} style={{
-      padding: '8px 18px', borderRadius: 999,
-      border: `1.5px solid ${tab === value ? t.primary : t.border}`,
-      background: tab === value ? t.primary : 'transparent',
-      color: tab === value ? '#fff' : t.ink,
-      fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+      padding: '8px 18px', borderRadius: 4,
+      border: `1.5px solid ${tab === value ? 'transparent' : t.border}`,
+      background: tab === value ? t.discountBg : 'transparent',
+      color: tab === value ? t.primaryDark : t.ink,
+      fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
       display: 'flex', alignItems: 'center', gap: 6,
     }}>
       {label}
       {count > 0 && (
         <span style={{
-          background: tab === value ? 'rgba(255,255,255,0.25)' : t.surfaceAlt,
-          borderRadius: 999, fontSize: 11, fontWeight: 800,
+          background: tab === value ? 'rgba(0,0,0,0.08)' : t.surfaceAlt,
+          borderRadius: 4, fontSize: 11, fontWeight: 600,
           padding: '1px 6px', lineHeight: '16px',
-          color: tab === value ? '#fff' : t.muted,
+          color: tab === value ? t.primaryDark : t.muted,
         }}>{count}</span>
       )}
     </button>
@@ -196,10 +196,10 @@ export function MyGiftsScreen({ device }) {
         padding: isDesk ? '24px 40px 20px' : '14px 16px 16px',
         borderBottom: `1px solid ${t.border}`,
       }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
           Мои подарки
         </div>
-        <div style={{ fontSize: isDesk ? 32 : 22, fontWeight: 900, marginTop: 4, letterSpacing: '-0.02em' }}>
+        <div style={{ fontSize: isDesk ? 32 : 22, fontWeight: 600, marginTop: 4, letterSpacing: '-0.02em' }}>
           🎁 Подарочные наборы
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
@@ -214,7 +214,7 @@ export function MyGiftsScreen({ device }) {
             <div style={{ fontSize: 48, marginBottom: 12 }}>
               {tab === 'drafts' ? '📝' : '📦'}
             </div>
-            <div style={{ fontWeight: 900, fontSize: 17, color: t.ink, marginBottom: 8 }}>
+            <div style={{ fontWeight: 600, fontSize: 17, color: t.ink, marginBottom: 8 }}>
               {tab === 'drafts' ? 'Нет черновиков' : 'История пуста'}
             </div>
             <div style={{ fontSize: 14, marginBottom: 20 }}>
@@ -225,9 +225,9 @@ export function MyGiftsScreen({ device }) {
             <button
               onClick={() => router.go({ screen: 'gift_builder' })}
               style={{
-                background: t.primary, color: '#fff', border: 'none',
-                padding: '11px 24px', borderRadius: 12,
-                fontWeight: 800, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
+                background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`,
+                padding: '11px 24px', borderRadius: 4,
+                fontWeight: 600, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >🎁 Собрать набор</button>
           </div>
@@ -252,9 +252,9 @@ export function MyGiftsScreen({ device }) {
           <button
             onClick={() => router.go({ screen: 'gift_builder' })}
             style={{
-              background: t.primary, color: '#fff', border: 'none',
-              padding: '12px 28px', borderRadius: 12,
-              fontWeight: 800, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
+              background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`,
+              padding: '12px 28px', borderRadius: 4,
+              fontWeight: 600, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit',
             }}
           >+ Новый набор</button>
         </div>

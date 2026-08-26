@@ -9,14 +9,14 @@ export function Section({ title, sub, children, device, onSeeAll }) {
       <div style={{ padding: isDesk ? '0 40px 14px' : '0 16px 10px',
         display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
         <div>
-          <div style={{ fontSize: isDesk ? 28 : 20, fontWeight: 900, color: t.ink,
+          <div style={{ fontSize: isDesk ? 28 : 20, fontWeight: 600, color: t.ink,
             letterSpacing: '-0.02em', lineHeight: 1.1 }}>{title}</div>
-          {sub && <div style={{ fontSize: isDesk ? 14 : 12, color: t.muted, marginTop: 4, fontWeight: 500 }}>{sub}</div>}
+          {sub && <div style={{ fontSize: isDesk ? 14 : 12, color: t.muted, marginTop: 4, fontWeight: 400 }}>{sub}</div>}
         </div>
         {onSeeAll && (
           <button onClick={onSeeAll} style={{
             background: 'transparent', border: 'none', cursor: 'pointer',
-            color: t.primary, fontWeight: 800, fontSize: isDesk ? 14 : 13, whiteSpace: 'nowrap',
+            color: t.primary, fontWeight: 600, fontSize: isDesk ? 14 : 13, whiteSpace: 'nowrap',
           }}>смотреть все →</button>
         )}
       </div>

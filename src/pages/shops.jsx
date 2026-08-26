@@ -17,7 +17,7 @@ function StarRow({ rating, reviews }) {
   const half = rating - full >= 0.5;
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-      <div style={{ display: 'flex', gap: 2, color: '#F89020' }}>
+      <div style={{ display: 'flex', gap: 2, color: t.primary }}>
         {[...Array(5)].map((_, i) => (
           <svg key={i} width="13" height="13" viewBox="0 0 24 24"
             fill={i < full || (i === full && half) ? 'currentColor' : 'none'}
@@ -26,7 +26,7 @@ function StarRow({ rating, reviews }) {
           </svg>
         ))}
       </div>
-      <span style={{ fontSize: 12, fontWeight: 800, color: t.ink }}>{rating.toFixed(1)}</span>
+      <span style={{ fontSize: 12, fontWeight: 600, color: t.ink }}>{rating.toFixed(1)}</span>
       <span style={{ fontSize: 12, color: t.muted }}>· {reviews.toLocaleString('ru-RU')} отзывов</span>
     </div>
   );
@@ -36,34 +36,34 @@ function ShopCard({ shop, isDesk }) {
   const t = useTheme();
   return (
     <div style={{
-      background: t.surface, borderRadius: 18,
-      boxShadow: `inset 0 0 0 1.5px ${t.border}`,
+      background: t.surface, borderRadius: 4,
+      border: `1px solid ${t.border}`,
       overflow: 'hidden', display: 'flex', flexDirection: 'column',
     }}>
       <div style={{
-        background: `linear-gradient(135deg, ${t.primary}18 0%, ${t.accent}18 100%)`,
+        background: t.bg,
         padding: isDesk ? '24px 24px 20px' : '18px 18px 14px',
         borderBottom: `1px solid ${t.border}`,
         display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{
-            width: 44, height: 44, borderRadius: 12, background: t.primary,
-            color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            width: 44, height: 44, borderRadius: 4, background: t.discountBg,
+            color: t.primaryDark, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
           </div>
           <div>
-            <div style={{ fontWeight: 900, fontSize: isDesk ? 16 : 14, letterSpacing: '-0.01em', color: t.ink }}>{shop.name}</div>
+            <div style={{ fontWeight: 600, fontSize: isDesk ? 16 : 14, letterSpacing: '-0.01em', color: t.ink }}>{shop.name}</div>
             <div style={{ fontSize: 12, color: t.muted, marginTop: 2 }}>{shop.district}</div>
           </div>
         </div>
         {shop.badge && (
           <div style={{
-            background: t.primary, color: '#fff',
-            fontSize: 11, fontWeight: 900, padding: '4px 10px', borderRadius: 999,
+            background: t.discountBg, color: t.primaryDark,
+            fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 4,
             letterSpacing: '0.03em', flexShrink: 0,
           }}>{shop.badge}</div>
         )}
@@ -77,7 +77,7 @@ function ShopCard({ shop, isDesk }) {
             </svg>
           </span>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: t.ink }}>{shop.address}</div>
+            <div style={{ fontWeight: 600, fontSize: 14, color: t.ink }}>{shop.address}</div>
             <div style={{ fontSize: 12, color: t.muted, marginTop: 2 }}>{shop.city}</div>
           </div>
         </div>
@@ -88,7 +88,7 @@ function ShopCard({ shop, isDesk }) {
               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
             </svg>
           </span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: t.ink }}>{shop.hours}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: t.ink }}>{shop.hours}</span>
         </div>
 
         <StarRow rating={shop.rating} reviews={shop.reviews} />
@@ -101,8 +101,8 @@ function ShopCard({ shop, isDesk }) {
           rel="noopener noreferrer"
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            background: t.primary, color: '#fff', borderRadius: 12,
-            padding: '12px 16px', fontWeight: 800, fontSize: 14,
+            background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4,
+            padding: '12px 16px', fontWeight: 600, fontSize: 14,
             textDecoration: 'none', fontFamily: 'inherit',
           }}
         >
@@ -130,14 +130,17 @@ export function ShopsScreen({ device }) {
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
       <div style={{
-        background: `linear-gradient(135deg, ${t.primary} 0%, #8b004a 100%)`,
+        background: t.surface, borderBottom: `1px solid ${t.border}`,
         padding: isDesk ? '48px 40px 44px' : '28px 20px 32px',
-        color: '#fff',
+        color: t.ink,
       }}>
-        <div style={{ fontSize: isDesk ? 38 : 26, fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+        <div style={{
+          fontSize: isDesk ? 38 : 26, fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.1,
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+        }}>
           🏪 Наши магазины
         </div>
-        <div style={{ fontSize: isDesk ? 15 : 13, marginTop: 8, opacity: 0.9 }}>
+        <div style={{ fontSize: isDesk ? 15 : 13, marginTop: 8, color: t.muted }}>
           4 магазина в Бишкеке · работаем ежедневно с 09:00
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
@@ -147,8 +150,8 @@ export function ShopsScreen({ device }) {
             { icon: '🛍️', label: 'Самовывоз бесплатно' },
           ].map((b) => (
             <div key={b.label} style={{
-              background: 'rgba(255,255,255,0.18)', borderRadius: 999,
-              padding: '5px 12px', fontSize: 12, fontWeight: 700,
+              background: t.discountBg, color: t.primaryDark, borderRadius: 4,
+              padding: '5px 12px', fontSize: 12, fontWeight: 600,
               display: 'inline-flex', alignItems: 'center', gap: 6,
             }}>
               <span>{b.icon}</span>{b.label}
@@ -170,7 +173,7 @@ export function ShopsScreen({ device }) {
 
         <div style={{
           marginTop: isDesk ? 40 : 28,
-          background: t.surfaceAlt, borderRadius: 16,
+          background: t.surfaceAlt, borderRadius: 4,
           padding: isDesk ? '24px 28px' : '18px 20px',
           display: 'flex', flexDirection: isDesk ? 'row' : 'column',
           alignItems: isDesk ? 'center' : 'flex-start',
@@ -178,7 +181,7 @@ export function ShopsScreen({ device }) {
         }}>
           <div style={{ fontSize: isDesk ? 40 : 32 }}>📦</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 900, fontSize: isDesk ? 16 : 15, color: t.ink }}>Самовывоз — бесплатно</div>
+            <div style={{ fontWeight: 600, fontSize: isDesk ? 16 : 15, color: t.ink }}>Самовывоз — бесплатно</div>
             <div style={{ fontSize: 13, color: t.muted, marginTop: 4, lineHeight: 1.5 }}>
               Оформите заказ онлайн и заберите из любого магазина в тот же день. Готовность заказа — от 2 часов. Уточняйте наличие через Instagram.
             </div>
@@ -188,8 +191,8 @@ export function ShopsScreen({ device }) {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              background: t.primary, color: '#fff', borderRadius: 12,
-              padding: '12px 20px', fontWeight: 800, fontSize: 14,
+              background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, borderRadius: 4,
+              padding: '12px 20px', fontWeight: 600, fontSize: 14,
               textDecoration: 'none', fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
             }}
           >
