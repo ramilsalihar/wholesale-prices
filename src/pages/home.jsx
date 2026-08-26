@@ -23,16 +23,16 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
 
   const chipBase = (active) => ({
     padding: '6px 14px',
-    borderRadius: 999,
-    border: `1.5px solid ${active ? t.primary : t.border}`,
-    background: active ? t.primary : t.surface,
-    color: active ? '#fff' : t.ink,
+    borderRadius: 4,
+    border: `1.5px solid ${active ? 'transparent' : t.border}`,
+    background: active ? t.discountBg : t.surface,
+    color: active ? t.primaryDark : t.ink,
     fontSize: 13,
-    fontWeight: 700,
+    fontWeight: 600,
     cursor: 'pointer',
     whiteSpace: 'nowrap',
     flexShrink: 0,
-    fontFamily: 'Manrope, sans-serif',
+    fontFamily: 'inherit',
     transition: 'background 0.12s, border-color 0.12s, color 0.12s',
   });
 
@@ -64,18 +64,18 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
           onClick={() => setOpen(o => !o)}
           style={{
             display: 'flex', alignItems: 'center', gap: 5,
-            padding: '7px 12px', borderRadius: 999, flexShrink: 0,
-            border: `1.5px solid ${open || activeBrands.length > 0 ? t.primary : t.border}`,
-            background: open || activeBrands.length > 0 ? t.primary : t.surface,
-            color: open || activeBrands.length > 0 ? '#fff' : t.ink,
-            fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Manrope, sans-serif',
+            padding: '7px 12px', borderRadius: 4, flexShrink: 0,
+            border: `1.5px solid ${open || activeBrands.length > 0 ? 'transparent' : t.border}`,
+            background: open || activeBrands.length > 0 ? t.discountBg : t.surface,
+            color: open || activeBrands.length > 0 ? t.primaryDark : t.ink,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
           }}
         >
           {Icon.filter({ width: 13, height: 13 })}
           {activeBrands.length > 0 && (
             <span style={{
-              background: 'rgba(255,255,255,0.25)', borderRadius: 999,
-              fontSize: 11, fontWeight: 800, padding: '0 5px', lineHeight: '17px',
+              background: 'rgba(0,0,0,0.08)', borderRadius: 4,
+              fontSize: 11, fontWeight: 600, padding: '0 5px', lineHeight: '17px',
             }}>{activeBrands.length}</span>
           )}
           <span style={{
@@ -89,7 +89,7 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
       {/* Expanded: brands */}
       {open && (
         <div style={{ paddingBottom: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
             БРЕНДЫ
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: activeCount > 0 ? 10 : 0 }}>
@@ -104,9 +104,9 @@ function FilterBar({ products, categories, activeCats, activeBrands, onCat, onBr
               onClick={onClear}
               style={{
                 padding: '7px 16px', background: 'none',
-                border: `1.5px solid ${t.border}`, borderRadius: 999,
-                fontSize: 13, fontWeight: 700, color: t.muted,
-                cursor: 'pointer', fontFamily: 'Manrope, sans-serif',
+                border: `1.5px solid ${t.border}`, borderRadius: 4,
+                fontSize: 13, fontWeight: 600, color: t.muted,
+                cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
               Сбросить всё
@@ -164,7 +164,12 @@ export function HomeScreen({ device }) {
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: 0.95 }}>
               {Icon.truck({ width: 14, height: 14 })} Доставка по КР от 1 дня
             </span>
-            <span style={{ opacity: 0.95 }}>📞 +996 222‒06‒01‒01</span>
+            <a
+              href="https://wa.me/996500409609"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ opacity: 0.95, color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}
+            >📞 +996 500‒40‒96‒09</a>
             <span style={{ opacity: 0.95 }}>Бишкек</span>
           </div>
           <div style={{ display: 'flex', gap: 18 }}>
@@ -213,11 +218,11 @@ export function HomeScreen({ device }) {
             return (
               <div key={f.id} style={{
                 background: t.surfaceAlt, padding: isDesk ? '14px 16px' : '10px 12px',
-                borderRadius: 12, display: 'flex', alignItems: 'center', gap: 10,
+                borderRadius: 4, display: 'flex', alignItems: 'center', gap: 10,
               }}>
                 <span style={{ color: t.primary, display: 'flex' }}>{iconFn()}</span>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: t.ink, lineHeight: 1.2 }}>{f.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: t.ink, lineHeight: 1.2 }}>{f.title}</div>
                   <div style={{ fontSize: 11, color: t.muted, marginTop: 2 }}>{f.subtitle}</div>
                 </div>
               </div>

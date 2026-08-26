@@ -24,8 +24,8 @@ export function DesktopFooter() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
             <Logo size={48} />
             <div>
-              <div style={{ fontWeight: 900, fontSize: 16, letterSpacing: '0.04em' }}>ОПТОВЫЕ ЦЕНЫ</div>
-              <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2 }}>САМЫЙ БОЛЬШОЙ МАГАЗИН КОСМЕТИКИ В КР</div>
+              <div style={{ fontWeight: 600, fontSize: 16, letterSpacing: '0.04em' }}>FLOWO</div>
+              <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2 }}>СВЕЖИЕ ЦВЕТЫ И АВТОРСКАЯ ФЛОРИСТИКА В КР</div>
             </div>
           </div>
           <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6, maxWidth: 320 }}>
@@ -38,7 +38,7 @@ export function DesktopFooter() {
           { h: 'Контакты',    l: ['Instagram: @optovye_ceny01_', 'Бишкек, Кыргызстан', 'пн-вс · 9:00–22:00'] },
         ].map((col) => (
           <div key={col.h}>
-            <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 10, letterSpacing: '0.04em', textTransform: 'uppercase', opacity: 0.7 }}>{col.h}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10, letterSpacing: '0.04em', textTransform: 'uppercase', opacity: 0.7 }}>{col.h}</div>
             {col.l.map((x) => {
               const isIg = x.startsWith('Instagram:');
               return (

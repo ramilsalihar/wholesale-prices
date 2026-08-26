@@ -5,10 +5,7 @@ import { MobileApp, MobileAppWithSeed, DesktopApp, DesktopAppWithSeed, DEVICE_W,
 
 
 const VARIANTS = [
-  { key: 'magnit', label: 'А · Магнит', desc: 'Магента + жёлтый — рыночная энергия' },
-  { key: 'noir', label: 'B · Чёрный', desc: 'Тёмный фон, неоновые карточки' },
-  { key: 'boutique', label: 'C · Светлый', desc: 'Белый ведущий, магента акцент' },
-  { key: 'carnival', label: 'D · Карнавал', desc: 'Жёлтый ведущий, максимум игры' },
+  { key: 'classical', label: 'Classical', desc: 'Editorial: Cormorant Garamond + Lora, bronze stroke accent' },
 ];
 
 function Themed({ theme, children }) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../shared/theme.jsx';
 
-const WA_LINK = `https://wa.me/996700938211?text=${encodeURIComponent('Хочу поговорить насчет проекта Оптовые Цены')}`;
+const WA_LINK = `https://wa.me/996700938211?text=${encodeURIComponent('Хочу поговорить насчет проекта FLOWO')}`;
 
 const PLANS = [
   {
@@ -117,21 +117,21 @@ function PlanCard({ plan, t }) {
   return (
     <div style={{
       background: t.cardBg,
-      borderRadius: 16,
+      borderRadius: 4,
       border: plan.highlight ? `2px solid ${t.primary}` : `1.5px solid ${t.border}`,
       padding: 24,
       display: 'flex',
       flexDirection: 'column',
       gap: 16,
       position: 'relative',
-      boxShadow: plan.highlight ? `0 4px 32px ${t.primary}20` : 'none',
+      boxShadow: 'none',
     }}>
       {plan.highlight && (
         <div style={{
           position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)',
-          background: t.primary, color: '#fff',
-          borderRadius: 20, padding: '4px 16px',
-          fontSize: 11, fontWeight: 800, letterSpacing: '0.06em', whiteSpace: 'nowrap',
+          background: t.discountBg, color: t.primaryDark,
+          borderRadius: 4, padding: '4px 16px',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', whiteSpace: 'nowrap',
         }}>
           {plan.badge}
         </div>
@@ -143,14 +143,14 @@ function PlanCard({ plan, t }) {
             display: 'inline-flex',
             background: `${accent}18`,
             color: accent,
-            borderRadius: 8, padding: '3px 10px',
-            fontSize: 11, fontWeight: 800, letterSpacing: '0.04em',
+            borderRadius: 4, padding: '3px 10px',
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
             marginBottom: 8,
           }}>
             {plan.badge}
           </div>
         )}
-        <div style={{ fontSize: 18, fontWeight: 900, color: t.ink, marginBottom: 4 }}>
+        <div style={{ fontSize: 18, fontWeight: 600, color: t.ink, marginBottom: 4 }}>
           {plan.name}
         </div>
         <div style={{ fontSize: 13, color: t.muted, lineHeight: 1.5 }}>
@@ -173,15 +173,15 @@ function PlanCard({ plan, t }) {
         rel="noopener noreferrer"
         style={{
           display: 'block',
-          background: plan.highlight ? t.primary : `${accent}15`,
-          color: plan.highlight ? '#fff' : accent,
-          borderRadius: 10,
+          background: plan.highlight ? t.discountBg : `${accent}15`,
+          color: plan.highlight ? t.primaryDark : accent,
+          borderRadius: 4,
           padding: '12px',
           textAlign: 'center',
-          fontWeight: 800,
+          fontWeight: 600,
           fontSize: 14,
           textDecoration: 'none',
-          border: plan.highlight ? 'none' : `1.5px solid ${accent}40`,
+          border: `1.5px solid ${plan.highlight ? 'transparent' : `${accent}40`}`,
           marginTop: 4,
         }}
       >
@@ -206,19 +206,20 @@ export function PricingScreen({ device }) {
           display: 'inline-flex',
           background: `${t.primary}18`,
           color: t.primary,
-          borderRadius: 20, padding: '5px 16px',
-          fontSize: 11, fontWeight: 800, letterSpacing: '0.08em',
+          borderRadius: 4, padding: '5px 16px',
+          fontSize: 11, fontWeight: 600, letterSpacing: '0.08em',
           marginBottom: 16,
         }}>
           APRD · WEB РЕШЕНИЯ
         </div>
         <h1 style={{
           fontSize: isMobile ? 26 : 40,
-          fontWeight: 900,
+          fontWeight: 600,
           color: t.ink,
           margin: '0 0 14px',
           letterSpacing: '-0.02em',
           lineHeight: 1.2,
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
         }}>
           Готовый магазин<br />за понятную цену
         </h1>
@@ -254,12 +255,12 @@ export function PricingScreen({ device }) {
       }}>
         <div style={{
           background: t.surface,
-          borderRadius: 20,
+          borderRadius: 4,
           border: `1.5px solid ${t.border}`,
           padding: isMobile ? '28px 20px' : '40px',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 900, color: t.ink, marginBottom: 8 }}>
+          <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 600, color: t.ink, marginBottom: 8 }}>
             Остались вопросы?
           </div>
           <div style={{ fontSize: 14, color: t.muted, marginBottom: 28, lineHeight: 1.7, maxWidth: 400, margin: '0 auto 28px' }}>
@@ -284,9 +285,9 @@ export function PricingScreen({ device }) {
                 gap: 8,
                 background: '#25D366',
                 color: '#fff',
-                borderRadius: 12,
+                borderRadius: 4,
                 padding: '12px 24px',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 14,
                 textDecoration: 'none',
                 width: isMobile ? '100%' : 'auto',
@@ -309,9 +310,9 @@ export function PricingScreen({ device }) {
                 background: t.surfaceAlt,
                 color: t.ink,
                 border: `1.5px solid ${t.border}`,
-                borderRadius: 12,
+                borderRadius: 4,
                 padding: '12px 24px',
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: 14,
                 textDecoration: 'none',
                 width: isMobile ? '100%' : 'auto',
@@ -331,7 +332,7 @@ export function PricingScreen({ device }) {
             style={{
               fontSize: 13,
               color: t.primary,
-              fontWeight: 700,
+              fontWeight: 600,
               textDecoration: 'none',
               display: 'inline-block',
             }}

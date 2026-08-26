@@ -7,9 +7,9 @@ export function StarRating({ rating, reviews, compact = false }) {
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: t.accent2 }}>
       {Icon.star(true)}
-      <span style={{ fontSize: compact ? 12 : 13, fontWeight: 700, color: t.ink }}>{rating}</span>
+      <span style={{ fontSize: compact ? 12 : 13, fontWeight: 600, color: t.ink }}>{rating}</span>
       {reviews != null && (
-        <span style={{ fontSize: compact ? 11 : 12, color: t.muted, fontWeight: 500 }}>· {reviews}</span>
+        <span style={{ fontSize: compact ? 11 : 12, color: t.muted, fontWeight: 400 }}>· {reviews}</span>
       )}
     </div>
   );

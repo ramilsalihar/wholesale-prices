@@ -18,11 +18,11 @@ function Chip({ active, onClick, children }) {
   const t = useTheme();
   return (
     <button onClick={onClick} style={{
-      padding: '7px 14px', borderRadius: 999,
-      border: `1.5px solid ${active ? t.primary : t.border}`,
-      background: active ? t.primary : t.surface,
-      color: active ? '#fff' : t.ink,
-      fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0,
+      padding: '7px 14px', borderRadius: 4,
+      border: `1.5px solid ${active ? 'transparent' : t.border}`,
+      background: active ? t.discountBg : t.surface,
+      color: active ? t.primaryDark : t.ink,
+      fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0,
       cursor: 'pointer', fontFamily: 'inherit',
       transition: 'background 0.12s, border-color 0.12s, color 0.12s',
     }}>
@@ -109,10 +109,10 @@ export function CatalogScreen({ device }) {
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
       <div style={{ background: t.surfaceAlt, padding: isDesk ? '24px 40px 20px' : '12px 16px 14px' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
           Главная · Каталог{activeCats.length === 1 && ` · ${headerTitle}`}
         </div>
-        <div style={{ fontSize: isDesk ? 36 : 24, fontWeight: 900, marginTop: 6, letterSpacing: '-0.02em' }}>
+        <div style={{ fontSize: isDesk ? 36 : 24, fontWeight: 600, marginTop: 6, letterSpacing: '-0.02em' }}>
           {headerTitle}
         </div>
         <div style={{ fontSize: isDesk ? 14 : 12, color: t.muted, marginTop: 4 }}>
@@ -128,7 +128,7 @@ export function CatalogScreen({ device }) {
         <div style={{ padding: isDesk ? '10px 40px' : '8px 16px' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            background: t.surface, borderRadius: 12, padding: '10px 14px',
+            background: t.surface, borderRadius: 4, padding: '10px 14px',
             boxShadow: `inset 0 0 0 1.5px ${t.border}`,
           }}>
             <span style={{ color: t.muted, display: 'flex', flexShrink: 0 }}>{Icon.search()}</span>
@@ -175,18 +175,18 @@ export function CatalogScreen({ device }) {
             onClick={() => setFiltersOpen(o => !o)}
             style={{
               display: 'flex', alignItems: 'center', gap: 5,
-              padding: '7px 12px', borderRadius: 999, flexShrink: 0,
-              border: `1.5px solid ${filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.primary : t.border}`,
-              background: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.primary : t.surface,
-              color: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? '#fff' : t.ink,
-              fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              padding: '7px 12px', borderRadius: 4, flexShrink: 0,
+              border: `1.5px solid ${filtersOpen || (activeFilterCount - activeCats.length) > 0 ? 'transparent' : t.border}`,
+              background: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.discountBg : t.surface,
+              color: filtersOpen || (activeFilterCount - activeCats.length) > 0 ? t.primaryDark : t.ink,
+              fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
             {Icon.filter({ width: 13, height: 13 })}
             {(activeFilterCount - activeCats.length) > 0 && (
               <span style={{
-                background: 'rgba(255,255,255,0.25)', borderRadius: 999,
-                fontSize: 11, fontWeight: 800, padding: '0 5px', lineHeight: '17px',
+                background: 'rgba(0,0,0,0.08)', borderRadius: 4,
+                fontSize: 11, fontWeight: 600, padding: '0 5px', lineHeight: '17px',
               }}>{activeFilterCount - activeCats.length}</span>
             )}
             <span style={{
@@ -202,7 +202,7 @@ export function CatalogScreen({ device }) {
             onChange={e => setSort(e.target.value)}
             style={{
               background: t.surface, color: t.ink, border: `1.5px solid ${t.border}`,
-              padding: '7px 12px', borderRadius: 999, fontSize: 13, fontWeight: 700,
+              padding: '7px 12px', borderRadius: 4, fontSize: 13, fontWeight: 600,
               cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
             }}
           >
@@ -221,7 +221,7 @@ export function CatalogScreen({ device }) {
             borderTop: `1px solid ${t.border}`,
             paddingTop: 14,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
               БРЕНДЫ
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -232,7 +232,7 @@ export function CatalogScreen({ device }) {
               ))}
             </div>
 
-            <div style={{ fontSize: 11, fontWeight: 700, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: t.muted, letterSpacing: '0.06em', marginBottom: 8 }}>
               ЦЕНА
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -251,8 +251,8 @@ export function CatalogScreen({ device }) {
                   onClick={clearAll}
                   style={{
                     padding: '7px 14px', background: 'none',
-                    border: `1.5px solid ${t.border}`, borderRadius: 999,
-                    fontSize: 13, fontWeight: 700, color: t.muted,
+                    border: `1.5px solid ${t.border}`, borderRadius: 4,
+                    fontSize: 13, fontWeight: 600, color: t.muted,
                     cursor: 'pointer', fontFamily: 'inherit',
                   }}
                 >
@@ -267,11 +267,11 @@ export function CatalogScreen({ device }) {
       {products.length === 0 ? (
         <div style={{ padding: '60px 24px', textAlign: 'center', color: t.muted }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-          <div style={{ fontWeight: 900, fontSize: 18, color: t.ink, marginBottom: 8 }}>Ничего не найдено</div>
+          <div style={{ fontWeight: 600, fontSize: 18, color: t.ink, marginBottom: 8 }}>Ничего не найдено</div>
           <div style={{ fontSize: 14 }}>Попробуйте другой запрос или сбросьте фильтры</div>
           <button onClick={clearAll} style={{
-            marginTop: 20, background: t.primary, color: '#fff', border: 'none', cursor: 'pointer',
-            padding: '10px 22px', borderRadius: 12, fontWeight: 800, fontSize: 14, fontFamily: 'inherit',
+            marginTop: 20, background: 'transparent', color: t.btnInk, border: `1.5px solid ${t.btnBorder}`, cursor: 'pointer',
+            padding: '10px 22px', borderRadius: 4, fontWeight: 600, fontSize: 14, fontFamily: 'inherit',
           }}>Сбросить</button>
         </div>
       ) : (

@@ -15,7 +15,7 @@ function UserChip({ t, user, onClick }) {
       onClick={onClick}
       style={{
         display: 'flex', alignItems: 'center', gap: 10,
-        background: t.surfaceAlt, borderRadius: 12, padding: '6px 12px 6px 8px',
+        background: t.surfaceAlt, borderRadius: 4, padding: '6px 12px 6px 8px',
         border: `1.5px solid ${t.border}`, cursor: 'pointer',
         fontFamily: 'inherit',
       }}
@@ -26,9 +26,10 @@ function UserChip({ t, user, onClick }) {
         ) : (
           <div style={{
             width: 28, height: 28, borderRadius: '50%',
-            background: t.primary, color: '#fff',
+            background: t.discountBg, color: t.primaryDark,
+            border: `1px solid ${t.border}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 10, fontWeight: 800, flexShrink: 0,
+            fontSize: 10, fontWeight: 600, flexShrink: 0,
           }}>
             {initials}
           </div>
@@ -36,7 +37,8 @@ function UserChip({ t, user, onClick }) {
       ) : (
         <div style={{
           width: 28, height: 28, borderRadius: '50%',
-          background: t.primary, color: '#fff',
+          background: t.discountBg, color: t.primaryDark,
+          border: `1px solid ${t.border}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           {Icon.user({ width: 14, height: 14 })}
@@ -46,7 +48,7 @@ function UserChip({ t, user, onClick }) {
         <div style={{ fontSize: 10, color: t.muted, fontWeight: 600, lineHeight: 1 }}>
           {user ? 'Профиль' : 'Войти'}
         </div>
-        <div style={{ fontSize: 12, fontWeight: 800, color: t.ink, lineHeight: 1.2, marginTop: 2, maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: t.ink, lineHeight: 1.2, marginTop: 2, maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {user ? (name.split(' ')[0] || 'Пользователь') : 'Бишкек'}
         </div>
       </div>
@@ -71,8 +73,8 @@ export function TopBar() {
     }}>
       {canGoBack && (
         <button onClick={() => router.back()} style={{
-          background: t.surfaceAlt, border: 'none', cursor: 'pointer',
-          width: 38, height: 38, borderRadius: 10, color: t.ink,
+          background: t.surfaceAlt, border: `1px solid ${t.border}`, cursor: 'pointer',
+          width: 38, height: 38, borderRadius: 4, color: t.ink,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0,
         }}>{Icon.back()}</button>
@@ -82,7 +84,7 @@ export function TopBar() {
           onClick={() => router.go({ screen: 'catalog', search: true })}
           style={{
             flex: 1, maxWidth: 520,
-            background: t.bg, borderRadius: 12, padding: '10px 14px',
+            background: t.bg, borderRadius: 4, padding: '10px 14px',
             display: 'flex', alignItems: 'center', gap: 10,
             boxShadow: `inset 0 0 0 1.5px ${t.border}`, cursor: 'text',
           }}
@@ -100,8 +102,8 @@ export function TopBar() {
           style={{
             background: router.route.screen === 'my_orders' ? `${t.primary}14` : 'transparent',
             border: `1.5px solid ${router.route.screen === 'my_orders' ? t.primary : t.border}`,
-            borderRadius: 10, padding: '8px 14px', cursor: 'pointer',
-            fontSize: 13, fontWeight: 700,
+            borderRadius: 4, padding: '8px 14px', cursor: 'pointer',
+            fontSize: 13, fontWeight: 600,
             color: router.route.screen === 'my_orders' ? t.primary : t.muted,
             fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
           }}
@@ -115,11 +117,11 @@ export function TopBar() {
       <button
         onClick={() => router.go({ screen: 'cart' })}
         style={{
-          background: cart.count > 0 ? t.primary : t.surfaceAlt,
-          color: cart.count > 0 ? '#fff' : t.ink,
-          border: 'none', cursor: 'pointer', borderRadius: 12,
+          background: cart.count > 0 ? t.discountBg : t.surfaceAlt,
+          color: cart.count > 0 ? t.primaryDark : t.ink,
+          border: `1.5px solid ${cart.count > 0 ? 'transparent' : t.border}`, cursor: 'pointer', borderRadius: 4,
           padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8,
-          fontFamily: 'inherit', fontWeight: 700, fontSize: 13, flexShrink: 0,
+          fontFamily: 'inherit', fontWeight: 600, fontSize: 13, flexShrink: 0,
         }}
       >
         {Icon.cart({ width: 18, height: 18 })}

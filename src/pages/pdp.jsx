@@ -18,7 +18,7 @@ import { ProductCard } from '../entities/product/ProductCard.jsx';
 import { DesktopFooter } from '../widgets/DesktopFooter.jsx';
 
 const qtyBtn = (t) => ({
-  width: 36, height: 36, borderRadius: 8, border: 'none',
+  width: 36, height: 36, borderRadius: 4, border: 'none',
   background: 'transparent', color: t.ink, cursor: 'pointer',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
 });
@@ -72,7 +72,7 @@ export function PDPScreen({ device }) {
               {thumbImages.map((imgUrl, i) => (
                 <div key={i} onClick={() => setSelectedImg(i)} style={{
                   width: isDesk ? 72 : 56, height: isDesk ? 72 : 56, flexShrink: 0,
-                  borderRadius: 8, overflow: 'hidden', cursor: 'pointer',
+                  borderRadius: 4, overflow: 'hidden', cursor: 'pointer',
                   outline: i === selectedImg ? `2.5px solid ${t.primary}` : `1px solid ${t.border}`,
                   outlineOffset: i === selectedImg ? 1 : 0,
                   opacity: i === selectedImg ? 1 : 0.7,
@@ -86,42 +86,42 @@ export function PDPScreen({ device }) {
         </div>
 
         <div style={{ padding: isDesk ? 0 : '16px 16px 0' }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
-          <h1 style={{ fontSize: isDesk ? 30 : 22, fontWeight: 900, margin: '6px 0 8px',
-            letterSpacing: '-0.02em', lineHeight: 1.15 }}>{p.name}</h1>
+          <div style={{ fontSize: 12, fontWeight: 600, color: t.muted, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{p.brand}</div>
+          <h1 style={{ fontSize: isDesk ? 30 : 22, fontWeight: 600, margin: '6px 0 8px',
+            letterSpacing: '-0.02em', lineHeight: 1.15, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{p.name}</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
             <StarRating rating={p.rating} reviews={p.reviews} />
             <span style={{ fontSize: 13, color: t.muted }}>· арт. {p.id.toUpperCase()}</span>
           </div>
 
           <div style={{
-            background: t.surfaceAlt, borderRadius: 16,
+            background: t.surfaceAlt, borderRadius: 4,
             padding: isDesk ? '20px 24px' : '14px 16px',
             display: 'flex', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap',
           }}>
             <div>
-              <div style={{ fontSize: isDesk ? 38 : 30, fontWeight: 900, color: t.primary, letterSpacing: '-0.03em', lineHeight: 1 }}>{fmtRub(p.price)}</div>
+              <div style={{ fontSize: isDesk ? 38 : 30, fontWeight: 600, color: t.primary, letterSpacing: '-0.03em', lineHeight: 1 }}>{fmtRub(p.price)}</div>
               {p.old && (
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 14, color: t.muted, textDecoration: 'line-through', flexShrink: 0 }}>{fmtRub(p.old)}</span>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: t.accent2, flexShrink: 0 }}>−{fmtRub(p.old - p.price)} (−{pctOff(p.price, p.old)}%)</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: t.accent2, flexShrink: 0 }}>−{fmtRub(p.old - p.price)} (−{pctOff(p.price, p.old)}%)</span>
                 </div>
               )}
             </div>
             {isDesk && <div style={{ flex: 1 }} />}
-            <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, fontWeight: 500 }}>
-              <span style={{ color: t.ink, fontWeight: 700 }}>На складе:</span> {p.stock != null ? `${p.stock} шт` : '—'}<br/>
-              <span style={{ color: t.ink, fontWeight: 700 }}>Объём:</span> {p.vol}
+            <div style={{ fontSize: 12, color: t.muted, lineHeight: 1.4, fontWeight: 400 }}>
+              <span style={{ color: t.ink, fontWeight: 600 }}>На складе:</span> {p.stock != null ? `${p.stock} шт` : '—'}<br/>
+              <span style={{ color: t.ink, fontWeight: 600 }}>Объём:</span> {p.vol}
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: 10, marginTop: 16, alignItems: 'stretch' }}>
             <div style={{
               display: 'flex', alignItems: 'center',
-              background: t.surface, borderRadius: 12, boxShadow: `inset 0 0 0 1.5px ${t.border}`, padding: 4, gap: 4,
+              background: t.surface, borderRadius: 4, boxShadow: `inset 0 0 0 1.5px ${t.border}`, padding: 4, gap: 4,
             }}>
               <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={qtyBtn(t)}>{Icon.minus()}</button>
-              <span style={{ width: 36, textAlign: 'center', fontWeight: 800, fontSize: 16 }}>{qty}</span>
+              <span style={{ width: 36, textAlign: 'center', fontWeight: 600, fontSize: 16 }}>{qty}</span>
               <button onClick={() => setQty((q) => q + 1)} style={qtyBtn(t)}>{Icon.plus()}</button>
             </div>
             <Button size="lg" block onClick={() => { cart.add(p.id, qty); router.go({ screen: 'cart' }); }}>
@@ -133,10 +133,10 @@ export function PDPScreen({ device }) {
                 notify.show(isFav ? `Удалено из избранного` : `${p.name} — добавлено в избранное`);
               }}
               style={{
-                width: 48, height: 'auto', flexShrink: 0, borderRadius: 12,
-                border: `1.5px solid ${isFav ? t.primary : t.border}`,
-                background: isFav ? t.primary : t.surface,
-                color: isFav ? '#fff' : t.muted,
+                width: 48, height: 'auto', flexShrink: 0, borderRadius: 4,
+                border: `1.5px solid ${isFav ? 'transparent' : t.border}`,
+                background: isFav ? t.discountBg : t.surface,
+                color: isFav ? t.primaryDark : t.muted,
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 0.15s, border-color 0.15s',
               }}
@@ -152,13 +152,13 @@ export function PDPScreen({ device }) {
               { icon: Icon.heart,   t: 'Возврат 14 дней', s: 'без объяснения причин' },
             ].map((u, i) => (
               <div key={i} style={{
-                background: t.surface, padding: isDesk ? '12px 14px' : '10px 8px', borderRadius: 12,
+                background: t.surface, padding: isDesk ? '12px 14px' : '10px 8px', borderRadius: 4,
                 display: 'flex', alignItems: 'flex-start', gap: isDesk ? 10 : 6, minWidth: 0,
                 boxShadow: `inset 0 0 0 1px ${t.border}`,
               }}>
                 <span style={{ color: t.primary, display: 'flex', flexShrink: 0, marginTop: 1 }}>{u.icon()}</span>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: isDesk ? 13 : 11, fontWeight: 800, lineHeight: 1.3 }}>{u.t}</div>
+                  <div style={{ fontSize: isDesk ? 13 : 11, fontWeight: 600, lineHeight: 1.3 }}>{u.t}</div>
                   <div style={{ fontSize: isDesk ? 11 : 10, color: t.muted, lineHeight: 1.3, marginTop: 2 }}>{u.s}</div>
                 </div>
               </div>
@@ -169,7 +169,7 @@ export function PDPScreen({ device }) {
             {[['about', 'Описание'], ['compose', 'Состав'], ['reviews', `Отзывы · ${p.reviews}`], ['delivery', 'Доставка']].map(([k, l]) => (
               <button key={k} onClick={() => setTab(k)} style={{
                 background: 'transparent', border: 'none', cursor: 'pointer',
-                padding: '12px 0', fontSize: 14, fontWeight: 700,
+                padding: '12px 0', fontSize: 14, fontWeight: 600,
                 color: tab === k ? t.ink : t.muted,
                 borderBottom: tab === k ? `2.5px solid ${t.primary}` : '2.5px solid transparent',
                 marginBottom: -1.5, fontFamily: 'inherit',
@@ -202,9 +202,9 @@ export function PDPScreen({ device }) {
                   { n: 'Марина С.', d: '4 апр',  r: 5, t: 'Пришло быстро, упаковано хорошо. Качество как в дорогих магазинах, а цена в два раза ниже.' },
                   { n: 'Ольга Р.',  d: '28 мар', r: 4, t: 'Хороший продукт за свои деньги. Эффект заметен через неделю.' },
                 ].map((r, i) => (
-                  <div key={i} style={{ background: t.surface, padding: 14, borderRadius: 12, boxShadow: `inset 0 0 0 1px ${t.border}` }}>
+                  <div key={i} style={{ background: t.surface, padding: 14, borderRadius: 4, boxShadow: `inset 0 0 0 1px ${t.border}` }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                      <div style={{ fontWeight: 800, fontSize: 13 }}>{r.n}</div>
+                      <div style={{ fontWeight: 600, fontSize: 13 }}>{r.n}</div>
                       <div style={{ display: 'flex', color: t.accent2, gap: 1 }}>
                         {[...Array(r.r)].map((_, j) => Icon.star(true, { key: j }))}
                       </div>

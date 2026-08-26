@@ -19,7 +19,7 @@ export function FavoritesScreen({ device }) {
         alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 14,
       }}>
         <div style={{ fontSize: 56 }}>🤍</div>
-        <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.01em' }}>Избранное пусто</div>
+        <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.01em' }}>Избранное пусто</div>
         <div style={{ fontSize: 14, color: t.muted, maxWidth: 280 }}>
           Нажимайте на ♥ на карточках товаров — они сохранятся здесь.
         </div>
@@ -31,7 +31,7 @@ export function FavoritesScreen({ device }) {
   return (
     <div style={{ background: t.bg, color: t.ink, minHeight: '100%' }}>
       <div style={{ padding: isDesk ? '24px 40px 40px' : '14px 16px 16px' }}>
-        <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 20px' }}>
+        <h1 style={{ fontSize: isDesk ? 32 : 22, fontWeight: 600, letterSpacing: '-0.02em', margin: '0 0 20px' }}>
           Избранное · {favs.list.length}
         </h1>
         <div style={{

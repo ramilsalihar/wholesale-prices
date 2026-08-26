@@ -7,7 +7,7 @@ export function SearchField({ placeholder = 'Поиск цветов, букет
   return (
     <div onClick={onFocus} style={{
       background: t.surface, color: t.ink,
-      borderRadius: 12, padding: '12px 14px',
+      borderRadius: 4, padding: '12px 14px',
       display: 'flex', alignItems: 'center', gap: 10,
       boxShadow: `inset 0 0 0 1.5px ${t.border}`, cursor: 'text',
     }}>

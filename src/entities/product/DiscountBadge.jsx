@@ -6,8 +6,8 @@ export function DiscountBadge({ pct, style }) {
   return (
     <div style={{
       background: t.discountBg, color: t.discountInk,
-      padding: '3px 8px', borderRadius: 6, fontWeight: 800, fontSize: 12,
-      letterSpacing: '0.02em', whiteSpace: 'nowrap', ...style,
+      padding: '3px 8px', borderRadius: 4, fontWeight: 600, fontSize: 12,
+      letterSpacing: '0.02em', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums', ...style,
     }}>−{pct}%</div>
   );
 }
