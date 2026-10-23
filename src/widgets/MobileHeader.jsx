@@ -3,6 +3,7 @@ import { useTheme } from '../shared/theme.jsx';
 import { useRouter } from '../shared/router.jsx';
 import { useCart } from '../features/cart.jsx';
 import { useFavorites } from '../features/favorites.jsx';
+import { useAuth } from '../features/auth.jsx';
 import { Icon } from '../shared/ui/Icon.jsx';
 import { Logo } from '../shared/ui/Logo.jsx';
 
@@ -11,6 +12,7 @@ export function MobileHeader({ title, showBack = false }) {
   const router = useRouter();
   const cart = useCart();
   const favs = useFavorites();
+  const { user, isVendor } = useAuth();
   return (
     <div style={{
       background: t.headerBg, color: t.headerInk,
@@ -38,6 +40,30 @@ export function MobileHeader({ title, showBack = false }) {
           </div>
         )}
       </div>
+
+      {/* Vendor button on mobile if authenticated as vendor */}
+      {user && isVendor && (
+        <a
+          href="/vendor"
+          title="Панель вендора"
+          style={{
+            background: t.discountBg,
+            border: `1.5px solid ${t.primary}`,
+            borderRadius: '50%',
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 18,
+            textDecoration: 'none',
+            flexShrink: 0,
+          }}
+        >
+          🏪
+        </a>
+      )}
+
       <button onClick={() => router.go({ screen: 'favorites' })} style={{
         background: t.surfaceAlt, border: `1px solid ${t.border}`, cursor: 'pointer',
         width: 40, height: 40, borderRadius: '50%', color: 'inherit',

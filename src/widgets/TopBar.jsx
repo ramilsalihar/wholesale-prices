@@ -60,7 +60,7 @@ export function TopBar() {
   const t = useTheme();
   const router = useRouter();
   const cart = useCart();
-  const { user, openLogin } = useAuth();
+  const { user, isVendor, openLogin } = useAuth();
 
   const NAV_SCREENS = ['home', 'catalog', 'gifts', 'shops', 'cart', 'favorites', 'pricing'];
   const canGoBack = !NAV_SCREENS.includes(router.route.screen);
@@ -95,6 +95,34 @@ export function TopBar() {
       )}
 
       <div style={{ flex: 1 }} />
+
+      {/* Vendor Panel button: ONLY visible if authenticated AND role is vendor */}
+      {user && isVendor && (
+        <a
+          href="/vendor"
+          title="Перейти в личный кабинет продавца"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 7,
+            background: t.discountBg,
+            color: t.primaryDark,
+            border: `1.5px solid ${t.primary}`,
+            borderRadius: 4,
+            padding: '7px 13px',
+            fontSize: 13,
+            fontWeight: 700,
+            textDecoration: 'none',
+            fontFamily: 'inherit',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            cursor: 'pointer',
+          }}
+        >
+          <span style={{ fontSize: 15 }}>🏪</span>
+          <span>Панель вендора</span>
+        </a>
+      )}
 
       {user && (
         <button

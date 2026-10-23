@@ -3,12 +3,21 @@ import ReactDOM from 'react-dom/client';
 import { Analytics } from '@vercel/analytics/react';
 import WebApp from './app/WebApp.jsx';
 import AdminApp from './admin/AdminApp.jsx';
+import VendorApp from './vendor/VendorApp.jsx';
 
-const isAdmin = window.location.pathname.startsWith('/admin');
+const pathname = window.location.pathname;
+const isAdmin = pathname.startsWith('/admin');
+const isVendor = pathname.startsWith('/vendor');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
-    {isAdmin ? <AdminApp /> : <WebApp />}
+    {isAdmin ? (
+      <AdminApp />
+    ) : isVendor ? (
+      <VendorApp />
+    ) : (
+      <WebApp />
+    )}
     <Analytics />
   </>
 );

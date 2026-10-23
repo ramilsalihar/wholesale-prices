@@ -103,6 +103,33 @@ const LANGS = ['RU', 'KG', 'EN'];
 
 function SidebarItem({ item, active, open, onClick }) {
   const t = useTheme();
+
+  if (item.href) {
+    return (
+      <a
+        href={item.href}
+        style={{
+          display: 'flex', alignItems: 'center',
+          justifyContent: open ? 'flex-start' : 'center',
+          gap: 12, padding: open ? '10px 12px' : '10px 0',
+          background: 'transparent',
+          color: t.ink,
+          border: 'none', cursor: 'pointer',
+          borderRadius: 4, width: '100%', textAlign: 'left',
+          fontFamily: 'inherit', position: 'relative',
+          textDecoration: 'none',
+          boxSizing: 'border-box',
+          transition: 'background 0.12s',
+        }}
+      >
+        <span style={{ display: 'flex', flexShrink: 0, color: t.primary }}>{item.icon()}</span>
+        {open && (
+          <span style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', flex: 1 }}>{item.label}</span>
+        )}
+      </a>
+    );
+  }
+
   return (
     <button
       onClick={onClick}
@@ -274,7 +301,6 @@ export function NavSidebar({ open, setOpen }) {
     { id: 'home',      icon: () => NI.home(),         label: 'Главная',     to: { screen: 'home' } },
     { id: 'catalog',   icon: () => NI.grid(),         label: 'Каталог',     to: { screen: 'catalog' } },
     { id: 'gifts',     icon: () => NI.gift(),         label: 'Подарки',     to: { screen: 'gifts' } },
-    // { id: 'shops',     icon: () => NI.store(),        label: 'Магазины',    to: { screen: 'shops' } },
     { id: 'cart',      icon: () => Icon.cart(),       label: 'Корзина',     to: { screen: 'cart' },      badge: cart.count },
     { id: 'favorites', icon: () => NI.heart(favs?.count > 0), label: 'Избранное', to: { screen: 'favorites' }, badge: favs?.count },
     { id: 'pricing',   icon: () => NI.pricetag(),             label: 'Тарифы',    to: { screen: 'pricing' } },

@@ -68,7 +68,7 @@ function Section({ title, children }) {
 export function ProfileScreen({ device }) {
   const t = useTheme();
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, isVendor, signOut } = useAuth();
   const notify = useNotification();
   const isDesk = device === 'desktop';
 
@@ -225,6 +225,48 @@ export function ProfileScreen({ device }) {
                 />
               </label>
             </Section>
+
+            {/* Vendor Portal Link - ONLY visible if user is a vendor */}
+            {isVendor && (
+              <div style={{
+                background: `linear-gradient(135deg, ${t.surface} 0%, ${t.discountBg} 100%)`,
+                borderRadius: 4,
+                border: `1.5px solid ${t.border}`,
+                padding: '18px 20px',
+                marginBottom: 20,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 16,
+                flexWrap: 'wrap',
+              }}>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: t.ink, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span>🏪</span> Ваш статус: Продавец (Vendor)
+                  </div>
+                  <div style={{ fontSize: 13, color: t.muted, marginTop: 4 }}>
+                    Управление вашим магазином и каталогом букетов
+                  </div>
+                </div>
+                <a
+                  href="/vendor"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    background: t.primary,
+                    color: '#fff',
+                    padding: '9px 16px',
+                    borderRadius: 4,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Панель вендора →
+                </a>
+              </div>
+            )}
 
             {/* Save */}
             <button

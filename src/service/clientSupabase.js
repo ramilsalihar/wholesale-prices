@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabase.js';
 
-const url = import.meta.env.VITE_SUPABASE_URL ?? 'https://placeholder.supabase.co';
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY ?? 'placeholder';
-
-export const clientSupabase = createClient(url, key, {
-  auth: { storageKey: 'sb-client-auth' },
-});
+// Export shared supabase client to guarantee unified session across storefront and vendor portal
+export const clientSupabase = supabase;

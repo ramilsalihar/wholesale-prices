@@ -3,6 +3,7 @@ import { AT } from '../adminTheme.js';
 import { fetchAllProducts, upsertProduct, toggleProductActive } from '../../service/products.js';
 import { fetchCategories } from '../../service/categories.js';
 import { fetchAllBrands } from '../../service/brands.js';
+import { fetchAllVendors } from '../../service/vendors.js';
 import { ProductsTableSkeleton } from '../ui/Skeleton.jsx';
 
 const SHAPES = ['jar', 'bottle', 'tube', 'flask', 'lipstick', 'palette', 'pencil', 'stick', 'spray', 'bar'];
@@ -612,9 +613,11 @@ export function Products() {
   const [products, setProducts] = useState([]);
   const [cats, setCats] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filterCat, setFilterCat] = useState('');
+  const [filterVendor, setFilterVendor] = useState('');
   const [search, setSearch] = useState('');
 
   const [view, setView] = useState('list');
@@ -628,10 +631,16 @@ export function Products() {
   async function load() {
     setLoading(true);
     try {
-      const [prods, categories, allBrands] = await Promise.all([fetchAllProducts(), fetchCategories(), fetchAllBrands()]);
+      const [prods, categories, allBrands, allVendors] = await Promise.all([
+        fetchAllProducts(),
+        fetchCategories(),
+        fetchAllBrands(),
+        fetchAllVendors().catch(() => []),
+      ]);
       setProducts(prods);
       setCats(categories);
       setBrands(allBrands);
+      setVendors(allVendors || []);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -717,6 +726,11 @@ export function Products() {
 
   const visible = products
     .filter(p => !filterCat || p.cat === filterCat)
+    .filter(p => {
+      if (!filterVendor) return true;
+      if (filterVendor === 'platform') return !p.vendor_id;
+      return p.vendor_id === filterVendor;
+    })
     .filter(p => !search || p.name?.toLowerCase().includes(search.toLowerCase()) || p.brand?.toLowerCase().includes(search.toLowerCase()));
 
   const catName = (id) => cats.find(c => c.id === id)?.ru ?? id;
@@ -791,6 +805,11 @@ export function Products() {
           <option value="">Все категории</option>
           {cats.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.ru}</option>)}
         </select>
+        <select style={inp({ width: isMobile ? '100%' : 200 })} value={filterVendor} onChange={e => setFilterVendor(e.target.value)}>
+          <option value="">Все продавцы</option>
+          <option value="platform">Только платформа Flowo</option>
+          {vendors.map(v => <option key={v.id} value={v.id}>Магазин: {v.name}</option>)}
+        </select>
       </div>
 
       {isMobile ? (
@@ -845,9 +864,23 @@ export function Products() {
                           <div style={{ width: 36, height: 36, borderRadius: 6, background: `hsl(${(p.hue ?? [300])[0]}, 40%, 88%)`, border: `1px solid ${AT.border}` }} />
                         )}
                       </td>
-                      <td style={{ padding: '11px 14px', maxWidth: 200 }}>
+                      <td style={{ padding: '11px 14px', maxWidth: 220 }}>
                         <div style={{ fontSize: 13, fontWeight: 700, color: AT.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                        <div style={{ fontSize: 11, color: AT.muted, fontFamily: 'monospace', marginTop: 2 }}>{p.id}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 11, color: AT.muted, fontFamily: 'monospace' }}>{p.id}</span>
+                          {p.vendor_id && (
+                            <span style={{
+                              fontSize: 10,
+                              background: AT.primaryBg,
+                              color: AT.primaryDark,
+                              padding: '1px 5px',
+                              borderRadius: 3,
+                              fontWeight: 700,
+                            }}>
+                              🏪 {vendors.find(v => v.id === p.vendor_id)?.name || 'Вендор'}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td style={{ padding: '11px 14px', fontSize: 13, color: AT.inkLight, whiteSpace: 'nowrap' }}>{p.brand}</td>
                       <td style={{ padding: '11px 14px', fontSize: 13, color: AT.inkLight, whiteSpace: 'nowrap' }}>{catName(p.cat)}</td>

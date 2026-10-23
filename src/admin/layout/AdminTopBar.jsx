@@ -5,6 +5,7 @@ const SCREEN_TITLES = {
   dashboard: 'Дашборд',
   orders: 'Заказы',
   products: 'Товары',
+  vendors: 'Вендоры',
   categories: 'Категории',
   banners: 'Баннеры',
   features: 'Преимущества',
