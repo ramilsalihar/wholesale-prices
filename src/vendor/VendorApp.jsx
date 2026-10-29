@@ -68,7 +68,7 @@ export default function VendorApp() {
       if (!v && (userRole === 'vendor' || userRole === 'admin')) {
         const metadata = user.user_metadata || {};
         const shopName = metadata.shop_name || metadata.full_name || 'Цветочный салон';
-        v = await upsertVendor({
+        const defaultVendor = {
           id: user.id,
           name: shopName,
           email: user.email,
@@ -77,7 +77,19 @@ export default function VendorApp() {
           address: metadata.address || '',
           description: metadata.description || '',
           status: 'approved',
-        });
+          hours: '09:00 – 21:00',
+          logo_url: '',
+          banner_url: '',
+          rating: 5.0,
+          tier: 'small',
+        };
+
+        try {
+          v = await upsertVendor(defaultVendor);
+        } catch (saveErr) {
+          console.warn('Could not upsert default vendor to DB, using local state:', saveErr);
+          v = defaultVendor;
+        }
       }
 
       setVendor(v);

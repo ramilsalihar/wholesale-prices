@@ -47,8 +47,14 @@ export async function fetchOrders() {
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
-  if (error) throw error;
-  return data;
+  if (error) {
+    if (error.code === 'PGRST205' || error.message?.includes('schema cache') || error.message?.includes('relation "orders" does not exist')) {
+      console.warn('Orders table not found in schema cache. Run migration SQL.');
+      return [];
+    }
+    throw error;
+  }
+  return data ?? [];
 }
 
 export async function fetchOrderById(id) {

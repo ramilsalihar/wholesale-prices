@@ -4,7 +4,7 @@ import { AT } from '../adminTheme.js';
 const NAV = [
   {
     key: 'dashboard',
-    label: 'Дашборд',
+    label: 'Дашборд и Метрики',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
@@ -13,8 +13,28 @@ const NAV = [
     ),
   },
   {
+    key: 'vendors',
+    label: 'Вендоры и Магазины',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+  },
+  {
+    key: 'products',
+    label: 'Каталог Букетов',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
+      </svg>
+    ),
+  },
+  {
     key: 'orders',
-    label: 'Заказы',
+    label: 'Заказы клиентов',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
@@ -24,30 +44,20 @@ const NAV = [
     ),
   },
   {
-    key: 'products',
-    label: 'Товары',
+    key: 'users',
+    label: 'Пользователи / Наплыв',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
-      </svg>
-    ),
-  },
-  {
-    key: 'vendors',
-    label: 'Вендоры',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="8.5" cy="7" r="4" />
-        <line x1="20" y1="8" x2="20" y2="14" />
-        <line x1="23" y1="11" x2="17" y2="11" />
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
     ),
   },
   {
     key: 'categories',
-    label: 'Категории',
+    label: 'Категории цветов',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -56,18 +66,8 @@ const NAV = [
     ),
   },
   {
-    key: 'brands',
-    label: 'Бренды',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="6" />
-        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
-      </svg>
-    ),
-  },
-  {
     key: 'banners',
-    label: 'Баннеры',
+    label: 'Баннеры витрины',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -77,27 +77,8 @@ const NAV = [
     ),
   },
   {
-    key: 'features',
-    label: 'Преимущества',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-      </svg>
-    ),
-  },
-  {
-    key: 'stores',
-    label: 'Магазины',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-  },
-  {
     key: 'settings',
-    label: 'Настройки',
+    label: 'Настройки сервиса',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
@@ -130,18 +111,32 @@ export function AdminSidebar({ screen, go, mobile, drawerOpen }) {
       {mobile && (
         <div style={{
           padding: '16px 16px 8px',
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: 800,
           color: AT.primary,
           letterSpacing: '-0.02em',
           borderBottom: `1px solid ${AT.border}`,
           marginBottom: 4,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
         }}>
-          Оптовые Цены
+          🌸 Flowo Marketplace
         </div>
       )}
 
-      <nav style={{ padding: '12px 8px', flex: 1 }}>
+      <div style={{
+        padding: '14px 16px 6px',
+        fontSize: 11,
+        fontWeight: 800,
+        color: AT.muted,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+      }}>
+        Управление Flowo
+      </div>
+
+      <nav style={{ padding: '6px 8px', flex: 1 }}>
         {NAV.map(item => {
           const active = screen === item.key;
           return (
@@ -159,7 +154,7 @@ export function AdminSidebar({ screen, go, mobile, drawerOpen }) {
                 background: active ? AT.primaryBg : 'transparent',
                 color: active ? AT.primary : AT.inkLight,
                 fontFamily: 'Manrope, sans-serif',
-                fontSize: 14,
+                fontSize: 13.5,
                 fontWeight: active ? 700 : 500,
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -177,14 +172,18 @@ export function AdminSidebar({ screen, go, mobile, drawerOpen }) {
       </nav>
 
       <div style={{
-        padding: '12px 16px',
+        padding: '14px 16px',
         borderTop: `1px solid ${AT.border}`,
         fontSize: 11,
         color: AT.muted,
-        fontWeight: 500,
+        fontWeight: 600,
         letterSpacing: '0.02em',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
       }}>
-        ОПТОВЫЕ ЦЕНЫ · ADMIN
+        <span>FLOWO · ADMIN</span>
+        <span style={{ fontSize: 10, background: AT.successBg, color: AT.success, padding: '2px 6px', borderRadius: 4, fontWeight: 800 }}>LIVE</span>
       </div>
     </aside>
   );

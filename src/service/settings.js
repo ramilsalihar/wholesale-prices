@@ -2,14 +2,17 @@ import { supabase } from './supabase.js';
 
 const DEFAULTS = {
   id: 'main',
-  store_name: 'САМЫЙ БОЛЬШОЙ МАГАЗИН КОСМЕТИКИ В КЫРГЫЗСТАНЕ',
-  instagram: 'optovye_ceny01_',
-  phone: '8 (312) 123-45-67',
-  free_delivery_threshold: 1500,
-  delivery_bishkek: 199,
-  delivery_osh: 199,
-  delivery_regions: 299,
-  default_theme: 'magnit',
+  platform_name: 'Flowo — Цветочный маркетплейс',
+  tagline: 'Быстрая доставка свежих букетов от лучших флористов',
+  support_phone: '+996 (555) 123-456',
+  support_whatsapp: '+996555123456',
+  instagram: 'flowo_kg',
+  default_city: 'Бишкек',
+  free_delivery_threshold: 2000,
+  delivery_bishkek: 250,
+  delivery_suburbs: 350,
+  commission_percent: 10,
+  auto_approve_vendors: true,
 };
 
 export { DEFAULTS as DEFAULT_SETTINGS };

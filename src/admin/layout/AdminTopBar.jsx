@@ -2,15 +2,14 @@ import React from 'react';
 import { AT } from '../adminTheme.js';
 
 const SCREEN_TITLES = {
-  dashboard: 'Дашборд',
-  orders: 'Заказы',
-  products: 'Товары',
-  vendors: 'Вендоры',
-  categories: 'Категории',
-  banners: 'Баннеры',
-  features: 'Преимущества',
-  stores: 'Магазины',
-  settings: 'Настройки',
+  dashboard: 'Дашборд и Метрики',
+  vendors: 'Вендоры и Цветочные магазины',
+  products: 'Каталог Букетов и Товаров',
+  orders: 'Заказы клиентов',
+  users: 'Пользователи и Покупатели',
+  categories: 'Категории цветов',
+  banners: 'Баннеры витрины',
+  settings: 'Настройки платформы',
 };
 
 function HamburgerIcon({ open }) {
@@ -65,12 +64,15 @@ export function AdminTopBar({ screen, session, onSignOut, mobile, drawerOpen, on
         <div style={{
           width: AT.sidebarW - 24,
           flexShrink: 0,
-          fontSize: 16,
+          fontSize: 17,
           fontWeight: 800,
           color: AT.primary,
           letterSpacing: '-0.02em',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
         }}>
-          Оптовые Цены
+          🌸 Flowo Admin
         </div>
       )}
 

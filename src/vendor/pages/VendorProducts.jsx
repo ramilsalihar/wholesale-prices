@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { VT } from '../vendorTheme.js';
 import { upsertVendorProduct, deleteVendorProduct, toggleVendorProductActive } from '../../service/vendorProducts.js';
 import { fetchCategories } from '../../service/categories.js';
+import { supabase } from '../../service/supabase.js';
 
 const inpStyle = (extra = {}) => ({
   display: 'block',
@@ -130,7 +131,14 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
     };
 
     try {
-      const saved = await upsertVendorProduct(payload, vendor.id);
+      let targetVendorId = vendor?.id;
+      if (!targetVendorId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        targetVendorId = user?.id;
+      }
+      if (!targetVendorId) throw new Error('Не удалось определить ID продавца');
+
+      const saved = await upsertVendorProduct(payload, targetVendorId);
       setProducts(prev => {
         if (editingProduct) {
           return prev.map(p => (p.id === saved.id ? saved : p));
@@ -148,7 +156,12 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
   async function handleToggleActive(prod) {
     const nextActive = prod.active === false ? true : false;
     try {
-      await toggleVendorProductActive(prod.id, nextActive, vendor.id);
+      let targetVendorId = vendor?.id;
+      if (!targetVendorId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        targetVendorId = user?.id;
+      }
+      await toggleVendorProductActive(prod.id, nextActive, targetVendorId);
       setProducts(prev => prev.map(p => (p.id === prod.id ? { ...p, active: nextActive } : p)));
     } catch (err) {
       alert('Не удалось изменить статус товара: ' + err.message);
@@ -157,7 +170,12 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
 
   async function handleDelete(id) {
     try {
-      await deleteVendorProduct(id, vendor.id);
+      let targetVendorId = vendor?.id;
+      if (!targetVendorId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        targetVendorId = user?.id;
+      }
+      await deleteVendorProduct(id, targetVendorId);
       setProducts(prev => prev.filter(p => p.id !== id));
       setDeleteConfirmId(null);
     } catch (err) {

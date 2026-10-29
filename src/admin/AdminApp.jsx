@@ -6,12 +6,10 @@ import { Dashboard } from './pages/Dashboard.jsx';
 import { Categories } from './pages/Categories.jsx';
 import { Products } from './pages/Products.jsx';
 import { Vendors } from './pages/Vendors.jsx';
-import { Brands } from './pages/Brands.jsx';
+import { Users } from './pages/Users.jsx';
 import { Banners } from './pages/Banners.jsx';
 import { Orders } from './pages/Orders.jsx';
-import { Stores } from './pages/Stores.jsx';
 import { Settings } from './pages/Settings.jsx';
-import { Features } from './pages/Features.jsx';
 import { fetchUserRole } from '../service/vendors.js';
 import { AT } from './adminTheme.js';
 
@@ -23,9 +21,9 @@ function Placeholder({ screen }) {
           orders: 'Заказы',
           products: 'Товары',
           vendors: 'Вендоры',
+          users: 'Пользователи',
           categories: 'Категории',
           banners: 'Баннеры',
-          stores: 'Магазины',
           settings: 'Настройки',
         }[screen] ?? screen}
       </h1>
@@ -39,7 +37,7 @@ function Placeholder({ screen }) {
         fontSize: 14,
         fontWeight: 500,
       }}>
-        Раздел в разработке — см. PLAN.md для деталей
+        Раздел в разработке
       </div>
     </div>
   );
@@ -48,15 +46,13 @@ function Placeholder({ screen }) {
 function ScreenContent({ screen }) {
   switch (screen) {
     case 'dashboard':  return <Dashboard />;
-    case 'orders':     return <Orders />;
-    case 'products':   return <Products />;
     case 'vendors':    return <Vendors />;
+    case 'products':   return <Products />;
+    case 'orders':     return <Orders />;
+    case 'users':      return <Users />;
     case 'categories': return <Categories />;
-    case 'brands':     return <Brands />;
     case 'banners':    return <Banners />;
-    case 'stores':     return <Stores />;
     case 'settings':   return <Settings />;
-    case 'features':   return <Features />;
     default:           return <Placeholder screen={screen} />;
   }
 }
@@ -114,8 +110,10 @@ export default function AdminApp() {
     return <AdminLogin />;
   }
 
-  // If a vendor logs into /admin, direct them to their vendor dashboard
-  if (role === 'vendor') {
+  // ── ROUTE PROTECTION FOR /admin ────────────────────────────────────
+  // Only users with role === 'admin' can access AdminShell
+  if (role !== 'admin') {
+    const isVendor = role === 'vendor';
     return (
       <div style={{
         minHeight: '100dvh',
@@ -130,48 +128,74 @@ export default function AdminApp() {
           background: AT.surface,
           borderRadius: AT.radiusLg,
           border: `1px solid ${AT.border}`,
-          padding: '36px 32px',
-          maxWidth: 460,
+          padding: '40px 32px',
+          maxWidth: 480,
           textAlign: 'center',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.06)',
         }}>
-          <div style={{ fontSize: 44, marginBottom: 12 }}>🌸</div>
+          <div style={{ fontSize: 44, marginBottom: 12 }}>
+            {isVendor ? '🌸' : '🔒'}
+          </div>
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: AT.ink }}>
-            Кабинет Вендора
+            {isVendor ? 'Кабинет продавца Flowo' : 'Доступ к панели запрещён'}
           </h2>
           <p style={{ fontSize: 14, color: AT.muted, margin: '12px 0 24px', lineHeight: 1.6 }}>
-            Вы авторизованы как продавец (Вендор). Панель супер-администратора предназначена для главного руководства. Управляйте своими товарами и магазином в Кабинете Вендора:
+            {isVendor ? (
+              <>Вы авторизованы как <strong>Вендор ({session.user.email})</strong>. Панель супер-администратора предназначена только для управляющего платформой. Ваши букеты и заказы находятся в панели продавца:</>
+            ) : (
+              <>Вы авторизованы как <strong>Покупатель ({session.user.email})</strong>. У вас нет прав доступа к административной панели платформы Flowo.</>
+            )}
           </p>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <a
-              href="/vendor"
-              style={{
-                display: 'block',
-                padding: '12px',
-                background: AT.primary,
-                color: '#fff',
-                borderRadius: AT.radius,
-                fontWeight: 700,
-                fontSize: 14,
-                textDecoration: 'none',
-              }}
-            >
-              Перейти в Кабинет Продавца →
-            </a>
+            {isVendor ? (
+              <a
+                href="/vendor"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  background: AT.primary,
+                  color: '#fff',
+                  borderRadius: AT.radius,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: 'none',
+                }}
+              >
+                Перейти в Кабинет Продавца →
+              </a>
+            ) : (
+              <a
+                href="/"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  background: AT.primary,
+                  color: '#fff',
+                  borderRadius: AT.radius,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: 'none',
+                }}
+              >
+                На главную витрину Flowo →
+              </a>
+            )}
+
             <button
               onClick={signOut}
               style={{
-                padding: '10px',
-                background: 'transparent',
+                padding: '11px',
+                background: AT.surfaceAlt,
                 border: `1px solid ${AT.border}`,
-                color: AT.muted,
+                color: AT.ink,
                 borderRadius: AT.radius,
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: 13,
                 cursor: 'pointer',
               }}
             >
-              Сменить аккаунт / Выйти
+              Войти под другим аккаунтом (Администратор)
             </button>
           </div>
         </div>

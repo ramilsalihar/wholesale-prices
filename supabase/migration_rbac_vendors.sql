@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.vendors (
   rating float4 DEFAULT 5.0,             -- Рейтинг
   reviews_count int4 DEFAULT 0,          -- Количество отзывов
   status text NOT NULL DEFAULT 'approved' CHECK (status IN ('pending', 'approved', 'rejected', 'blocked')),
+  tier text NOT NULL DEFAULT 'small' CHECK (tier IN ('small', 'medium', 'flagship')),  -- Масштаб магазина
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -59,6 +60,7 @@ ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS banner_url text;
 ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS rating float4 DEFAULT 5.0;
 ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS reviews_count int4 DEFAULT 0;
 ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'approved';
+ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS tier text NOT NULL DEFAULT 'small';
 ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS created_at timestamptz DEFAULT now();
 ALTER TABLE public.vendors ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now();
 

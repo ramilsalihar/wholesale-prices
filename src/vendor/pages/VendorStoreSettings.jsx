@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VT } from '../vendorTheme.js';
 import { upsertVendor } from '../../service/vendors.js';
+import { supabase } from '../../service/supabase.js';
 
 const inpStyle = (extra = {}) => ({
   display: 'block',
@@ -33,6 +34,21 @@ export function VendorStoreSettings({ vendor, onVendorUpdated }) {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // Sync state if vendor object loads/changes
+  useEffect(() => {
+    if (vendor) {
+      if (vendor.name) setName(vendor.name);
+      if (vendor.description) setDescription(vendor.description);
+      if (vendor.phone) setPhone(vendor.phone);
+      if (vendor.email) setEmail(vendor.email);
+      if (vendor.city) setCity(vendor.city);
+      if (vendor.address) setAddress(vendor.address);
+      if (vendor.hours) setHours(vendor.hours);
+      if (vendor.logo_url) setLogoUrl(vendor.logo_url);
+      if (vendor.banner_url) setBannerUrl(vendor.banner_url);
+    }
+  }, [vendor]);
+
   async function handleSave(e) {
     e.preventDefault();
     if (!name.trim()) {
@@ -45,8 +61,19 @@ export function VendorStoreSettings({ vendor, onVendorUpdated }) {
     setSavedSuccess(false);
 
     try {
+      // Safely resolve vendor ID: from props, or directly from current authenticated session
+      let targetId = vendor?.id;
+      if (!targetId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        targetId = user?.id;
+      }
+
+      if (!targetId) {
+        throw new Error('Не удалось определить ID магазина. Пожалуйста, перезайдите в аккаунт.');
+      }
+
       const payload = {
-        id: vendor.id,
+        id: targetId,
         name: name.trim(),
         description: description.trim(),
         phone: phone.trim(),
@@ -56,6 +83,7 @@ export function VendorStoreSettings({ vendor, onVendorUpdated }) {
         hours: hours.trim(),
         logo_url: logoUrl.trim(),
         banner_url: bannerUrl.trim(),
+        status: vendor?.status || 'approved',
       };
 
       const updated = await upsertVendor(payload);
