@@ -49,6 +49,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
   const [formVol, setFormVol] = useState('');
   const [formDesc, setFormDesc] = useState('');
   const [formImageUrl, setFormImageUrl] = useState('');
+  const [imagePreviewError, setImagePreviewError] = useState(false);
   const [formSku, setFormSku] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formHit, setFormHit] = useState(false);
@@ -77,6 +78,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
     setFormVol('');
     setFormDesc('');
     setFormImageUrl('');
+    setImagePreviewError(false);
     setFormSku(`FLW-${Math.floor(1000 + Math.random() * 9000)}`);
     setFormActive(true);
     setFormHit(false);
@@ -93,6 +95,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
     setFormVol(prod.vol || '');
     setFormDesc(prod.description || '');
     setFormImageUrl(prod.image_url || (Array.isArray(prod.images) ? prod.images[0] : '') || '');
+    setImagePreviewError(false);
     setFormSku(prod.sku || '');
     setFormActive(prod.active !== false);
     setFormHit(Boolean(prod.hit));
@@ -686,16 +689,20 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
                 <input
                   type="url"
                   value={formImageUrl}
-                  onChange={e => setFormImageUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
+                  onChange={e => { setFormImageUrl(e.target.value); setImagePreviewError(false); }}
+                  placeholder="Прямая ссылка на файл .jpg, .png или .webp"
                   style={inpStyle()}
                 />
                 {formImageUrl && (
                   <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', border: `1px solid ${VT.border}`, background: '#f5f5f5' }}>
-                      <img src={formImageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.currentTarget.style.display = 'none'} />
-                    </div>
-                    <span style={{ fontSize: 12, color: VT.muted }}>Предпросмотр фото</span>
+                    {!imagePreviewError ? (
+                      <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', border: `1px solid ${VT.border}`, background: '#f5f5f5' }}>
+                        <img src={formImageUrl} alt="Предпросмотр букета" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setImagePreviewError(true)} />
+                      </div>
+                    ) : null}
+                    <span style={{ fontSize: 12, color: imagePreviewError ? '#b42318' : VT.muted }}>
+                      {imagePreviewError ? 'Изображение недоступно. Нужна прямая публичная ссылка на файл, а не страница просмотра.' : 'Предпросмотр фото'}
+                    </span>
                   </div>
                 )}
               </div>
