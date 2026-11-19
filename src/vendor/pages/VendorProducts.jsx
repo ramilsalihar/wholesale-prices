@@ -50,6 +50,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
   const [formDesc, setFormDesc] = useState('');
   const [formImageUrl, setFormImageUrl] = useState('');
   const [imagePreviewError, setImagePreviewError] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const [formSku, setFormSku] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formHit, setFormHit] = useState(false);
@@ -78,6 +79,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
     setFormVol('');
     setFormDesc('');
     setFormImageUrl('');
+    setImageFile(null);
     setImagePreviewError(false);
     setFormSku(`FLW-${Math.floor(1000 + Math.random() * 9000)}`);
     setFormActive(true);
@@ -95,6 +97,7 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
     setFormVol(prod.vol || '');
     setFormDesc(prod.description || '');
     setFormImageUrl(prod.image_url || (Array.isArray(prod.images) ? prod.images[0] : '') || '');
+    setImageFile(null);
     setImagePreviewError(false);
     setFormSku(prod.sku || '');
     setFormActive(prod.active !== false);
@@ -141,6 +144,15 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
       }
       if (!targetVendorId) throw new Error('Не удалось определить ID продавца');
 
+      if (imageFile) {
+        const safeName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const path = `${targetVendorId}/${Date.now()}-${safeName}`;
+        const { error: uploadError } = await supabase.storage.from('product-images').upload(path, imageFile, { upsert: false, contentType: imageFile.type });
+        if (uploadError) throw new Error(`Не удалось загрузить фото: ${uploadError.message}. Проверьте, что в Supabase Storage создан bucket product-images и разрешена загрузка для вендоров.`);
+        const { data } = supabase.storage.from('product-images').getPublicUrl(path);
+        payload.image_url = data.publicUrl;
+        payload.images = [data.publicUrl];
+      }
       const saved = await upsertVendorProduct(payload, targetVendorId);
       setProducts(prev => {
         if (editingProduct) {
@@ -684,12 +696,24 @@ export function VendorProducts({ vendor, products, setProducts, initialModalOpen
 
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: VT.inkLight, textTransform: 'uppercase' }}>
-                  Ссылка на фото букета (URL)
+                  Фото букета — загрузить файл или указать ссылку
                 </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={e => {
+                    const file = e.target.files?.[0] || null;
+                    setImageFile(file);
+                    setImagePreviewError(false);
+                    if (file) setFormImageUrl(URL.createObjectURL(file));
+                  }}
+                  style={inpStyle()}
+                />
+                <div style={{ fontSize: 12, color: VT.muted, marginTop: 4 }}>JPG, PNG или WebP, до 8 МБ</div>
                 <input
                   type="url"
                   value={formImageUrl}
-                  onChange={e => { setFormImageUrl(e.target.value); setImagePreviewError(false); }}
+                  onChange={e => { setFormImageUrl(e.target.value); setImageFile(null); setImagePreviewError(false); }}
                   placeholder="Прямая ссылка на файл .jpg, .png или .webp"
                   style={inpStyle()}
                 />
