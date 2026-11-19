@@ -3,7 +3,8 @@ import { supabase } from './supabase.js';
 export async function fetchProducts() {
   const { data, error } = await supabase
     .from('products')
-    .select('id, images')
+    .select('*')
+    .eq('active', true)
     .order('id');
   if (error) throw error;
   return data;
