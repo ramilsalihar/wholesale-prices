@@ -17,14 +17,22 @@ export function DataProvider({ children }) {
   const [features, setFeatures] = useState([]);
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures()])
-      .then(([prods, cats, bans, feats]) => {
-        if (prods) setProducts(mergeProducts(PRODUCTS, prods));
-        if (cats?.length) setCategories(cats);
-        if (bans?.length) setBanners(bans);
-        if (feats?.length) setFeatures(feats);
-      })
-      .catch((err) => console.error('[DataProvider]', err));
+    const loadStorefront = async () => {
+      const results = await Promise.allSettled([
+        fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures(),
+      ]);
+      const [productsResult, categoriesResult, bannersResult, featuresResult] = results;
+      if (productsResult.status === 'fulfilled') {
+        setProducts(mergeProducts(PRODUCTS, productsResult.value || []));
+      } else console.error('[DataProvider products]', productsResult.reason);
+      if (categoriesResult.status === 'fulfilled' && categoriesResult.value?.length) setCategories(categoriesResult.value);
+      else if (categoriesResult.status === 'rejected') console.error('[DataProvider categories]', categoriesResult.reason);
+      if (bannersResult.status === 'fulfilled' && bannersResult.value?.length) setBanners(bannersResult.value);
+      else if (bannersResult.status === 'rejected') console.error('[DataProvider banners]', bannersResult.reason);
+      if (featuresResult.status === 'fulfilled') setFeatures(featuresResult.value || []);
+      else console.error('[DataProvider features]', featuresResult.reason);
+    };
+    loadStorefront();
 
     const channel = supabase
       .channel('storefront-sync')
