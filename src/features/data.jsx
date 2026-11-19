@@ -19,14 +19,7 @@ export function DataProvider({ children }) {
   useEffect(() => {
     Promise.all([fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures()])
       .then(([prods, cats, bans, feats]) => {
-        if (prods?.length) {
-          setProducts(prev => prev.map(local => {
-            const remote = prods.find(r => r.id === local.id);
-            const imgs = Array.isArray(remote?.images) ? remote.images : (remote?.images ? [remote.images] : []);
-            const firstImage = imgs[0] ?? null;
-            return remote ? { ...local, image_url: firstImage, images: imgs } : local;
-          }));
-        }
+        if (prods) setProducts(mergeProducts(PRODUCTS, prods));
         if (cats?.length) setCategories(cats);
         if (bans?.length) setBanners(bans);
         if (feats?.length) setFeatures(feats);
@@ -38,13 +31,7 @@ export function DataProvider({ children }) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
         fetchProducts()
           .then((prods) => {
-            if (prods?.length) {
-              setProducts(prev => prev.map(local => {
-                const remote = prods.find(r => r.id === local.id);
-                const firstImage = Array.isArray(remote?.images) ? remote.images[0] : remote?.images ?? null;
-                return remote ? { ...local, image_url: firstImage } : local;
-              }));
-            }
+            if (prods) setProducts(prev => mergeProducts(PRODUCTS, prods));
           })
           .catch((err) => console.error('[DataProvider realtime products]', err));
       })
@@ -73,6 +60,24 @@ export function DataProvider({ children }) {
       {children}
     </DataContext.Provider>
   );
+}
+
+function mergeProducts(localProducts, remoteProducts) {
+  const remoteById = new Map(remoteProducts.map(product => [String(product.id), product]));
+  const mergedLocal = localProducts.map(local => {
+    const remote = remoteById.get(String(local.id));
+    if (!remote) return local;
+    remoteById.delete(String(local.id));
+    return { ...local, ...remote, image_url: remote.image_url || remote.images?.[0] || local.image_url };
+  });
+  const vendorProducts = [...remoteById.values()]
+    .filter(product => product.active !== false)
+    .map(product => ({
+      ...product,
+      brand: product.brand || product.vendor_name || 'Цветочная студия',
+      image_url: product.image_url || product.images?.[0] || null,
+    }));
+  return [...mergedLocal, ...vendorProducts];
 }
 
 export const useData = () => useContext(DataContext);
