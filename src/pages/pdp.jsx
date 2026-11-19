@@ -166,7 +166,7 @@ export function PDPScreen({ device }) {
           </div>
 
           <div style={{ marginTop: 24, borderBottom: `1.5px solid ${t.border}`, display: 'flex', gap: 24 }}>
-            {[['about', 'Описание'], ['compose', 'Состав'], ['reviews', `Отзывы · ${p.reviews}`], ['delivery', 'Доставка']].map(([k, l]) => (
+            {[['about', 'Описание'], ['compose', 'Состав'], ['reviews', `Отзывы · ${Number(p.reviews ?? p.review_count ?? 0)}`], ['delivery', 'Доставка']].map(([k, l]) => (
               <button key={k} onClick={() => setTab(k)} style={{
                 background: 'transparent', border: 'none', cursor: 'pointer',
                 padding: '12px 0', fontSize: 14, fontWeight: 600,

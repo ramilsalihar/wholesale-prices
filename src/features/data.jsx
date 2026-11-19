@@ -6,6 +6,7 @@ import { fetchProducts } from '../service/products.js';
 import { fetchCategories } from '../service/categories.js';
 import { fetchBanners } from '../service/banners.js';
 import { fetchFeatures } from '../service/features.js';
+import { fetchVendors } from '../service/vendors.js';
 import { supabase } from '../service/supabase.js';
 
 const DataContext = createContext(null);
@@ -19,11 +20,12 @@ export function DataProvider({ children }) {
   useEffect(() => {
     const loadStorefront = async () => {
       const results = await Promise.allSettled([
-        fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures(),
+        fetchProducts(), fetchCategories(), fetchBanners(), fetchFeatures(), fetchVendors(),
       ]);
-      const [productsResult, categoriesResult, bannersResult, featuresResult] = results;
+      const [productsResult, categoriesResult, bannersResult, featuresResult, vendorsResult] = results;
       if (productsResult.status === 'fulfilled') {
-        setProducts(mergeProducts(PRODUCTS, productsResult.value || []));
+        const vendors = vendorsResult.status === 'fulfilled' ? vendorsResult.value : [];
+        setProducts(mergeProducts(PRODUCTS, productsResult.value || [], vendors));
       } else console.error('[DataProvider products]', productsResult.reason);
       if (categoriesResult.status === 'fulfilled' && categoriesResult.value?.length) setCategories(categoriesResult.value);
       else if (categoriesResult.status === 'rejected') console.error('[DataProvider categories]', categoriesResult.reason);
@@ -31,6 +33,7 @@ export function DataProvider({ children }) {
       else if (bannersResult.status === 'rejected') console.error('[DataProvider banners]', bannersResult.reason);
       if (featuresResult.status === 'fulfilled') setFeatures(featuresResult.value || []);
       else console.error('[DataProvider features]', featuresResult.reason);
+      if (vendorsResult.status === 'rejected') console.error('[DataProvider vendors]', vendorsResult.reason);
     };
     loadStorefront();
 
@@ -70,7 +73,8 @@ export function DataProvider({ children }) {
   );
 }
 
-function mergeProducts(localProducts, remoteProducts) {
+function mergeProducts(localProducts, remoteProducts, vendors = []) {
+  const vendorNames = new Map(vendors.map(vendor => [String(vendor.id), vendor.name]));
   const remoteById = new Map(remoteProducts.map(product => [String(product.id), product]));
   const mergedLocal = localProducts.map(local => {
     const remote = remoteById.get(String(local.id));
@@ -82,7 +86,8 @@ function mergeProducts(localProducts, remoteProducts) {
     .filter(product => product.active !== false)
     .map(product => ({
       ...product,
-      brand: product.brand || product.vendor_name || 'Цветочная студия',
+      brand: product.brand || vendorNames.get(String(product.vendor_id)) || 'Цветочная студия',
+      reviews: Number(product.reviews ?? product.review_count ?? 0),
       image_url: product.image_url || product.images?.[0] || null,
     }));
   return [...mergedLocal, ...vendorProducts];
